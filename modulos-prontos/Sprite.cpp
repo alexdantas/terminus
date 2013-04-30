@@ -5,7 +5,7 @@ Sprite::Sprite(std::string filename)
 {
 	setFilename(filename);
 	this->surface  = NULL;
-    this->load();
+	this->load();
 }
 Sprite::~Sprite()
 {
@@ -18,17 +18,17 @@ void Sprite::setFilename(std::string newFilename)
 bool Sprite::load()
 {
 	if (this->surface) SDL_FreeSurface(this->surface);
-    
+
 	this->surface = SDLManager::loadImage(this->filename);
-    if (!this->surface)
-    {
-        SDLManager::errorLog("Couldn't load sprite on " + this->filename);
-        return false;
-    }
+	if (!this->surface)
+	{
+		SDLManager::errorLog("Couldn't load sprite on " + this->filename);
+		return false;
+	}
 
 	// Will print image at it's original size
 	this->crop(0, 0, this->surface->w, this->surface->h);
-    return true;
+	return true;
 }
 void Sprite::crop(int x, int y, int w, int h)
 {
@@ -44,12 +44,20 @@ void Sprite::render(int x, int y)
 	tmpRect.x = x;
 	tmpRect.y = y;
 
-	global_sdl_manager->renderSurface(this->surface, &(this->clipRect), &tmpRect);
+	SDLManager::renderSurface(this->surface, &(this->clipRect), &tmpRect);
 }
 void Sprite::setTransparentRGBColor(int red, int green, int blue)
 {
 	Uint32 colorKey = SDL_MapRGB(this->surface->format, red, green, blue);
 
 	SDL_SetColorKey(this->surface, SDL_SRCCOLORKEY, colorKey);
+}
+int Sprite::getW()
+{
+	return this->clipRect.w;
+}
+int Sprite::getH()
+{
+	return this->clipRect.h;
 }
 
