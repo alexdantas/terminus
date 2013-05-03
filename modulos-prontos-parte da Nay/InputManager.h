@@ -1,3 +1,4 @@
+/// @file InputManager.h Tratamento dos eventos de input (teclado)
 #pragma once
 
 #include <SDL/SDL.h>
