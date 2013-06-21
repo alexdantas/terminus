@@ -1,0 +1,25 @@
+1 VERSIONINFO
+FILEVERSION     1,5,0,2
+PRODUCTVERSION  1,5,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", "IDJ"
+      VALUE "FileDescription", "The greatest game ever."
+      VALUE "FileVersion", "1.0"
+      VALUE "InternalName", "terminus"
+      VALUE "LegalCopyright", "IDJ"
+      VALUE "OriginalFilename", "terminus.exe"
+      VALUE "ProductName", "terminus"
+      VALUE "ProductVersion", "1.0"
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x809, 1252
+  END
+END
+id ICON "../img/logo.ico"

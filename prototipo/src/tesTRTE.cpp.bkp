@@ -1,0 +1,70 @@
+#include <iostream>
+#include <string>
+
+#include "SDL.hpp"
+#include "InputManager.hpp"
+
+int main(int argc, char* argv[])
+{
+    SDL::init(800, 500, 30);
+
+    SDL_Surface* original = SDL::loadImage("img/NaveSheet.png");
+
+    SDL_Rect rect;
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = 100;
+    rect.h = 100;
+    SDL_Surface* clipped = SDL_CreateRGBSurface(original->flags,
+                                                rect.w,
+                                                rect.h,
+                                                original->format->BitsPerPixel,
+                                                0, 0, 0, 0);
+                                                // original->format->Rmask,
+                                                // original->format->Gmask,
+                                                // original->format->Bmask,
+                                                // 0x000000FF);
+//                                                original->format->Amask);
+
+    // SURFACE EXISTS
+//    SDL_FillRect(clipped, NULL, SDL_MapRGB(original->format, 255, 0, 255));
+
+    SDL_SetAlpha(clipped, SDL_SRCALPHA, SDL_ALPHA_TRANSPARENT);
+    // Copies original *surface*'s contents to the newly created one
+    if (SDL_BlitSurface(original, &rect, clipped, NULL) == -1)
+        return -1;
+
+    SDL_Surface* rotated = SDL::rotoZoom(original, 30, 1.2, 1.4);
+
+    SDL_FillRect(SDL::getScreen(), NULL, SDL_MapRGB(original->format, 255, 0, 255));
+
+    rect.x = 0;
+    rect.y = 0;
+    SDL::renderSurface(original, NULL, &rect);
+
+    rect.x = 10;
+    rect.y = 10;
+    SDL::renderSurface(clipped, NULL, &rect);
+
+    rect.x = 200;
+    rect.y = 200;
+    SDL::renderSurface(rotated, NULL, &rect);
+
+    SDL::refreshScreen();
+
+    InputManager* input = InputManager::getInstance();
+
+    bool sair = false;
+    while (!sair)
+    {
+        if (input->isKeyPressed(SDLK_q))
+            sair = true;
+
+        SDL::delay_ms(100);
+    }
+
+    return 0;
+}
+
+
+
