@@ -2,59 +2,34 @@
 #
 # This file compiles FOR Windows ON Linux
 # It assumes you have 'mxe' nand installed SDL for windows
-# on /opt/SDL-1.2.13
+# on \opt\SDL-1.2.13
 #
-# http://mxe.cc/#tutorial
+# http:\\mxe.cc\#tutorial
 
-########## There are the things that you CAN edit
+########## There are the things that you CAN edit 
 # Executable name
-EXE     = windows/prototipo.exe
+EXE = windows\prototipo.exe
 
-# Compilation/linking flags
-SDL_ROOT_DIR = /opt/SDL-1.2.13
-CFLAGS       = -g `$(SDL_ROOT_DIR)/bin/sdl-config --cflags`
-CXXFLAGS     = -g `$(SDL_ROOT_DIR)/bin/sdl-config --cflags` \
-               -Wall -Wextra
-LDFLAGS      = `$(SDL_ROOT_DIR)/bin/sdl-config --libs` \
-               -lSDL_image -lSDL_ttf -lSDL_mixer -lSDL_gfx
+# Compilation\linking flags
+SDL_ROOT_DIR = C:\MinGW
+INCLUDE = -I"$(SDL_ROOT_DIR)\include" \
+          -I"$(SDL_ROOT_DIR)\include\SDL"
 
-CC  = /opt/cross-tools/i386-mingw32msvc/bin/gcc
-CXX = /opt/cross-tools/i386-mingw32msvc/bin/g++
+CFLAGS   =
+CXXFLAGS = -Wall -Wextra $(INCLUDE)
+LDFLAGS  = -mwindows -lmingw32 -lSDLmain -lSDL -lSDL_image -lSDL_ttf -lSDL_mixer -lSDL_gfx
 
-# All libraries we'll use on the projects
-LIB_TMXPARSER   = src/lib/TmxParser
-LIB_TINYXML     = src/lib/TmxParser/tinyxml
-LIB_ZLIB        = src/lib/TmxParser/zlib
-LIB_BASE64      = src/lib/TmxParser/base64
+CC  = gcc
+CXX = g++
 
-# And where we'll find them
-LIBS_CFILES     = $(shell find  $(LIB_TMXPARSER) \
-                                $(LIB_TINYXML)   \
-                                $(LIB_ZLIB)      \
-                                $(LIB_BASE64)    \
-                                -maxdepth 1 -type f -name '*.c')
-
-
-LIBS_CXXFILES    =  $(shell find $(LIB_TMXPARSER) \
-                                 $(LIB_TINYXML)   \
-                                 $(LIB_ZLIB)      \
-                                 $(LIB_BASE64)    \
-                                 -maxdepth 1 -type f -name '*.cpp')
-
-# Finally, which directories we should include
-INCLUDE   = -I$(LIB_TMXPARSER)          \
-            -I$(LIB_TINYXML)            \
-            -I$(LIB_ZLIB)               \
-            -I$(LIB_BASE64)             \
-            -I"$(SDL_ROOT_DIR)/include" \
-            -I"$(SDL_ROOT_DIR)/include/SDL"
+FIND = C:\gnuwin32\bin\find.exe
 
 # All C file sources of the projects
-CFILES     = $(shell find src -maxdepth 1 -type f -name '*.c')
+CFILES     = $(shell $(FIND) src -maxdepth 1 -type f -name '*.c')
 COBJECTS   = $(CFILES:.c=.o)
 
 # All C++ file sources of the projects
-CXXFILES   = $(shell find src -maxdepth 1 -type f -name '*.cpp')
+CXXFILES   = $(shell $(FIND) src -maxdepth 1 -type f -name '*.cpp')
 CXXOBJECTS = $(CXXFILES:.cpp=.o)
 
 # All of them summed up
@@ -65,53 +40,49 @@ LIBS_COBJECTS   = $(LIBS_CFILES:.c=.o)
 LIBS_CXXOBJECTS = $(LIBS_CXXFILES:.cpp=.o)
 
 LIBS_SOURCES    = $(LIBS_CFILES)   $(LIBS_CXXFILES)
-LIBS_OBJECTS    = $(LIBS_COBJECTS) $(LIBS_CXXOBJECTS) src/lib/SDL_Config/SDL_config.o
+LIBS_OBJECTS    = $(LIBS_COBJECTS) $(LIBS_CXXOBJECTS) src\lib\SDL_Config\SDL_config.o
 
-all: dirs $(EXE)
-	# Build successful!
+all: $(EXE)
+	@echo Build successful!
 
 $(EXE): $(OBJECTS) $(LIBS_OBJECTS)
-	# Linking...
+	@echo Linking...
 	$(CXX) $(OBJECTS) $(LIBS_OBJECTS) -o $(EXE) $(LDFLAGS)
 
-src/%.o: src/%.cpp
-	# Compiling $<...
+src\%.o: src\%.cpp
+	@echo Compiling $<...
 	$(CXX) $(CFLAGS) $(INCLUDE) $< -c -o $@
 
-src/%.o: src/%.c
-	# Compiling $<...
-	$(CC) $(CFLAGS) $(INCLUDE) $< -c -o $@
-
 # This needed to be added manually
-src/lib/SDL_Config/SDL_config.o: src/lib/SDL_Config/SDL_config.c
-	# Compiling SDL_Config...
+src\lib\SDL_Config\SDL_config.o: src\lib\SDL_Config\SDL_config.c
+	@echo Compiling SDL_Config...
 	$(MUTE)$(CXX) $< -c -o $@ $(INCLUDE) -fexpensive-optimizations -O3
 
 run: all
 	wine $(EXE)
 
 clean:
-	# Cleaning...
+	@echo Cleaning...
 	-rm -f $(EXE) $(OBJECTS)
 
 libclean: clean
 	-rm -f $(LIBS_OBJECTS)
 
 dirs:
-	@mkdir -p windows/img windows/ogg windows/ttf windows/map
-	@unix2dos -n README.txt  windows/README.txt
-	@unix2dos -n config.ini windows/config.ini
-	@cp -r img/*   windows/img
-	@cp -r ogg/*   windows/ogg
-	@cp -r ttf/*   windows/ttf
-	@cp -r map/*   windows/map
+	@mkdir -p windows\img windows\ogg windows\ttf windows\map
+	@unix2dos -n README.txt  windows\README.txt
+	@unix2dos -n config.ini windows\config.ini
+	@cp -r img\*   windows\img
+	@cp -r ogg\*   windows\ogg
+	@cp -r ttf\*   windows\ttf
+	@cp -r map\*   windows\map
 
 # Distribution zip
 ZIPNAME = sdl-test
 VERSION = 1.0
 DISTDIR = $(ZIPNAME)-$(VERSION)
-DISTDIRS = $(DISTDIR)/img $(DISTDIR)/ogg $(DISTDIR)/ttf \
-           $(DISTDIR)/map
+DISTDIRS = $(DISTDIR)\img $(DISTDIR)\ogg $(DISTDIR)\ttf \
+           $(DISTDIR)\map
 
 # Creates a zip file with release version
 dist: all $(DISTDIR).zip
@@ -122,18 +93,17 @@ $(DISTDIR).zip: $(DISTDIR)
 
 $(DISTDIR):
 	$(MUTE)mkdir -p $(DISTDIRS)
-	-$(MUTE)cp windows/* -t $(DISTDIR)
-	-$(MUTE)cp -r img/* $(DISTDIR)/img
-	-$(MUTE)cp -r ogg/* $(DISTDIR)/ogg
-	-$(MUTE)cp -r ttf/* $(DISTDIR)/ttf
-	-$(MUTE)cp -r map/* $(DISTDIR)/map
+	-$(MUTE)cp windows\* -t $(DISTDIR)
+	-$(MUTE)cp -r img\* $(DISTDIR)\img
+	-$(MUTE)cp -r ogg\* $(DISTDIR)\ogg
+	-$(MUTE)cp -r ttf\* $(DISTDIR)\ttf
+	-$(MUTE)cp -r map\* $(DISTDIR)\map
 
 # Uploads results on a website
 WEBSITE = alexdantas.net
 USER	= alexd075
-WEB_DIR = public_html/projects/sdl-test
+WEB_DIR = public_html\projects\sdl-test
 
 up: all dist
-	# Uploading results to ${WEBSITE}...
+	@echo Uploading results to ${WEBSITE}...
 	@rsync -avze "ssh -p 2222" $(DISTDIR).zip ${USER}@${WEBSITE}:$(WEB_DIR)
-

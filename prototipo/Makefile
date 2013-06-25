@@ -5,7 +5,7 @@ EXE      = prototipo
 CFLAGS   = -g `sdl-config --cflags`
 CXXFLAGS = -Wall -Wextra -g `sdl-config --cflags`
 LDFLAGS  = `sdl-config --libs` \
-           -lSDL_image -lSDL_ttf -lSDL_mixer -lSDL_gfx
+           -lSDL_image -lSDL_ttf -lSDL_mixer -lSDL_gfx -lm
 
 INCLUDE = -I"/usr/include/SDL"
 

@@ -76,7 +76,7 @@ void Log::debugMode(bool option)
 
     // Prints a nice logo
     isDebugMode = true;
-    Log::debug("> Debug mode activated");
+    Log::debug(">Debug mode activated");
 }
 void Log::verboseMode(bool option)
 {
@@ -88,7 +88,7 @@ void Log::verboseMode(bool option)
 
     // Prints a nice logo
     isVerboseMode = true;
-    Log::verbose("> Verbose Mode activated");
+    Log::verbose(">Verbose Mode activated");
 }
 // void Log::useLogFiles(bool option)
 // {

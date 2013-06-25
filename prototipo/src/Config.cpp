@@ -5,6 +5,7 @@
 ConfigFile  Config::file;
 bool        Config::debugMode = false;
 bool        Config::skipMenu  = false;
+bool        Config::hasMusic  = true;
 
 int         Config::screenWidth       = 0;
 int         Config::screenHeight      = 0;
@@ -12,6 +13,8 @@ int         Config::screenFramerate   = 0;
 int         Config::screenBgColorR    = 0;
 int         Config::screenBgColorG    = 0;
 int         Config::screenBgColorB    = 0;
+
+float Config::playerAcceleration = 0.0;
 
 std::string Config::filename          = "";
 int         Config::audioRate         = 0;
@@ -36,6 +39,7 @@ bool Config::load(std::string fileName)
     file.SelectGroup("game", false);
     debugMode = file.Read("debug_mode", debugMode);
     skipMenu = file.Read("skip_menu", skipMenu);
+    hasMusic = file.Read("has_music", hasMusic);
 
     file.SelectGroup("screen", false);
     screenWidth     = file.Read("width",      screenWidth);
@@ -44,6 +48,9 @@ bool Config::load(std::string fileName)
     screenBgColorR  = file.Read("bg_color_r", screenBgColorR);
     screenBgColorG  = file.Read("bg_color_g", screenBgColorG);
     screenBgColorB  = file.Read("bg_color_b", screenBgColorB);
+
+    file.SelectGroup("player", false);
+    playerAcceleration = file.Read("acceleration", playerAcceleration);
 
     file.SelectGroup("camera", false);
     cameraScrollSpeed = file.Read("scroll_speed", cameraScrollSpeed);

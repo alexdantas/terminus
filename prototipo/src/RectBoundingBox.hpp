@@ -40,8 +40,23 @@ public:
     /// Shows bounding box onscreen for debugging purposes.
     void render(float cameraX, float cameraY);
 
-private:
+    /// Copies all the *other*'s values to this one.
+    void copy(RectBoundingBox* other);
 
+    /// Updates special points.
+    ///
+    /// TODO: somehow improve this interface
+    void update();
+
+    // Public variables, PLEASE do not change them
+
+    float top; /// Top position on the Y axis.
+    float bottom; /// Bottom position on the Y axis.
+
+    float leftmost;
+    float rightmost;
+
+private:
     /// The x/y/w/h of the bounding box.
     Rectangle* rect;
 

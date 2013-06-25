@@ -12,14 +12,14 @@
 
 StateManager::StateManager(int width, int height)
 {
-    SDL::init(30);
-
-    Window::init(width, height, "Prototype", "yes");
-    Graphics::init(Window::screen);
-
     Config::load("config.ini");
     if (Config::debugMode)
         Log::debugMode(true);
+
+    SDL::init(30);
+
+    Window::init(width, height, "PROTOTYPE", "prototype");
+    Graphics::init(Window::screen);
 
     Log::verboseMode(true);
 

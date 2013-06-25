@@ -11,11 +11,7 @@ Rectangle::Rectangle(float x, float y, int w, int h):
     w(w),
     h(h)
 {
-    this->centerX = x + (w/2);
-    this->centerY = y + (h/2);
-
-    this->dx = x + w;
-    this->dy = y + h;
+    this->recalculate();
 }
 void Rectangle::addX(float x)
 {
@@ -29,6 +25,15 @@ void Rectangle::addY(float y)
     this->dy      += y;
     this->centerY += y;
 }
+void Rectangle::recalculate()
+{
+    this->centerX = x + (w/2);
+    this->centerY = y + (h/2);
+
+    this->dx = x + w;
+    this->dy = y + h;
+}
+
 
 Circle::Circle(float x, float y, int r):
     x(x),

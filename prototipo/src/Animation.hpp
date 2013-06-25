@@ -49,7 +49,7 @@ public:
     /// Updates animation.
     ///
     /// Checks if it's time to change sprites and does it if necessary.
-    virtual void update(uint32_t dt);
+    virtual void update(uint32_t dt=0);
 
     /// Starts a new animation from the image on *filepath*, with *ammount*
     /// sprites and framerate *framerate*.

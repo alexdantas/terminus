@@ -56,6 +56,12 @@ public:
     /// Although this seems useless, you must call this instead of
     /// modifying y directly because it refreshes internal points.
     void addY(float y);
+
+    /// Refreshes internal values.
+    ///
+    /// Must be called if something changes.
+    /// Got, I'm sleepy.
+    void recalculate();
 };
 
 /// A circle, duh.

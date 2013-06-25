@@ -9,20 +9,16 @@
 #include "Sprite.hpp"
 #include "InputManager.hpp"
 #include "Camera.hpp"
-#include "PlanetRed.hpp"
-#include "Earth.hpp"
-#include "Moon.hpp"
-#include "FollowerObject.hpp"
 #include "Music.hpp"
 #include "Animation.hpp"
-#include "AccellObject.hpp"
 #include "Explosion.hpp"
 #include "ProgressBar.hpp"
 #include "Font.hpp"
 #include "Text.hpp"
 #include "Menu.hpp"
-#include "Background.hpp"
 #include "DropDownConsole.hpp"
+#include "Player.hpp"
+#include "PlatformManager.hpp"
 
 /// This represents the actual game taking place.
 ///
@@ -56,34 +52,19 @@ private:
 
     // Such a mess, right?
 	Sprite* bg;
-	Sprite* planetSprite;
-    Sprite* earthSprite;
-    Sprite* moonSprite;
-    Sprite* ufoSprite;
-    Animation* shipAnim;
-    Animation* explosionAnim;
-
-	std::vector<Planet*> planetArray;
-    Earth* earth;
-    Moon* moon;
 
 	bool will_quit;
     bool game_over;
 
     Camera* camera;
 
-    FollowerObject* ufo;
-
     Music* bgmusic;
 
-    AccellObject* ship;
-    Explosion* explosion;
+    Player* apterus;
 
     ProgressBar* lifeBar;
     Font* lifeBarFont;
     Text* lifeBarText;
-
-    Background* cenario;
 
     // Internal state-specific functions
 
@@ -109,11 +90,10 @@ private:
     Font* font;
     Text* pausedTitle;
 
-    Font* hiliteFont;
-    Menu* pausedMenu;
-
     Font* consoleFont;
     DropDownConsole* console;
+
+    PlatformManager* platforms;
 };
 
 #endif //GAMESTATEGAME_H_DEFINED

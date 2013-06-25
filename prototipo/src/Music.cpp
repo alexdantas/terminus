@@ -17,7 +17,8 @@ void Music::setMusic(std::string filepath)
 }
 bool Music::load()
 {
-    if (!(SDL::hasAudio())) return false;
+    if (!(SDL::hasAudio()))
+        return false;
 
     if (this->music) Mix_FreeMusic(this->music);
 
@@ -34,7 +35,7 @@ bool Music::load()
 }
 bool Music::play(int times)
 {
-    if (!SDL::hasAudio())
+    if (!(SDL::hasAudio()))
         return false;
 
     if (!this->music)

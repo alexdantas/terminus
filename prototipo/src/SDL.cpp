@@ -36,10 +36,16 @@ bool SDL::init(uint32_t frameRate)
     // This makes input-handling a LOT easier.
     SDL_EnableUNICODE(SDL_ENABLE);
 
-    if (SDL::initAudio() == false)
-        startedAudio = false;
+    if (Config::hasMusic)
+    {
+        bool succeeded = SDL::initAudio();
+        if (!succeeded)
+            startedAudio = false;
+        else
+            startedAudio = true;
+    }
     else
-        startedAudio = true;
+        startedAudio = false;
 
     // I saw this here: http://www.kekkai.org/roger/sdl/mixer/
     // but don't quite know what it does.
@@ -59,9 +65,12 @@ bool SDL::init(uint32_t frameRate)
 }
 void SDL::exit()
 {
-    //Mix_Quit(); segmentation fault! why?
+    if (startedAudio)
+    {
+        //Mix_Quit(); segmentation fault! why?
 
-    Mix_CloseAudio();
+        Mix_CloseAudio();
+    }
 
     SDL_EnableUNICODE(SDL_DISABLE);
 
@@ -162,6 +171,9 @@ bool SDL::isPrintable(SDLKey key)
 }
 bool SDL::musicPlaying()
 {
+    if (!(SDL::startedAudio))
+        return false;
+
     if (Mix_PlayingMusic())
         return true;
     else
@@ -169,6 +181,9 @@ bool SDL::musicPlaying()
 }
 bool SDL::musicPaused()
 {
+    if (!(SDL::startedAudio))
+        return false;
+
     if (Mix_PausedMusic())
         return true;
     else
@@ -176,16 +191,25 @@ bool SDL::musicPaused()
 }
 void SDL::pauseMusic()
 {
+    if (!(SDL::startedAudio))
+        return;
+
     if (SDL::musicPlaying())
         Mix_PauseMusic();
 }
 void SDL::resumeMusic()
 {
+    if (!(SDL::startedAudio))
+        return;
+
     if (SDL::musicPaused())
         Mix_ResumeMusic();
 }
 void SDL::stopMusic()
 {
+    if (!(SDL::startedAudio))
+        return;
+
     if (SDL::musicPlaying() || SDL::musicPaused())
         Mix_HaltMusic();
 }

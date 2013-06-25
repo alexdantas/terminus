@@ -10,33 +10,24 @@ bool GameStateGame::showBoundingBoxes = false;
 // All possible commands the user might type into the console
 enum GameStateGameCommands
 {
-    COMMAND_KILL, COMMAND_QUIT, COMMAND_ADD_PLANET
+    COMMAND_QUIT, COMMAND_ADD_PLATFORM
 };
 
 GameStateGame::GameStateGame():
     bg(NULL),
-    planetSprite(NULL),
-    earthSprite(NULL),
-    moonSprite(NULL),
-    ufoSprite(NULL),
-    shipAnim(NULL),
-    explosionAnim(NULL),
-    earth(NULL),
-    moon(NULL),
     will_quit(false),
     game_over(false),
     camera(NULL),
-    ufo(NULL),
     bgmusic(NULL),
-    ship(NULL),
-    explosion(NULL),
+    apterus(NULL),
     lifeBar(NULL),
     lifeBarFont(NULL),
     lifeBarText(NULL),
     isPaused(false),
     font(NULL),
     pausedTitle(NULL),
-    console(NULL)
+    console(NULL),
+    platforms(NULL)
 { }
 GameStateGame::~GameStateGame()
 { }
@@ -48,63 +39,31 @@ void GameStateGame::load(int stack)
 
     loading.increase(2);
 
-    this->bg = new Sprite("img/cenario.png");
+    this->bg = new Sprite("img/fundo.png");
 
     loading.increase(30);
-
-    this->planetSprite = new Sprite("img/PlanetaVermelho.png");
-
-    loading.increase(3);
-
-    loading.increase(4);
-
-    this->earthSprite = new Sprite("img/PlanetaTerra.png");
-    this->earthSprite->rotoZoom(0, 2.0, 2.0);
-    this->earth = new Earth(this->earthSprite, 20,
-                            SDL::randomNumberBetween(-1000, 1000),
-                            SDL::randomNumberBetween(-1000, 1000),
-                            this->earthSprite->getWidth(),
-                            this->earthSprite->getHeight());
-
-    loading.increase(8);
-
-    this->moonSprite = new Sprite("img/Lua.png");
-    this->moon       = new Moon(this->moonSprite, 1, this->earth,
-                                this->moonSprite->getWidth(),
-                                this->moonSprite->getHeight());
-
-    loading.increase(8);
 
     this->camera = new Camera(0, 0, Window::width,
                               Window::height,
                               Config::cameraScrollSpeed);
     this->camera->lockXAxis();
+    this->camera->setVerticalLimit(0, this->bg->getHeight());
 
     loading.increase(3);
 
-    this->ufoSprite = new Sprite("img/ufo.png");
-    this->ufo = new FollowerObject(this->ufoSprite, 30, 30,
-                                   this->ufoSprite->getWidth(),
-                                   this->ufoSprite->getHeight(), 20);
+    int playerX = 245;
+    int playerY = this->bg->getHeight() - 201;
 
-    loading.increase(8);
-
-    int playerX = 100;
-    int playerY = this->bg->getHeight() - 100;
-
-    this->shipAnim = new Animation("img/NaveSheet.png", 4, 18);
-    this->ship = new AccellObject(this->shipAnim,
-                                  playerX, playerY,
-                                  94, 100, 20);
+    this->apterus = new Player(playerX, playerY,
+                               245, 200,
+                               20,
+                               Config::playerAcceleration);
+    this->apterus->setHorizontalLimit(0, this->bg->getWidth());
+    this->apterus->setVerticalLimit(0, this->bg->getHeight());
 
     loading.increase(10);
 
-    this->explosionAnim = new Animation("img/explosion.png", 22, 30);
-    this->explosion = new Explosion(this->explosionAnim);
-
-    loading.increase(8);
-
-    this->lifeBar = new ProgressBar(200, 20, this->ship->getHitpoints(), this->ship->getHitpoints());
+    this->lifeBar = new ProgressBar(200, 20, this->apterus->getHitpoints(), this->apterus->getHitpoints());
     this->lifeBar->setForegroundColor(Color(255, 0, 255));
     this->lifeBar->setBackgroundColor(Color(100, 0, 100));
 
@@ -128,27 +87,9 @@ void GameStateGame::load(int stack)
 
     loading.increase(5);
 
-    this->hiliteFont = new Font("ttf/UbuntuMono.ttf", 42);
-    this->hiliteFont->setColor(Color(100, 100, 100));
-
-    loading.increase(5);
-
-    this->pausedMenu = new Menu(this->font, this->hiliteFont,
-                                Window::width/2  - 60,
-                                Window::height/2 + 100);
-
-    this->pausedMenu->addItem("Continue");
-    this->pausedMenu->addItem("Exit");
-    this->pausedMenu->centralizeText();
-
-    loading.increase(13);
 
     this->bgmusic = new Music("ogg/escaping.ogg");
     this->bgmusic->play();
-
-    loading.increase(10);
-
-    this->cenario = new Background("img/cenario.png");
 
     loading.increase(10);
 
@@ -162,9 +103,21 @@ void GameStateGame::load(int stack)
     this->console->refresh();
     this->console->print("* Game console loaded *");
 
-    this->console->addCommand("kill", COMMAND_KILL);
     this->console->addCommand("quit", COMMAND_QUIT);
-    this->console->addCommand("addplanet", COMMAND_ADD_PLANET);
+    this->console->addCommand("add", COMMAND_ADD_PLATFORM);
+
+    this->platforms = new PlatformManager();
+
+    for (int i = 0; i < 10; i++)
+    {
+        this->platforms->addBetween(Point(0, 0),
+                                    Point(this->bg->getWidth(),
+                                          this->bg->getHeight()), PlatformManager::GROUND);
+
+        this->platforms->addBetween(Point(0, 0),
+                                    Point(this->bg->getWidth(),
+                                          this->bg->getHeight()), PlatformManager::CLOUD);
+    }
 }
 int GameStateGame::unload()
 {
@@ -172,9 +125,6 @@ int GameStateGame::unload()
     // just won.
     // If we did, then this->ufo will be NULL
     bool we_won = false;
-
-    if (!(this->ufo))
-        we_won = true;
 
 // Time to delete!
 // This macro deletes a thing only if it's non-NULL,
@@ -188,42 +138,19 @@ int GameStateGame::unload()
     }                  \
 }
 
-    int size = this->planetArray.size();
-
-    for (int i = 0; i < size; i++)
-        safe_delete(this->planetArray[i]);
-
-    safe_delete(this->planetSprite);
-
     safe_delete(this->bg);
     safe_delete(this->bgmusic);
     safe_delete(this->camera);
 
-    safe_delete(this->earth);
-    safe_delete(this->earthSprite);
 
-    safe_delete(this->moon);
-    safe_delete(this->moonSprite);
-
-    safe_delete(this->ship);
-    safe_delete(this->shipAnim);
-
-// TODO there's a segmentation fault when I delete explosion
-//      why is that?
-//    safe_delete(this->explosion);
-
-    safe_delete(this->explosionAnim);
+    safe_delete(this->apterus);
 
     safe_delete(this->font);
     safe_delete(this->pausedTitle);
-    safe_delete(this->hiliteFont);
-    safe_delete(this->pausedMenu);
 
     safe_delete(this->lifeBar);
     safe_delete(this->lifeBarFont);
     safe_delete(this->lifeBarText);
-
-    safe_delete(this->cenario);
 
     if (we_won)
         return 1;
@@ -239,8 +166,7 @@ int GameStateGame::update(uint32_t dt)
     // Will only go to the GAME OVER screen when the
     // explosion ends.
     if (this->game_over)
-        if (!(this->explosion->isExploding()))
-            return GameState::GAME_OVER;
+        return GameState::GAME_OVER;
 
     this->processEvents();
 
@@ -251,17 +177,15 @@ int GameStateGame::update(uint32_t dt)
     {
         switch (this->console->getCommand())
         {
-        case COMMAND_KILL:
-            this->explosion->explodeAt(this->ship->getX(),
-                                       this->ship->getY());
-            break;
         case COMMAND_QUIT:
             this->console->print("Quitting...");
             this->will_quit = true;
             break;
 
-        case COMMAND_ADD_PLANET:
-            this->addPlanet();
+        case COMMAND_ADD_PLATFORM:
+            this->platforms->addBetween(Point(0, 0),
+                                        Point(this->bg->getWidth(),
+                                              this->bg->getHeight()), PlatformManager::GROUND);
             break;
 
         default:
@@ -271,7 +195,6 @@ int GameStateGame::update(uint32_t dt)
     }
     if (this->isPaused)
     {
-        this->pausedMenu->update();
         return GameState::CONTINUE;
     }
 
@@ -279,28 +202,17 @@ int GameStateGame::update(uint32_t dt)
     // game's paused.
     // From now on, they won't.
 
-    int size = this->planetArray.size();
-    for (int i = 0; i < size; i++)
-        this->planetArray[i]->update(dt);
-
-    this->earth->update(dt);
-    this->moon->update(dt);
-
-    if (this->ufo)
-        this->ufo->update(dt);
-
-    if (this->ship)
-        this->ship->update(dt);
+    if (this->apterus)
+        this->apterus->update(dt);
 
     this->camera->update(dt);
 
-    float levelHeight  = this->bg->getHeight();
-
     float cameraLowestPoint = this->camera->getY() + this->camera->getHeight();
     float cameraScrollPoint = cameraLowestPoint    - this->camera->getHeight()/3;
+    UNUSED(cameraScrollPoint);
 
-    this->camera->centerOn(this->ship->getCenterX(),
-                           this->ship->getCenterY());
+    this->camera->centerOn(this->apterus->getCenterX(),
+                           this->apterus->getCenterY());
 
 //    if (cameraLowestPoint > levelHeight)
 //        this->camera->setY(levelHeight - this->camera->getHeight());
@@ -308,14 +220,14 @@ int GameStateGame::update(uint32_t dt)
 //     // Relative-stuff
 //     float cameraOffset  = this->camera->getY();
 //     float scrollPoint   = 200; // relative to the camera
-//     float playerCenterY = (this->ship->getY() + this->ship->getHeight()/2) - cameraOffset;
+//     float playerCenterY = (this->apterus->getY() + this->apterus->getHeight()/2) - cameraOffset;
 
 //     if (playerCenterY < scrollPoint)
 //         this->camera->scroll(Camera::UP, (playerCenterY - cameraOffset));
 // //        this->camera->setY(playerCenterY);
 
-//     // this->camera->centerOn(this->ship->getX() + (this->ship->getWidth()/2),
-//     //                        this->ship->getY() + (this->ship->getHeight()/2));
+//     // this->camera->centerOn(this->apterus->getX() + (this->apterus->getWidth()/2),
+//     //                        this->apterus->getY() + (this->apterus->getHeight()/2));
 
 //     // Global stuff
 //     float cameraLowestPoint = cameraOffset + this->camera->getY();
@@ -324,13 +236,12 @@ int GameStateGame::update(uint32_t dt)
 //     if (cameraLowestPoint > levelLowestPoint)
 //         this->camera->setY(levelLowestPoint - cameraOffset);
 
-    if (this->ship->getY() >= cameraLowestPoint)
+    if (this->apterus->getY() >= cameraLowestPoint)
     {
         // this is where the player dies
     }
 
     this->checkCollision();
-    this->explosion->update(dt);
 
     return GameState::CONTINUE;
 }
@@ -339,105 +250,40 @@ void GameStateGame::render()
     int cameraX = this->camera->getX();
     int cameraY = this->camera->getY();
 
+    Window::clear();
     this->bg->render(0 - cameraX, 0 - cameraY);
 
-    int size = this->planetArray.size();
-    for (int i = 0; i < size; i++)
-        this->planetArray[i]->render(cameraX, cameraY);
+    this->platforms->render(cameraX, cameraY);
 
-    this->earth->render(cameraX, cameraY);
-    this->moon->render(cameraX, cameraY);
-
-    if (!(this->ufo->isDead()))
-        this->ufo->render(cameraX, cameraY);
-
-    if (!(this->ship->isDead()))
-        this->ship->render(cameraX, cameraY);
-
-    this->explosion->render(cameraX, cameraY);
-
-    this->lifeBar->render(10, 10);
-    this->lifeBarText->render();
-
-//    this->cenario->show(cameraX, cameraY);
+    if (!(this->apterus->isDead()))
+        this->apterus->render(cameraX, cameraY);
 
     if (this->isPaused)
     {
         this->pausedTitle->render();
-        this->pausedMenu->render();
     }
+
+    this->lifeBar->render(10, 10);
+    this->lifeBarText->render();
+
 
     // Must always be on top
     this->console->render();
 }
 void GameStateGame::checkCollision()
 {
-    if (!(this->ufo) || !(this->ship))
+    if (!(this->apterus))
         return;
 
-    this->checkPlanets();
+    if (this->platforms->collidesWith(this->apterus))
+        this->apterus->undoUpdate();
 
-    if (this->ship->collidedWith(this->earth))
+    if (this->apterus->isDead())
     {
-        this->ufo->damage(666);
-        this->game_over = true;
-    }
-
-    if (this->ship->isDead())
-    {
-        this->explosion->explodeAt(this->ship->getX(),
-                                   this->ship->getY());
-        delete this->ship;
-        this->ship = NULL;
+        delete this->apterus;
+        this->apterus = NULL;
 
         this->game_over = true;
-    }
-    if (this->ufo->isDead())
-    {
-        this->explosion->explodeAt(this->ufo->getX(),
-                                   this->ufo->getY());
-        delete this->ufo;
-        this->ufo = NULL;
-    }
-}
-void GameStateGame::addPlanet()
-{
-    int hit = SDL::randomNumberBetween(1, 20);
-    int x   = SDL::randomNumberBetween(0, Window::width  - 1);
-    int y   = SDL::randomNumberBetween(0, Window::height - 1);
-
-    PlanetRed* planet = new PlanetRed((this->planetSprite),
-                                      hit,
-                                      x + this->camera->getX(),
-                                      y + this->camera->getY(),
-                                      this->planetSprite->getWidth(),
-                                      this->planetSprite->getHeight());
-
-    this->planetArray.push_back(planet);
-    Log::debug("GameStateGame::addPlanet Successful");
-}
-void GameStateGame::checkPlanets()
-{
-    int size = this->planetArray.size();
-
-    for (int i = 0; i < size; i++)
-    {
-        if (this->ship->collidedWith(this->planetArray[i]))
-        {
-            this->explosion->explodeAt(this->planetArray[i]->getX(),
-                                       this->planetArray[i]->getY());
-            this->planetArray[i]->damage(666);
-            this->ship->damage(1);
-            this->lifeBar->decrease(1);
-        }
-
-        if (this->planetArray[i]->isDead())
-        {
-            delete this->planetArray[i];
-            this->planetArray.erase(this->planetArray.begin() + i);
-            Log::debug("GameStateGame::checkPlanets Delete Planet no " +
-                       SDL::intToString(i));
-        }
     }
 }
 void GameStateGame::processEvents()
@@ -460,25 +306,7 @@ void GameStateGame::processEvents()
             this->isPaused = true;
 
     // The only things we're going to care when the game is
-    // paused are quitting, unpausing and the pause menu.
-    if (this->isPaused)
-    {
-        if (this->pausedMenu->optionWasSelected())
-        {
-            switch (this->pausedMenu->getSelectedOption())
-            {
-            case 0:
-                this->isPaused = false;
-                break;
-            case 1:
-                this->will_quit = true;
-                break;
-            default:
-                break;
-            }
-        }
-        return;
-    }
+    // paused are quitting and unpausing
 
     if ((input->isKeyDown(SDLK_F2)))
         this->game_over = true;
@@ -497,23 +325,6 @@ void GameStateGame::processEvents()
     // Reloading config file at runtime!
     if (input->isKeyDown(SDLK_r))
         Config::reload();
-
-    if (input->isMouseDown(SDL_BUTTON_LEFT))
-        this->addPlanet();
-
-    // Empty ufo command list
-    if (input->isMouseDown(SDL_BUTTON_MIDDLE))
-    {
-        if (this->ufo)
-            this->ufo->empty();
-    }
-
-    if (input->isMouseDown(SDL_BUTTON_RIGHT))
-    {
-        if (this->ufo)
-            this->ufo->enqueueCommand(input->getMouseX(),
-                                      input->getMouseY());
-    }
 
     if (input->isKeyDown(SDLK_F3))
         Window::center();

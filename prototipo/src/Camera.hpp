@@ -45,6 +45,8 @@ public:
     /// Prevents the camera from moving on the x axis.
     void lockXAxis();
 
+    void setVerticalLimit(int top, int bottom);
+
 private:
     /// Current camera position on the x-axis.
     float x;
@@ -66,6 +68,10 @@ private:
 
     bool lockedX;
     bool lockedY;
+
+    bool hasVerticalLimit;
+    int  topLimitY;
+    int  bottomLimitY;
 };
 
 #endif /* CAMERA_H_DEFINED */

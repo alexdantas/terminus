@@ -1,5 +1,6 @@
 #include "Window.hpp"
 #include "Log.hpp"
+#include "Config.hpp"
 
 SDL_Surface* Window::screen           = NULL;
 uint32_t     Window::width            = 0;
@@ -32,7 +33,9 @@ bool Window::init(uint32_t width, uint32_t height, std::string windowCaption, st
     SDL_WM_SetCaption(Window::caption.c_str(),
                       Window::minimizedCaption.c_str());
 
-    Window::setBackgroundColor();
+    Window::setBackgroundColor(Color(Config::screenBgColorR,
+                                     Config::screenBgColorG,
+                                     Config::screenBgColorB));
     return true;
 }
 bool Window::toggleFullscreen()

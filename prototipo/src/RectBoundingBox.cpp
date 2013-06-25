@@ -1,19 +1,22 @@
 #include "RectBoundingBox.hpp"
 #include "Graphics.hpp"
 
-RectBoundingBox::RectBoundingBox(float x, float y, int w, int h)
+RectBoundingBox::RectBoundingBox(float x, float y, int w, int h):
+    rect(NULL),
+    externalRect(false)
 {
-    this->rect = NULL;
     this->rect = new Rectangle(x, y, w, h);
 
-    this->externalRect = false;
+    this->update();
 }
-RectBoundingBox::RectBoundingBox(Rectangle* rect)
+RectBoundingBox::RectBoundingBox(Rectangle* rect):
+    rect(NULL)
 {
-    this->rect = NULL;
     this->rect = rect;
 
     this->externalRect = true;
+
+    this->update();
 }
 RectBoundingBox::~RectBoundingBox()
 {
@@ -96,5 +99,32 @@ void RectBoundingBox::render(float cameraX, float cameraY)
     color.randomize();
 
     Graphics::drawRectangle(tmp, color);
+}
+void RectBoundingBox::copy(RectBoundingBox* other)
+{
+    // // Seriously, if you really want to copy a thing
+    // // to itself, you MUST be sleepy.
+    // //
+    // // Just like I was when I wrote this code.
+    // if (!(this->externalRect))
+    //     return;
+
+    this->rect->x = other->rect->x;
+    this->rect->y = other->rect->y;
+    this->rect->w = other->rect->w;
+    this->rect->h = other->rect->h;
+
+    this->top       = other->top;
+    this->bottom    = other->bottom;
+    this->leftmost  = other->leftmost;
+    this->rightmost = other->rightmost;
+}
+void RectBoundingBox::update()
+{
+    this->top    = this->rect->y;
+    this->bottom = this->rect->y + this->rect->h;
+
+    this->leftmost  = this->rect->x;
+    this->rightmost = this->rect->x + this->rect->w;
 }
 

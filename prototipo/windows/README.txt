@@ -1,2 +1,4 @@
-= Game PrototypeOla, cara!
+= Game Prototype
+
+Ola, cara!
 

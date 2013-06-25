@@ -9,9 +9,11 @@ Camera::Camera(float x, float y, int w, int h, float scrollSpeed):
     speedY(0),
     scrollSpeed(scrollSpeed),
     lockedX(false),
-    lockedY(false)
-{
-}
+    lockedY(false),
+    hasVerticalLimit(false),
+    topLimitY(0),
+    bottomLimitY(0)
+{ }
 float Camera::getX()
 {
     return this->x;
@@ -36,6 +38,13 @@ void Camera::setY(float y)
 {
     this->y = y;
 }
+void Camera::setVerticalLimit(int top, int bottom)
+{
+    this->topLimitY    = top;
+    this->bottomLimitY = bottom;
+
+    this->hasVerticalLimit = true;
+}
 void Camera::update(uint32_t dt)
 {
     this->x += (this->speedX) * dt;
@@ -44,10 +53,22 @@ void Camera::update(uint32_t dt)
 void Camera::centerOn(int x, int y)
 {
     if (!(this->lockedX))
-        this->x = x - this->w/2;
+        this->x = (x - this->w/2);
 
     if (!(this->lockedY))
-        this->y = y - this->h/2;
+        this->y = (y - this->h/2);
+
+    // Kinda intuitive, right?
+    // If it has any kind of limit, make it so
+
+    if (this->hasVerticalLimit)
+    {
+        if (this->y < this->topLimitY)
+            this->y = this->topLimitY;
+
+        if ((this->y + this->h) > this->bottomLimitY)
+            this->y = (this->bottomLimitY - this->h);
+    }
 }
 // void Camera::setScrollSpeed(float speed)
 // {
