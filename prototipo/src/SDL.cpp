@@ -322,6 +322,15 @@ std::string SDL::intToString(int num)
     std::string numStr = ss.str();
     return numStr;
 }
+int SDL::stringToInt(std::string text)
+{
+    std::istringstream ss(text);
+    int num;
+
+    ss >> num;
+    return (num);
+}
+
 
 SDL_Surface* SDL::clip(SDL_Surface* original, SDL_Rect* clip)
 {

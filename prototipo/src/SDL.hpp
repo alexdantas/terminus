@@ -195,6 +195,8 @@ public:
     /// stuff to it.
     static std::string intToString(int num);
 
+    static int stringToInt(std::string text);
+
     /// Rotates and/or zooms surface *src*, with *angle*, *scaleX* and
     /// *scaleY*.
     static SDL_Surface* rotoZoom(SDL_Surface* surface, float angle, float scaleX=1.0, float scaleY=1.0);

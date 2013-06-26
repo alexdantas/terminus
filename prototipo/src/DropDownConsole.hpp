@@ -67,7 +67,13 @@ struct Command
     std::string command; ///< String of the command
     int value;           ///< Programmer-assigned value to the command
 
+    int argc;
+    std::vector<std::string> argv;
+
     Command(std::string command, int value);
+
+    /// Inserts an argument into command.
+    void addArgument(std::string text);
 };
 
 /// General history feature.
@@ -190,6 +196,14 @@ public:
     /// Clears the console's output history.
     void clearHistory();
 
+    /// Returns how many arguments the command was give.
+    ///
+    /// The arguments are separated by spaces.
+    int getCommandArgsAmmount();
+
+    /// Returns the current command's argument *num*.
+    std::string getCommandArg(int num);
+
 private:
 
 
@@ -243,7 +257,7 @@ private:
     int curHistorySize;
     int maxHistorySize;
 
-    int cursor; ///< The cursor position on the *inputBuffer*.
+    unsigned int cursor; ///< The cursor position on the *inputBuffer*.
 
     std::vector<Command*> commands; ///< Has all the possible commands.
 
@@ -271,6 +285,8 @@ private:
     void cursorDelete();
     void cursorBackspace();
     void cursorClear();
+
+    void parseCommandOnInput();
 };
 
 #endif //DROPDOWNCONSOLE_H_DEFINED

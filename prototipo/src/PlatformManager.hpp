@@ -10,13 +10,13 @@
 class PlatformManager
 {
 public:
-    enum PlatformType { GROUND=0, CLOUD, TYPE_MAX };
+    enum PlatformType { GROUND=0, CLOUD, VANISHING, TYPE_MAX };
 
     PlatformManager();
     virtual ~PlatformManager();
 
     void add(Point x, PlatformType type=GROUND);
-    void addBetween(Point a, Point b, PlatformType type=GROUND);
+    void addBetween(Point a, Point b, PlatformType type=TYPE_MAX);
 
     void render(float cameraX, float cameraY);
     void update(uint32_t dt);

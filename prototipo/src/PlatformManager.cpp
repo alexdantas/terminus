@@ -8,8 +8,9 @@ PlatformManager::PlatformManager():
 {
     this->sprites.resize(TYPE_MAX);
 
-    this->sprites[GROUND] = new Sprite("img/plataforma1.png");
-    this->sprites[CLOUD]  = new Sprite("img/plataforma2.png");
+    this->sprites[GROUND]    = new Sprite("img/plataforma1.png");
+    this->sprites[CLOUD]     = new Sprite("img/plataforma2.png");
+    this->sprites[VANISHING] = new Sprite("img/plataforma3.png");
 }
 PlatformManager::~PlatformManager()
 {
@@ -37,12 +38,34 @@ void PlatformManager::add(Point p, PlatformType type)
 }
 void PlatformManager::addBetween(Point a, Point b, PlatformType type)
 {
-    // Taking into consideration the Platform's width
-    int actualX = b.x - this->sprites[type]->getWidth();
+    if (type == TYPE_MAX) // will send random types
+    {
+        // This is very ugly, but the only way I found of interfacing
+        // between int and enums.
 
-    this->add(Point(SDL::randomNumberBetween(a.x, actualX),
-                    SDL::randomNumberBetween(a.y, b.y)),
-              type);
+        int num = SDL::randomNumberBetween(static_cast<int>(GROUND),
+                                           static_cast<int>(VANISHING));
+
+        PlatformType Type = static_cast<PlatformType>(num);
+
+        // Taking into consideration the Platform's width
+        int actualX = b.x - this->sprites[Type]->getWidth();
+
+        Point p(SDL::randomNumberBetween(a.x, actualX),
+                SDL::randomNumberBetween(a.y, b.y));
+
+        this->add(p, Type);
+    }
+    else
+    {
+        // Taking into consideration the Platform's width
+        int actualX = b.x - this->sprites[type]->getWidth();
+
+        Point p(SDL::randomNumberBetween(a.x, actualX),
+                SDL::randomNumberBetween(a.y, b.y));
+
+        this->add(p, type);
+    }
 }
 void PlatformManager::render(float cameraX, float cameraY)
 {

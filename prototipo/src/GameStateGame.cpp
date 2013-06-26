@@ -4,13 +4,15 @@
 #include "Log.hpp"
 #include "Window.hpp"
 #include "LoadingScreen.hpp"
+#include "PhysicsManager.hpp"
 
 bool GameStateGame::showBoundingBoxes = false;
 
 // All possible commands the user might type into the console
 enum GameStateGameCommands
 {
-    COMMAND_QUIT, COMMAND_ADD_PLATFORM
+    COMMAND_QUIT, COMMAND_ADD_PLATFORM, COMMAND_INVERT_GRAVITY,
+    COMMAND_FLY
 };
 
 GameStateGame::GameStateGame():
@@ -43,8 +45,8 @@ void GameStateGame::load(int stack)
 
     loading.increase(30);
 
-    this->camera = new Camera(0, 0, Window::width,
-                              Window::height,
+    this->camera = new Camera(0, 0,
+                              Window::width, Window::height,
                               Config::cameraScrollSpeed);
     this->camera->lockXAxis();
     this->camera->setVerticalLimit(0, this->bg->getHeight());
@@ -105,18 +107,17 @@ void GameStateGame::load(int stack)
 
     this->console->addCommand("quit", COMMAND_QUIT);
     this->console->addCommand("add", COMMAND_ADD_PLATFORM);
+    this->console->addCommand("toinfinityandbeyond", COMMAND_FLY);
+    this->console->addCommand("whocaresaboutphysics", COMMAND_INVERT_GRAVITY);
 
     this->platforms = new PlatformManager();
 
     for (int i = 0; i < 10; i++)
     {
-        this->platforms->addBetween(Point(0, 0),
-                                    Point(this->bg->getWidth(),
-                                          this->bg->getHeight()), PlatformManager::GROUND);
+        Point p(this->bg->getWidth(),
+                this->bg->getHeight());
 
-        this->platforms->addBetween(Point(0, 0),
-                                    Point(this->bg->getWidth(),
-                                          this->bg->getHeight()), PlatformManager::CLOUD);
+        this->platforms->addBetween(Point(0, 0), p);
     }
 }
 int GameStateGame::unload()
@@ -183,9 +184,27 @@ int GameStateGame::update(uint32_t dt)
             break;
 
         case COMMAND_ADD_PLATFORM:
-            this->platforms->addBetween(Point(0, 0),
-                                        Point(this->bg->getWidth(),
-                                              this->bg->getHeight()), PlatformManager::GROUND);
+        {
+            // Will add `n` platforms, being `n` the number passed
+            // as an argument to the command `add`.
+            int platformAmmount = 1;
+
+            if (this->console->getCommandArgsAmmount() > 0)
+                platformAmmount = SDL::stringToInt(this->console->getCommandArg(1));
+
+            for (int i = 0; i < platformAmmount; i++)
+                this->platforms->addBetween(Point(0, 0),
+                                            Point(this->bg->getWidth(),
+                                                  this->bg->getHeight()));
+        }
+            break;
+
+        case COMMAND_FLY:
+            this->apterus->toggleFlyMode();
+            break;
+
+        case COMMAND_INVERT_GRAVITY:
+            PhysicsManager::gravityAcceleration *= -1;
             break;
 
         default:
@@ -266,6 +285,22 @@ void GameStateGame::render()
     this->lifeBar->render(10, 10);
     this->lifeBarText->render();
 
+    if (Config::debugMode)
+    {
+        Text debug(this->lifeBarFont);
+
+        // Showing the gravity
+        // (ugly hack)
+        debug.setText("Gravity: " +
+                      SDL::intToString(PhysicsManager::gravityAcceleration) +
+                      "." +
+                      SDL::intToString(abs(PhysicsManager::gravityAcceleration * 10)));
+        debug.setPosition(0, 40);
+        debug.render();
+
+
+    }
+
 
     // Must always be on top
     this->console->render();
@@ -276,7 +311,17 @@ void GameStateGame::checkCollision()
         return;
 
     if (this->platforms->collidesWith(this->apterus))
+    {
         this->apterus->undoUpdate();
+        this->apterus->jump(false);
+    }
+    else
+    {
+        // TODO
+        // what should I do to make the player fall through
+        // air without forcing him to the ground?
+//        this->apterus->fall();
+    }
 
     if (this->apterus->isDead())
     {

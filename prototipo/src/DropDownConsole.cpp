@@ -1,3 +1,4 @@
+#include <sstream> // for getline()
 #include "DropDownConsole.hpp"
 #include "InputManager.hpp"
 
@@ -7,6 +8,32 @@ DropDownConsoleHistory::DropDownConsoleHistory(int maxSize):
     firstIndex(0),
     lastIndex(-1)
 { }
+
+/// Returns the *num*-th argument of the string *string*.
+///
+/// It recognizes arguments as strings separated by spaces.
+std::string arg(int num, std::string text)
+{
+    std::istringstream stream(text);
+    std::string currentArg = "";
+
+    for (int i = 0; i <= num; i++)
+        std::getline(stream, currentArg, ' ');
+
+    return currentArg;
+}
+int argc(std::string text)
+{
+    std::istringstream stream(text);
+    std::string currentArg = "";
+
+    int i = 0;
+    while (std::getline(stream, currentArg, ' '))
+        i++;
+
+    return i;
+}
+
 
 void DropDownConsoleHistory::add(std::string text)
 {
@@ -105,8 +132,15 @@ void DropDownConsoleHistory::clear()
 
 Command::Command(std::string command, int value):
     command(command),
-    value(value)
+    value(value),
+    argc(0)
 { }
+
+void Command::addArgument(std::string text)
+{
+    this->argc++;
+    this->argv.push_back(text);
+}
 
 ////////////////////////////////////////////////////////////////////
 
@@ -165,10 +199,29 @@ int DropDownConsole::getCommand()
     // Pop command
     this->userJustSentACommand = false;
 
-    if (this->currentCommand == NULL)
+    if (!(this->currentCommand))
         return -1;
 
     return (this->currentCommand->value);
+}
+int DropDownConsole::getCommandArgsAmmount()
+{
+    return (this->currentCommand->argc);
+
+    // std::istringstream stream(this->currentCommand->command);
+    // std::string currentArg = "";
+
+    // int i = 0;
+
+    // while (std::getline(stream, currentArg, ' '))
+    //     i++;
+
+    // return i;
+}
+std::string DropDownConsole::getCommandArg(int num)
+{
+    return (this->currentCommand->argv.at(num));
+    //arg(num, this->currentCommand->command));
 }
 void DropDownConsole::setDropDownKeybinding(int key)
 {
@@ -401,28 +454,7 @@ void DropDownConsole::updateInput()
 
     if (input->isKeyDown(SDLK_RETURN))
     {
-        if (this->commands.size() > 0)
-        {
-            this->userJustSentACommand = true;
-
-            // See first word of the input buffer and compare with
-            // all commands stored in memory
-            int i;
-            int size = this->commands.size();
-            for (i = 0; i < size; i++)
-            {
-                // TODO actually compare the first word and not the whole
-                //      inputBuffer
-                if (this->inputBuffer == this->commands[i]->command)
-                {
-                    this->currentCommand = this->commands[i];
-                    break;
-                }
-            }
-            if (i == size) // no command found
-                this->currentCommand = NULL;
-        }
-
+        this->parseCommandOnInput();
         this->print(this->inputBuffer);
         this->printCommand(this->inputBuffer);
         this->cursorClear();
@@ -488,10 +520,9 @@ void DropDownConsole::addStringOnCursor(std::string string)
 }
 void DropDownConsole::cursorMoveLeft()
 {
-    this->cursor--;
+    if (this->cursor == 0) return;
 
-    if (this->cursor < 0)
-        this->cursor = 0;
+    this->cursor--;
 }
 void DropDownConsole::cursorMoveRight()
 {
@@ -529,6 +560,39 @@ void DropDownConsole::cursorClear()
         this->inputBuffer.clear();
         this->cursor = 0;
     }
+}
+void DropDownConsole::parseCommandOnInput()
+{
+    if (this->commands.size() <= 0) return;
+
+    if (this->currentCommand)
+        delete this->currentCommand;
+
+    this->userJustSentACommand = true;
+
+    // See first word of the input buffer and compare with
+    // all commands stored in memory
+    int i;
+    int size = this->commands.size();
+    for (i = 0; i < size; i++)
+    {
+        std::string firstWord = arg(0, this->inputBuffer);
+
+        if (firstWord == this->commands[i]->command)
+        {
+            this->currentCommand = new Command(this->commands[i]->command,
+                                               this->commands[i]->value);
+
+            int argAmmount = argc(this->inputBuffer);
+
+            for (int i = 0; i < argAmmount; i++)
+                this->currentCommand->addArgument(arg(i, this->inputBuffer));
+
+            break;
+        }
+    }
+    if (i == size) // no command found
+        this->currentCommand = NULL;
 }
 
 

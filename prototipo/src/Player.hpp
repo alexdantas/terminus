@@ -17,6 +17,7 @@ public:
         JUMPING_LEFT=0, JUMPING_RIGHT,
         STANDING_LEFT,  STANDING_RIGHT,
         RUNNING_LEFT,   RUNNING_RIGHT,
+        DASHING_LEFT,   DASHING_RIGHT,
 
         ANIMATION_MAX // This arbitrary value exists so the
                       // animation vector can be safely resized
@@ -39,13 +40,31 @@ public:
     void render(float cameraX, float cameraY);
 
     /// Respond to any input commands.
-    void inputUpdate();
+    void updateInput();
 
     /// Updates internal animation.
-    void animationUpdate();
+    void updateAnimation();
+
+    /// Updates y velocity if it's on air (jumping or falling).
+    void updateGravity(uint32_t dt);
 
     void setHorizontalLimit(int left, int right);
     void setVerticalLimit(int top, int bottom);
+
+    /// Makes the player jump.
+    ///
+    /// Internally it assures that it won't jump again.
+    void jump(bool willJump);
+
+    /// Forces the player to suffer gravity.
+    void fall();
+
+    /// Toggles _cheat_ fly mode, that allows the player to freely
+    /// fly around there.
+    void toggleFlyMode();
+
+    /// Makes the player dash, possibly giving damage to others.
+    void dash();
 
 private:
     float vx; ///< Speed component of the x axis.
@@ -65,9 +84,6 @@ private:
     /// The facing direction of the player.
     FacingDirection facingDirection;
 
-    /// Tells if the player's jumping.
-    bool isJumping;
-
     bool hasHorizontalLimit;
     int rightmostLimitX;
     int leftmostLimitX;
@@ -76,6 +92,22 @@ private:
     int topLimitY;
     int bottomLimitY;
 
+    /// Tells if the player's floating on air (due to jumping
+    /// or falling
+    bool inAir;
+
+    bool isJumping;
+    bool isDoubleJumping;
+
+    /// Ammount of strength the player has when jumping.
+    float thrust;
+
+    /// Secret mode that allows the player to fly around the
+    /// scenery.
+    bool flyMode;
+
+    /// Tells about the player's dashing action.
+    bool isDashing;
 };
 
 #endif //PLAYER_H_DEFINED
