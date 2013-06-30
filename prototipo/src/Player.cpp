@@ -20,7 +20,9 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     isDoubleJumping(false),
     thrust(68.14159265359),
     flyMode(false),
-    isDashing(false)
+    isDashing(false),
+    dead(false),
+    damaging(false)
 {
     Animation* tmp = NULL;
 
@@ -28,10 +30,10 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
 
     int animationSpeed = 12;
 
-    tmp = new Animation("img/apterus-standing.png", 1, 0);
+    tmp = new Animation("img/apterus-standing-left.png", 12, animationSpeed);
     this->animations[STANDING_LEFT] = tmp;
 
-    tmp = new Animation("img/apterus-standing-right.png", 1, 0);
+    tmp = new Animation("img/apterus-standing-right.png", 12, animationSpeed);
     this->animations[STANDING_RIGHT] = tmp;
 
     tmp = new Animation("img/apterus-running.png", 6, animationSpeed);
@@ -52,6 +54,18 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
 
     tmp = new Animation("img/apterus-dashing-right.png", 5, 2, 1);
     this->animations[DASHING_RIGHT] = tmp;
+
+    tmp = new Animation("img/apterus-damaging-left.png", 7, animationSpeed);
+    this->animations[DAMAGING_LEFT] = tmp;
+
+    tmp = new Animation("img/apterus-damaging-right.png", 7, animationSpeed);
+    this->animations[DAMAGING_RIGHT] = tmp;
+
+    tmp = new Animation("img/apterus-death-left.png", 7, animationSpeed);
+    this->animations[DEATH_LEFT] = tmp;
+
+    tmp = new Animation("img/apterus-death-right.png", 7, animationSpeed);
+    this->animations[DEATH_RIGHT] = tmp;
 
     this->currentAnimation = this->animations[STANDING_RIGHT];
     this->currentAnimation->start();
@@ -113,7 +127,6 @@ void Player::update(uint32_t dt)
         this->box->recalculate();
     }
 
-
     // Updating visible
     this->boundingBox->update();
 
@@ -140,6 +153,9 @@ void Player::updateInput()
     InputManager* input = InputManager::getInstance();
 
     float turbo = 1.7;
+
+    if (this->damaging)
+        return;
 
     if (input->isKeyPressed(SDLK_a) ||
         input->isKeyPressed(SDLK_LEFT))
@@ -197,12 +213,19 @@ void Player::updateInput()
         this->dash();
     }
 
+    if (input->isKeyDown(SDLK_DELETE))
+    {
+        this->die();
+    }
+
+    if (input->isKeyDown(SDLK_BACKSPACE))
+        this->dealDamage();
+
     // TODO TMP TEMP
     if (input->isKeyDown(SDLK_o))
         PhysicsManager::gravityAcceleration += 0.5;
     if (input->isKeyDown(SDLK_i))
         PhysicsManager::gravityAcceleration -= 0.5;
-
 }
 void Player::updateAnimation()
 {
@@ -230,81 +253,127 @@ void Player::updateAnimation()
     // And there's a whole tree of possible animations depending
     // on a lot of circumstances... Damn, dude.
 
-    if (this->inAir)
+    if (this->damaging)
     {
         if (this->facingDirection == RIGHT)
         {
-            if (this->currentAnimation != this->animations[JUMPING_RIGHT])
+            if (this->currentAnimation != this->animations[DAMAGING_RIGHT])
             {
                 willChangeAnimation = true;
-                tmp = this->animations[JUMPING_RIGHT];
+                tmp = this->animations[DAMAGING_RIGHT];
             }
         }
-        else // facingDirection == LEFT
+        else
         {
-            if (this->currentAnimation != this->animations[JUMPING_LEFT])
+            if (this->currentAnimation != this->animations[DAMAGING_LEFT])
             {
                 willChangeAnimation = true;
-                tmp = this->animations[JUMPING_LEFT];
+                tmp = this->animations[DAMAGING_LEFT];
+            }
+        }
+        if (this->damaging)
+        {
+            if (!(this->currentAnimation->isRunning()))
+                this->damaging = false;
+        }
+    }
+    if (this->dead)
+    {
+        if (this->facingDirection == RIGHT)
+        {
+            if (this->currentAnimation != this->animations[DEATH_RIGHT])
+            {
+                willChangeAnimation = true;
+                tmp = this->animations[DEATH_RIGHT];
+            }
+        }
+        else
+        {
+            if (this->currentAnimation != this->animations[DEATH_LEFT])
+            {
+                willChangeAnimation = true;
+                tmp = this->animations[DEATH_LEFT];
             }
         }
     }
-    else // is not jumping
+    else
     {
-        if (this->isDashing)
+        if (this->inAir)
         {
             if (this->facingDirection == RIGHT)
             {
-                if (this->currentAnimation != this->animations[DASHING_RIGHT])
+                if (this->currentAnimation != this->animations[JUMPING_RIGHT])
                 {
                     willChangeAnimation = true;
-                    tmp = this->animations[DASHING_RIGHT];
+                    tmp = this->animations[JUMPING_RIGHT];
                 }
             }
             else // facingDirection == LEFT
             {
-                if (this->currentAnimation != this->animations[DASHING_LEFT])
+                if (this->currentAnimation != this->animations[JUMPING_LEFT])
                 {
                     willChangeAnimation = true;
-                    tmp = this->animations[DASHING_LEFT];
+                    tmp = this->animations[JUMPING_LEFT];
                 }
             }
         }
-        else if (fabs(this->vx) < stoppedTolerance) // it is stopped
+        else // is not jumping
         {
-            if (this->facingDirection == RIGHT)
+            if (this->isDashing)
             {
-                if (this->currentAnimation != this->animations[STANDING_RIGHT])
+                if (this->facingDirection == RIGHT)
                 {
-                    willChangeAnimation = true;
-                    tmp = this->animations[STANDING_RIGHT];
+                    if (this->currentAnimation != this->animations[DASHING_RIGHT])
+                    {
+                        willChangeAnimation = true;
+                        tmp = this->animations[DASHING_RIGHT];
+                    }
+                }
+                else // facingDirection == LEFT
+                {
+                    if (this->currentAnimation != this->animations[DASHING_LEFT])
+                    {
+                        willChangeAnimation = true;
+                        tmp = this->animations[DASHING_LEFT];
+                    }
                 }
             }
-            else // facingDirection == LEFT
+            else if (fabs(this->vx) < stoppedTolerance) // it is stopped
             {
-                if (this->currentAnimation != this->animations[STANDING_LEFT])
+                if (this->facingDirection == RIGHT)
                 {
-                    willChangeAnimation = true;
-                    tmp = this->animations[STANDING_LEFT];
+                    if (this->currentAnimation != this->animations[STANDING_RIGHT])
+                    {
+                        willChangeAnimation = true;
+                        tmp = this->animations[STANDING_RIGHT];
+                    }
+                }
+                else // facingDirection == LEFT
+                {
+                    if (this->currentAnimation != this->animations[STANDING_LEFT])
+                    {
+                        willChangeAnimation = true;
+                        tmp = this->animations[STANDING_LEFT];
+                    }
                 }
             }
-        }
-        else // it's running
-        {
-            if (this->facingDirection == RIGHT)
+            else // it's running
             {
-                if (this->currentAnimation != this->animations[RUNNING_RIGHT])
+                if (this->facingDirection == RIGHT)
                 {
-                    willChangeAnimation = true;
-                    tmp = this->animations[RUNNING_RIGHT];
+                    if (this->currentAnimation != this->animations[RUNNING_RIGHT])
+                    {
+                        willChangeAnimation = true;
+                        tmp = this->animations[RUNNING_RIGHT];
+                    }
                 }
-            }
-            else // facingDirection == LEFT
-            {
-                if (this->currentAnimation != this->animations[RUNNING_LEFT])
+                else // facingDirection == LEFT
                 {
-                    willChangeAnimation = true;
-                    tmp = this->animations[RUNNING_LEFT];
+                    if (this->currentAnimation != this->animations[RUNNING_LEFT])
+                    {
+                        willChangeAnimation = true;
+                        tmp = this->animations[RUNNING_LEFT];
+                    }
                 }
             }
         }
@@ -409,5 +478,17 @@ void Player::dash()
         this->ax =  7 * this->acceleration;
     else
         this->ax = -7 * this->acceleration;
+}
+void Player::die()
+{
+    this->dead = true;
+}
+bool Player::isAlive()
+{
+    return (!this->dead);
+}
+void Player::dealDamage()
+{
+    this->damaging = true;
 }
 

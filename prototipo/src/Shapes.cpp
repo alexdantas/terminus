@@ -5,6 +5,11 @@ Point::Point(float x, float y):
     y(y)
 { }
 
+Point::Point():
+    x(0),
+    y(0)
+{ }
+
 Rectangle::Rectangle(float x, float y, int w, int h):
     x(x),
     y(y),
@@ -15,23 +20,43 @@ Rectangle::Rectangle(float x, float y, int w, int h):
 }
 void Rectangle::addX(float x)
 {
-    this->x       += x;
-    this->dx      += x;
-    this->centerX += x;
+    this->x += x;
+
+    this->recalculate();
 }
 void Rectangle::addY(float y)
 {
-    this->y       += y;
-    this->dy      += y;
-    this->centerY += y;
+    this->y += y;
+
+    this->recalculate();
+}
+void Rectangle::setX(float x)
+{
+    this->x = x;
+
+    this->recalculate();
+}
+void Rectangle::setY(float y)
+{
+    this->y = y;
+
+    this->recalculate();
 }
 void Rectangle::recalculate()
 {
-    this->centerX = x + (w/2);
-    this->centerY = y + (h/2);
+    this->top    = y;
+    this->bottom = y + h;
 
-    this->dx = x + w;
-    this->dy = y + h;
+    this->leftmost  = x;
+    this->rightmost = x + w;
+
+    this->center = Point(x + (w/2),
+                         y + (h/2));
+
+    this->topLeft     = Point(x,     y);
+    this->topRight    = Point(x + w, y);
+    this->bottomLeft  = Point(x,     y + h);
+    this->bottomRight = Point(x + w, y + h);
 }
 
 

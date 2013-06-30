@@ -67,10 +67,10 @@ bool RectBoundingBox::overlaps(RectBoundingBox* other)
 
     // return true;
 
-    if ((A->x <= B->dx) &&
-        (B->x <= A->dx) &&
-        (A->y <= B->dy) &&
-        (B->y <= A->dy))
+    if ((A->x <= B->rightmost) &&
+        (B->x <= A->rightmost) &&
+        (A->y <= B->bottom) &&
+        (B->y <= A->bottom))
         return true;
 
     return false;

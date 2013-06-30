@@ -18,6 +18,8 @@ public:
         STANDING_LEFT,  STANDING_RIGHT,
         RUNNING_LEFT,   RUNNING_RIGHT,
         DASHING_LEFT,   DASHING_RIGHT,
+        DAMAGING_LEFT,  DAMAGING_RIGHT,
+        DEATH_LEFT,     DEATH_RIGHT,
 
         ANIMATION_MAX // This arbitrary value exists so the
                       // animation vector can be safely resized
@@ -66,6 +68,13 @@ public:
     /// Makes the player dash, possibly giving damage to others.
     void dash();
 
+    /// Tells if the player's dead.
+    bool isAlive();
+
+    void die();
+
+    void dealDamage();
+
 private:
     float vx; ///< Speed component of the x axis.
     float vy; ///< Speed component of the y axis.
@@ -108,6 +117,10 @@ private:
 
     /// Tells about the player's dashing action.
     bool isDashing;
+
+    bool dead;
+
+    bool damaging;
 };
 
 #endif //PLAYER_H_DEFINED

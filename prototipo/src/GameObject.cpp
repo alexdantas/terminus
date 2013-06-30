@@ -37,11 +37,11 @@ float GameObject::getY()
 }
 float GameObject::getCenterX()
 {
-    return this->box->centerX;
+    return this->box->center.x;
 }
 float GameObject::getCenterY()
 {
-    return this->box->centerY;
+    return this->box->center.y;
 }
 int GameObject::getWidth()
 {
