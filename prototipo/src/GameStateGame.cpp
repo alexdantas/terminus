@@ -29,7 +29,9 @@ GameStateGame::GameStateGame():
     font(NULL),
     pausedTitle(NULL),
     console(NULL),
-    platforms(NULL)
+    platforms(NULL),
+    cloudContainer(NULL),
+    cloudSprite(NULL)
 { }
 GameStateGame::~GameStateGame()
 { }
@@ -44,6 +46,12 @@ void GameStateGame::load(int stack)
     this->bg = new Sprite("img/fundo.png");
 
     loading.increase(30);
+
+    this->cloudSprite = new Sprite("img/cloud.png");
+    this->cloudContainer = new CloudContainer(10, this->cloudSprite);
+    this->cloudContainer->addAt(Point(this->bg->getWidth()/4,
+                                      this->bg->getHeight() - 400));
+
 
     this->camera = new Camera(0, 0,
                               Window::width, Window::height,
@@ -260,6 +268,7 @@ int GameStateGame::update(uint32_t dt)
         // this is where the player dies
     }
 
+    this->cloudContainer->update(dt);
     this->checkCollision();
 
     return GameState::CONTINUE;
@@ -272,6 +281,7 @@ void GameStateGame::render()
     Window::clear();
     this->bg->render(0 - cameraX, 0 - cameraY);
 
+    this->cloudContainer->render(cameraX, cameraY);
     this->platforms->render(cameraX, cameraY);
 
     if (!(this->apterus->isDead()))

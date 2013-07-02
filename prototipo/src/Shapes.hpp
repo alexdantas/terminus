@@ -57,6 +57,9 @@ public:
     /// modifying y directly because it refreshes internal points.
     void addY(float y);
 
+    void setX(float x);
+    void setY(float y);
+
     /// Refreshes internal values.
     ///
     /// Must be called if something changes.

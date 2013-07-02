@@ -19,6 +19,7 @@
 #include "DropDownConsole.hpp"
 #include "Player.hpp"
 #include "PlatformManager.hpp"
+#include "CloudContainer.hpp"
 
 /// This represents the actual game taking place.
 ///
@@ -94,6 +95,9 @@ private:
     DropDownConsole* console;
 
     PlatformManager* platforms;
+
+    CloudContainer* cloudContainer;
+    Sprite* cloudSprite;
 };
 
 #endif //GAMESTATEGAME_H_DEFINED
