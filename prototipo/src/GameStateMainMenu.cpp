@@ -1,7 +1,6 @@
 #include "GameStateMainMenu.hpp"
 #include "InputManager.hpp"
 #include "SDL.hpp"
-#include "Window.hpp"
 #include "LoadingScreen.hpp"
 
 GameStateMainMenu::GameStateMainMenu():

@@ -296,7 +296,7 @@ void Player::updateAnimation()
             }
         }
     }
-    else
+    else // NOT dead
     {
         if (this->inAir)
         {
@@ -338,7 +338,7 @@ void Player::updateAnimation()
                     }
                 }
             }
-            else if (fabs(this->vx) < stoppedTolerance) // it is stopped
+            if (fabs(this->vx) < stoppedTolerance) // it is stopped
             {
                 if (this->facingDirection == RIGHT)
                 {
@@ -388,8 +388,16 @@ void Player::updateAnimation()
         this->currentAnimation->start();
     }
 
-    int newFramerate = (int)fabs((this->vx));
-    this->currentAnimation->setFramerate(newFramerate);
+    // this was FUCKING UP EVERYTHING
+    // it just wouldn't work right
+    //
+    // i must find a way to get the running animation to change
+    // according to the speed
+    //
+    // while that day never comes, FUCK THIS
+
+    // int newFramerate = (int)fabs((this->vx));
+    // this->currentAnimation->setFramerate(newFramerate);
 
     this->currentAnimation->update();
 }

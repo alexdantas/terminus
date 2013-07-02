@@ -65,6 +65,7 @@ public:
     // bool load();
 
 
+    // NOTE
     // The following functions shouldn't be called unless you really
     // know what you're doing.
 

@@ -43,7 +43,7 @@ void Menu::addItem(std::string text, int value)
     // user didn't explicitly specified it.
     int itemValue;
     if (value == -1)
-        itemValue = (this->items + 1);
+        itemValue = (this->items);
     else
         itemValue = value;
 
