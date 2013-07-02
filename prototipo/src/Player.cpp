@@ -48,11 +48,11 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     tmp = new Animation("img/apterus-jumping-right.png", 6, animationSpeed);
     this->animations[JUMPING_RIGHT] = tmp;
 
-    tmp = new Animation("img/apterus-dashing-left.png", 5, 2, 1);
+    tmp = new Animation("img/apterus-dashing-left.png", 5, animationSpeed, 1);
     tmp->setTransparentRGBColor(Color(255, 255, 255));
     this->animations[DASHING_LEFT] = tmp;
 
-    tmp = new Animation("img/apterus-dashing-right.png", 5, 2, 1);
+    tmp = new Animation("img/apterus-dashing-right.png", 5, animationSpeed, 1);
     this->animations[DASHING_RIGHT] = tmp;
 
     tmp = new Animation("img/apterus-damaging-left.png", 7, animationSpeed);

@@ -197,7 +197,9 @@ int GameStateGame::update(uint32_t dt)
             // as an argument to the command `add`.
             int platformAmmount = 1;
 
-            if (this->console->getCommandArgsAmmount() > 0)
+            // Args start counting from 1 - the command itself.
+            // If it's greater than 1 then we have an argument.
+            if (this->console->getCommandArgsAmmount() > 1)
                 platformAmmount = SDL::stringToInt(this->console->getCommandArg(1));
 
             for (int i = 0; i < platformAmmount; i++)
