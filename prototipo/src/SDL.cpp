@@ -133,6 +133,7 @@ SDL_Surface* SDL::loadImage(std::string filename, bool optimize)
     if (!tmpImage)
     {
         Log::error("IMG_Load: Couldn't open image '" + filename + "'");
+        Log::error("IMG_Load:" + std::string(IMG_GetError()));
         return NULL;
     }
 
