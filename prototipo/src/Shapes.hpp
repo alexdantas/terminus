@@ -105,4 +105,3 @@ struct Circle
 };
 
 #endif /* SHAPES_H_DEFINED */
-

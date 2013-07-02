@@ -42,6 +42,16 @@ void Rectangle::setY(float y)
 
     this->recalculate();
 }
+void Rectangle::setX(float x)
+{
+    this->x = x;
+    this->recalculate();
+}
+void Rectangle::setY(float y)
+{
+    this->y = y;
+    this->recalculate();
+}
 void Rectangle::recalculate()
 {
     this->top    = y;
@@ -78,4 +88,5 @@ void Circle::addY(float y)
     this->y       += y;
     this->centerY += y;
 }
+
 
