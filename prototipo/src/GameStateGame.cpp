@@ -18,6 +18,7 @@ enum GameStateGameCommands
 GameStateGame::GameStateGame():
     bg(NULL),
     will_quit(false),
+    will_return_to_main_menu(false),
     game_over(false),
     camera(NULL),
     bgmusic(NULL),
@@ -38,7 +39,7 @@ void GameStateGame::load(int stack)
 {
     UNUSED(stack);
 
-    LoadingScreen loading("loading...", "ttf/Terminus.ttf");
+    LoadingScreen loading("loading...", "ttf/LithosProRegular.ttf");
 
     loading.increase(2);
 
@@ -183,6 +184,9 @@ int GameStateGame::update(uint32_t dt)
 {
     if (this->will_quit)
         return GameState::QUIT;
+
+    if (this->will_return_to_main_menu)
+        return GameState::MAIN_MENU;
 
     // Player/UFO has died.
     // Will only go to the GAME OVER screen when the
@@ -392,6 +396,9 @@ void GameStateGame::processEvents()
     if ((input->isKeyDown(SDLK_ESCAPE)) ||
         (input->isKeyDown(SDLK_q)))
         this->will_quit = true;
+
+    if ((input->isKeyDown(SDLK_m)))
+        this->will_return_to_main_menu = true;
 
     if (input->isKeyDown(SDLK_p))
         this->isPaused?

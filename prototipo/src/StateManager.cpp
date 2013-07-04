@@ -85,6 +85,14 @@ void StateManager::run()
             this->currentState->load(this->sharedInfo);
             break;
 
+        case GameState::MAIN_MENU:
+            this->sharedInfo = this->currentState->unload();
+            delete (this->currentState);
+
+            this->currentState = new GameStateMainMenu();
+            this->currentState->load(this->sharedInfo);
+            break;
+
         default:
             break;
         }

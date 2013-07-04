@@ -9,7 +9,8 @@ GameStateMainMenu::GameStateMainMenu():
     music(NULL),
     menu(NULL),
     bg(NULL),
-    logo(NULL)
+    logo(NULL),
+    detail(NULL)
 { }
 GameStateMainMenu::~GameStateMainMenu()
 { }
@@ -17,15 +18,21 @@ void GameStateMainMenu::load(int stack)
 {
     UNUSED(stack);
 
-    LoadingScreen loading("Loading...", "ttf/UbuntuMono.ttf");
+    LoadingScreen loading("Loading...", "ttf/LithosProRegular.ttf");
 
     this->font = new Font("ttf/LithosProRegular.ttf", 42);
     this->hiliteFont = new Font("ttf/LithosProBlack.ttf", 42);
 
-    loading.increase(12);
+    loading.increase(10);
 
     this->font->setColor(Color(0, 0, 0));
     this->hiliteFont->setColor(Color(100, 100, 100));
+
+    loading.increase(12);
+
+    this->bg   = new Sprite("img/menu-bg.png");
+    this->logo = new Sprite("img/title.png");
+    this->detail = new Sprite("img/pilar.png");
 
     loading.increase(12);
 
@@ -35,7 +42,9 @@ void GameStateMainMenu::load(int stack)
     loading.increase(4);
 
     this->menu = new Menu(this->font, this->hiliteFont,
-                          Window::width/2 - 100, Window::height/2 + 100);
+                          Window::width/2 - 100,
+                          Window::height/2 + 100);
+
     this->menu->addItem("New Game");
     this->menu->addItem("Credits");
     this->menu->addItem("Exit");
@@ -43,39 +52,36 @@ void GameStateMainMenu::load(int stack)
 
     loading.increase(6);
 
-    this->bg   = new Sprite("img/menu-bg.png");
-    this->logo = new Sprite("img/title.png");
-
-    loading.increase(10);
-
     this->clouds = new CloudContainer(30, Rectangle(0, 0, Window::width, Window::height), false);
     this->clouds->addAll();
 }
 int GameStateMainMenu::unload()
 {
-    if (this->font)
-        delete this->font;
-
-    if (this->hiliteFont)
-        delete this->hiliteFont;
+// Time to delete!
+// This macro deletes a thing only if it's non-NULL,
+// making sure it won't double-delete things.
+#define safe_delete(x) \
+{                      \
+    if (x)             \
+    {                  \
+        delete (x);    \
+        x = NULL;      \
+    }                  \
+}
+    safe_delete(this->font);
+    safe_delete(this->hiliteFont);
 
     if (this->music)
     {
         this->music->stop();
-        delete this->music;
+        safe_delete(this->music);
     }
 
-    if (this->menu)
-        delete this->menu;
-
-    if (this->bg)
-        delete this->bg;
-
-    if (this->logo)
-        delete this->logo;
-
-    if (this->clouds)
-        delete this->clouds;
+    safe_delete(this->menu);
+    safe_delete(this->bg);
+    safe_delete(this->logo);
+    safe_delete(this->clouds);
+    safe_delete(this->detail);
 
     return 0;
 }
@@ -129,6 +135,7 @@ void GameStateMainMenu::render()
     this->bg->render(0, 0);
     this->clouds->render();
     this->logo->render(0, 0);
+    this->detail->render(0, 0);
     this->menu->render();
 }
 

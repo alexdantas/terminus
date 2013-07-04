@@ -41,6 +41,7 @@ private:
 
     Sprite* bg;       ///< The background image.
     Sprite* logo;     ///< The logo image.
+    Sprite* detail;   ///< Some nice details.
 
     CloudContainer* clouds;
 };

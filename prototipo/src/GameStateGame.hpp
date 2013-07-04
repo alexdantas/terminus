@@ -54,6 +54,7 @@ private:
 	Sprite* bg;
 
 	bool will_quit;
+    bool will_return_to_main_menu;
     bool game_over;
 
     Camera* camera;
