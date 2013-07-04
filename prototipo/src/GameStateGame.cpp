@@ -12,7 +12,7 @@ bool GameStateGame::showBoundingBoxes = false;
 enum GameStateGameCommands
 {
     COMMAND_QUIT, COMMAND_ADD_PLATFORM, COMMAND_INVERT_GRAVITY,
-    COMMAND_FLY
+    COMMAND_FLY,  COMMAND_ADD_CLOUD
 };
 
 GameStateGame::GameStateGame():
@@ -30,8 +30,7 @@ GameStateGame::GameStateGame():
     pausedTitle(NULL),
     console(NULL),
     platforms(NULL),
-    cloudContainer(NULL),
-    cloudSprite(NULL)
+    cloudContainer(NULL)
 { }
 GameStateGame::~GameStateGame()
 { }
@@ -46,12 +45,6 @@ void GameStateGame::load(int stack)
     this->bg = new Sprite("img/fundo.png");
 
     loading.increase(30);
-
-    this->cloudSprite = new Sprite("img/cloud.png");
-    this->cloudContainer = new CloudContainer(10, this->cloudSprite);
-    this->cloudContainer->addAt(Point(this->bg->getWidth()/4,
-                                      this->bg->getHeight() - 400));
-
 
     this->camera = new Camera(0, 0,
                               Window::width, Window::height,
@@ -115,8 +108,11 @@ void GameStateGame::load(int stack)
 
     this->console->addCommand("quit", COMMAND_QUIT);
     this->console->addCommand("add", COMMAND_ADD_PLATFORM);
+    this->console->addCommand("addcloud", COMMAND_ADD_CLOUD);
     this->console->addCommand("toinfinityandbeyond", COMMAND_FLY);
     this->console->addCommand("whocaresaboutphysics", COMMAND_INVERT_GRAVITY);
+
+    loading.increase(6);
 
     this->platforms = new PlatformManager();
 
@@ -127,6 +123,23 @@ void GameStateGame::load(int stack)
 
         this->platforms->addBetween(Point(0, 0), p);
     }
+
+    loading.increase(3);
+
+    Rectangle cloudLimit(0,
+                         this->bg->getHeight() - Window::height,
+                         Window::width,
+                         Window::height);
+
+    this->cloudContainer = new CloudContainer(20, cloudLimit);
+    this->cloudContainer->addAt(Point(this->bg->getWidth()/4,
+                                      this->bg->getHeight() - 400));
+
+    this->cloudContainer->addAtRandom();
+    this->cloudContainer->addAtRandom();
+    this->cloudContainer->addAtRandom();
+
+    loading.increase(10);
 }
 int GameStateGame::unload()
 {
@@ -206,6 +219,22 @@ int GameStateGame::update(uint32_t dt)
                 this->platforms->addBetween(Point(0, 0),
                                             Point(this->bg->getWidth(),
                                                   this->bg->getHeight()));
+        }
+            break;
+
+        case COMMAND_ADD_CLOUD:
+        {
+            // Will add `n` clouds, being `n` the number passed
+            // as an argument to the command `add`.
+            int cloudAmmount = 1;
+
+            // Args start counting from 1 - the command itself.
+            // If it's greater than 1 then we have an argument.
+            if (this->console->getCommandArgsAmmount() > 1)
+                cloudAmmount = SDL::stringToInt(this->console->getCommandArg(1));
+
+            for (int i = 0; i < cloudAmmount; i++)
+                this->cloudContainer->addAtRandom();
         }
             break;
 

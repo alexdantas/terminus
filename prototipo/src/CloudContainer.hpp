@@ -17,23 +17,31 @@
 class CloudContainer
 {
 public:
-    CloudContainer(unsigned int maxAmmount, Sprite* sprite);
+    CloudContainer(unsigned int maxAmmount, Rectangle areaLimit);
     virtual ~CloudContainer();
 
     void update(uint32_t dt);
     void render(float cameraX, float cameraY);
 
     void addAt(Point p);
+    void addAtRandom();
+    void removeAt(unsigned int index);
+
+    void limitArea(Rectangle a);
 
 private:
     unsigned int maxAmmount;
     unsigned int currentAmmount;
 
-    std::vector<Cloud*> container;
+    std::vector<Cloud*> freeClouds;
+    std::vector<Cloud*> usedClouds;
     Sprite* sprite;
 
     /// Contains indexes to active objects.
     std::vector<int> indirection;
+
+    bool hasLimits;
+    Rectangle areaLimit;
 };
 
 #endif //CLOUDCONTAINER_H_DEFINED

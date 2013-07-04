@@ -57,6 +57,11 @@ public:
     /// *w* and *y* dimensions.
     Rectangle(float x, float y, int w, int h);
 
+    /// Creates a rectangle from two opposite corners.
+    ///
+    /// TODO Implement!
+    Rectangle (Point topLeft, Point bottomRight);
+
     /// Adds to the current x, making necessary internal calculations.
     void addX(float x);
 

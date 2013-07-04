@@ -34,7 +34,11 @@ void PlatformManager::add(Point p, PlatformType type)
     this->container.push_back(tmp);
     this->empty = false;
 
-    Log::verbose("Platform::add");
+    Log::verbose("Platform::add (" + SDL::intToString(p.x) +
+                 ", " + SDL::intToString(p.y) +
+                 ") " +
+                 "Count: " + SDL::intToString(this->container.size()));
+
 }
 void PlatformManager::addBetween(Point a, Point b, PlatformType type)
 {

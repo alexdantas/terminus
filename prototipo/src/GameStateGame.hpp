@@ -97,7 +97,6 @@ private:
     PlatformManager* platforms;
 
     CloudContainer* cloudContainer;
-    Sprite* cloudSprite;
 };
 
 #endif //GAMESTATEGAME_H_DEFINED
