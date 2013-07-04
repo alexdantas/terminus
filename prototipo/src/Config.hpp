@@ -45,6 +45,7 @@ public:
     static int screenBgColorR;
     static int screenBgColorG;
     static int screenBgColorB;
+    static int cloudsLimit;
 
     static float playerAcceleration;
 

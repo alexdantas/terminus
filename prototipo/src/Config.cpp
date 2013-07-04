@@ -13,6 +13,7 @@ int         Config::screenFramerate   = 0;
 int         Config::screenBgColorR    = 0;
 int         Config::screenBgColorG    = 0;
 int         Config::screenBgColorB    = 0;
+int         Config::cloudsLimit       = 30;
 
 float Config::playerAcceleration = 0.0;
 
@@ -40,6 +41,7 @@ bool Config::load(std::string fileName)
     debugMode = file.Read("debug_mode", debugMode);
     skipMenu = file.Read("skip_menu", skipMenu);
     hasMusic = file.Read("has_music", hasMusic);
+    cloudsLimit = file.Read("clouds_limit", cloudsLimit);
 
     file.SelectGroup("screen", false);
     screenWidth     = file.Read("width",      screenWidth);
@@ -78,6 +80,8 @@ bool Config::saveAs(std::string fileName)
 }
 void Config::reset()
 {
+    // Is this necessary?
+
     debugMode       = DEFAULT_DEBUG_MODE;
 
     screenWidth     = DEFAULT_SCREEN_WIDTH;

@@ -131,7 +131,7 @@ void GameStateGame::load(int stack)
                          Window::width,
                          Window::height);
 
-    this->cloudContainer = new CloudContainer(20, cloudLimit);
+    this->cloudContainer = new CloudContainer(Config::cloudsLimit, cloudLimit);
     this->cloudContainer->addAt(Point(this->bg->getWidth()/4,
                                       this->bg->getHeight() - 400));
 
