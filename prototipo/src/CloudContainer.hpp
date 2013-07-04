@@ -17,6 +17,8 @@
 class CloudContainer
 {
 public:
+    enum CloudType { CLOUD_1, CLOUD_2, CLOUD_MAX };
+
     CloudContainer(unsigned int maxAmmount, Rectangle areaLimit);
     virtual ~CloudContainer();
 
@@ -35,7 +37,8 @@ private:
 
     std::vector<Cloud*> freeClouds;
     std::vector<Cloud*> usedClouds;
-    Sprite* sprite;
+
+    std::vector<Sprite*> sprites;
 
     /// Contains indexes to active objects.
     std::vector<int> indirection;

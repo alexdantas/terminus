@@ -5,29 +5,31 @@
 CloudContainer::CloudContainer(unsigned int maxAmmount, Rectangle areaLimit):
     maxAmmount(maxAmmount),
     currentAmmount(0),
-    sprite(NULL),
     areaLimit(areaLimit)
 {
-    this->sprite = new Sprite("img/cloud.png");
+    this->sprites.resize(CLOUD_MAX);
+    this->sprites[CLOUD_1] = new Sprite("img/cloud1.png");
+    this->sprites[CLOUD_2] = new Sprite("img/cloud2.png");
 
     this->usedClouds.resize(0);
     this->freeClouds.resize(this->maxAmmount);
 
     for (unsigned int i = 0; i < (this->maxAmmount); i++)
     {
-        Cloud* tmp = new Cloud(0, 0, 0.2, this->sprite, i);
+        unsigned int index = SDL::randomNumberBetween(CLOUD_1, CLOUD_2);
+
+        Cloud* tmp = new Cloud(0, 0, 0.2, this->sprites[index], i);
         this->freeClouds.push_back(tmp);
     }
 }
 CloudContainer::~CloudContainer()
 {
-    if (this->sprite)
-    {
-        delete (this->sprite);
-        this->sprite = NULL;
-    }
+    unsigned int size = this->sprites.size();
+    for (unsigned int i = 0; i < CLOUD_MAX; i++)
+        if (this->sprites[i])
+            delete (this->sprites[i]);
 
-    unsigned int size = this->freeClouds.size();
+    size = this->freeClouds.size();
     for (unsigned int i = 0; i < size; i++)
     {
         if (this->freeClouds[i])
