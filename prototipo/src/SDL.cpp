@@ -158,7 +158,28 @@ void SDL::freeImage(SDL_Surface* image)
 }
 void SDL::renderSurface(SDL_Surface* source, SDL_Rect* crop, SDL_Rect* position)
 {
-    SDL_BlitSurface(source, crop, Window::screen, position);
+    // This is a dirty hack to make the game screen always centralize
+    // on the window size.
+    //
+    // You see, EVERYTHING that gets shown on the screen (including
+    // the text) must pass through this method here.
+    //
+    // So whenever we resize the screen, Window::width and
+    // Window::height will change.
+    //
+    // Whenever they do, we'll make sure to place the whole "Game
+    // Window" (all objects) at the right position.
+    //
+    // This is like a "global camera". Hope I'm not confusing you.
+
+    int x = (Window::width  - Window::originalWidth)/2;
+    int y = (Window::height - Window::originalHeight)/2;
+
+    SDL_Rect tmp;
+    tmp.x = position->x + x;
+    tmp.y = position->y + y;
+
+    SDL_BlitSurface(source, crop, Window::screen, &tmp);
 }
 bool SDL::isPrintable(SDLKey key)
 {

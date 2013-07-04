@@ -313,6 +313,13 @@ void GameStateGame::render()
     this->bg->render(0 - cameraX, 0 - cameraY);
 
     this->cloudContainer->render(cameraX, cameraY);
+
+    // This is a BAD HACK to make sure the clouds are always added at
+    // the camera.
+    // Must find a way to always limit the area to the camera!
+    this->cloudContainer->limitArea(Rectangle(cameraX, cameraY,
+                                              Window::width, Window::height));
+
     this->platforms->render(cameraX, cameraY);
 
     if (!(this->apterus->isDead()))

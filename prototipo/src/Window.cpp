@@ -5,6 +5,8 @@
 SDL_Surface* Window::screen           = NULL;
 uint32_t     Window::width            = 0;
 uint32_t     Window::height           = 0;
+uint32_t     Window::originalWidth    = 0;
+uint32_t     Window::originalHeight   = 0;
 uint32_t     Window::flags            = 0;
 bool         Window::isFullscreen     = false;
 std::string  Window::caption          = "";
@@ -15,6 +17,8 @@ bool Window::init(uint32_t width, uint32_t height, std::string windowCaption, st
 {
     Window::width  = width;
     Window::height = height;
+    Window::originalWidth = width;
+    Window::originalHeight = height;
     Window::caption = windowCaption;
     Window::minimizedCaption = minimizedWindowCaption;
 
@@ -96,6 +100,9 @@ void Window::resize(uint32_t width, uint32_t height)
     // Creates/updates the window, possibly storing it
     // on hardware memory and making it resizable.
     Window::screen = SDL_SetVideoMode(width, height, 0, Window::flags);
+
+    Window::width = width;
+    Window::height = height;
 }
 void Window::restart()
 {

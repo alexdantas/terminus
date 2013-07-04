@@ -71,9 +71,28 @@ public:
     // of Window::getWidth(), and such).
 
     static SDL_Surface* screen;
+
+    /// Current window width.
     static uint32_t width;
+
+    /// Current window height.
     static uint32_t height;
+
+    /// Original window height (the height game developers had in mind
+    /// when making this game).
+    ///
+    /// In other words, the optimal width for the game.
+    static uint32_t originalWidth;
+
+    /// Original window height (the height game developers had in mind
+    /// when making this game).
+    ///
+    /// In other words, the optimal height for the game.
+    static uint32_t originalHeight;
+
     static uint32_t flags;
+
+    /// Tells if the window is currently fullscreen.
     static bool isFullscreen;
 
 private:
