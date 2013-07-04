@@ -2,21 +2,32 @@
 #include "SDL.hpp"
 #include "Log.hpp"
 
-CloudContainer::CloudContainer(unsigned int maxAmmount, Rectangle areaLimit):
+CloudContainer::CloudContainer(unsigned int maxAmmount, Rectangle areaLimit, bool blackClouds):
     maxAmmount(maxAmmount),
     currentAmmount(0),
     areaLimit(areaLimit)
 {
     this->sprites.resize(CLOUD_MAX);
-    this->sprites[CLOUD_1] = new Sprite("img/cloud1.png");
-    this->sprites[CLOUD_2] = new Sprite("img/cloud2.png");
+
+    if (blackClouds)
+    {
+        this->sprites[CLOUD_1] = new Sprite("img/cloud1.png");
+        this->sprites[CLOUD_2] = new Sprite("img/cloud2.png");
+        this->sprites[CLOUD_3] = new Sprite("img/cloud3.png");
+    }
+    else
+    {
+        this->sprites[CLOUD_1] = new Sprite("img/nuvembranca1.png");
+        this->sprites[CLOUD_2] = new Sprite("img/nuvembranca2.png");
+        this->sprites[CLOUD_3] = new Sprite("img/nuvembranca3.png");
+    }
 
     this->usedClouds.resize(0);
     this->freeClouds.resize(this->maxAmmount);
 
     for (unsigned int i = 0; i < (this->maxAmmount); i++)
     {
-        unsigned int index = SDL::randomNumberBetween(CLOUD_1, CLOUD_2);
+        unsigned int index = SDL::randomNumberBetween(CLOUD_1, CLOUD_3);
 
         Cloud* tmp = new Cloud(0, 0, 0.2, this->sprites[index], i);
         this->freeClouds.push_back(tmp);
@@ -112,6 +123,35 @@ void CloudContainer::addAtRandom()
     unsigned int previousAmmount = this->currentAmmount;
 
     while (this->currentAmmount == previousAmmount)
+    {
+        int safetyCheckToAvoidInfiniteLoops = 10;
+
+
+        int x = SDL::randomNumberBetween(this->areaLimit.leftmost,
+                                         this->areaLimit.rightmost);
+        int y = SDL::randomNumberBetween(this->areaLimit.top,
+                                         this->areaLimit.bottom);
+
+        // This will fail silentrly if (x, y) is not inside bounds
+        this->addAt(Point(x, y));
+
+
+        if (--safetyCheckToAvoidInfiniteLoops < 0)
+            break;
+    }
+}
+void CloudContainer::addAll()
+{
+    // Cannot add anyway
+    if (this->currentAmmount >= this->maxAmmount)
+        return;
+
+    // Will forcefully try to add until it works.
+    // Watch out for those infinite loops!
+
+    unsigned int previousAmmount = this->currentAmmount;
+
+    while (this->currentAmmount != this->maxAmmount)
     {
         int safetyCheckToAvoidInfiniteLoops = 10;
 

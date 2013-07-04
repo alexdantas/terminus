@@ -123,10 +123,11 @@ void Menu::render(float cameraX, float cameraY)
 {
     // print borders for debuggin purposes
     // {
-    //     Graphics::drawRectangle(this->x,
-    //                             this->y,
-    //                             this->width,
-    //                             this->height);
+    //     Graphics::drawRectangle(Rectangle(this->x,
+    //                                       this->y,
+    //                                       this->width,
+    //                                       this->height),
+    //                             Color(247, 175, 127));
     // }
 
     // Storing the current camera position for the next

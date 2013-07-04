@@ -6,8 +6,6 @@ GameStateGameOver::GameStateGameOver():
     font(NULL),
     text1(NULL),
     text2(NULL),
-    explosionAnim(NULL),
-    explosion(NULL),
     music(NULL)
 { }
 void GameStateGameOver::load(int stack)
@@ -34,9 +32,6 @@ void GameStateGameOver::load(int stack)
     text2->setText("Press 'r' to retry");
     text2->setPosition(60, 400);
 
-    this->explosionAnim = new Animation("img/explosion.png", 22, 30);
-    this->explosion = new Explosion(this->explosionAnim);
-
     this->music = new Music("ogg/cliffs.ogg");
     this->music->play();
 }
@@ -44,11 +39,6 @@ int GameStateGameOver::unload()
 {
     if (this->music) delete this->music;
 
-// TODO there's a segmentation fault when I delete explosion
-//      why is that?
-//  if (this->explosion) delete this->explosion;
-
-    if (this->explosionAnim) delete this->explosionAnim;
     return 0;
 }
 int GameStateGameOver::update(uint32_t dt)
@@ -67,14 +57,6 @@ int GameStateGameOver::update(uint32_t dt)
     if (input->quitRequested())
         return GameState::QUIT;
 
-    // this->explosion->update(dt);
-    // if (!(this->explosion->isExploding()))
-    // {
-    //     int x = SDL::randomNumberBetween(0, Window::width);
-    //     int y = SDL::randomNumberBetween(0, Window::height);
-    //     this->explosion->explodeAt(x, y);
-    // }
-
     // if we're not doing anything it keeps TRAVANDO
     return GameState::CONTINUE;
 }
@@ -82,6 +64,5 @@ void GameStateGameOver::render()
 {
     text1->render();
     text2->render();
-//    explosion->render();
 }
 

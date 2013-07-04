@@ -2,12 +2,14 @@
 #include "InputManager.hpp"
 #include "SDL.hpp"
 #include "LoadingScreen.hpp"
+#include "Window.hpp"
 
 GameStateMainMenu::GameStateMainMenu():
     font(NULL),
     music(NULL),
     menu(NULL),
-    bg(NULL)
+    bg(NULL),
+    logo(NULL)
 { }
 GameStateMainMenu::~GameStateMainMenu()
 { }
@@ -17,8 +19,8 @@ void GameStateMainMenu::load(int stack)
 
     LoadingScreen loading("Loading...", "ttf/UbuntuMono.ttf");
 
-    this->font = new Font("ttf/UbuntuMono.ttf", 42);
-    this->hiliteFont = new Font("ttf/Terminus.ttf", 42);
+    this->font = new Font("ttf/LithosProRegular.ttf", 42);
+    this->hiliteFont = new Font("ttf/LithosProBlack.ttf", 42);
 
     loading.increase(12);
 
@@ -32,7 +34,8 @@ void GameStateMainMenu::load(int stack)
 
     loading.increase(4);
 
-    this->menu = new Menu(this->font, this->hiliteFont, 600, 200);
+    this->menu = new Menu(this->font, this->hiliteFont,
+                          Window::width/2 - 100, Window::height/2 + 100);
     this->menu->addItem("New Game");
     this->menu->addItem("Credits");
     this->menu->addItem("Exit");
@@ -40,9 +43,13 @@ void GameStateMainMenu::load(int stack)
 
     loading.increase(6);
 
-    this->bg = new Sprite("img/menu-bg.png");
+    this->bg   = new Sprite("img/menu-bg.png");
+    this->logo = new Sprite("img/title.png");
 
     loading.increase(10);
+
+    this->clouds = new CloudContainer(30, Rectangle(0, 0, Window::width, Window::height), false);
+    this->clouds->addAll();
 }
 int GameStateMainMenu::unload()
 {
@@ -63,6 +70,12 @@ int GameStateMainMenu::unload()
 
     if (this->bg)
         delete this->bg;
+
+    if (this->logo)
+        delete this->logo;
+
+    if (this->clouds)
+        delete this->clouds;
 
     return 0;
 }
@@ -100,6 +113,7 @@ int GameStateMainMenu::update(uint32_t dt)
             break;
         }
     }
+    this->clouds->update(dt);
 
     return GameState::CONTINUE;
 }
@@ -113,6 +127,8 @@ void GameStateMainMenu::render()
     //                   "Aperte 'up' pra iniciar,"
     //                   "'q' para sair.");
     this->bg->render(0, 0);
+    this->clouds->render();
+    this->logo->render(0, 0);
     this->menu->render();
 }
 

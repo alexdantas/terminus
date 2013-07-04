@@ -7,6 +7,7 @@
 #include "Text.hpp"
 #include "Menu.hpp"
 #include "Sprite.hpp"
+#include "CloudContainer.hpp"
 
 /// Everything that happens on the main menu.
 class GameStateMainMenu: public GameState
@@ -39,6 +40,9 @@ private:
     Menu* menu;       ///< The actual game menu.
 
     Sprite* bg;       ///< The background image.
+    Sprite* logo;     ///< The logo image.
+
+    CloudContainer* clouds;
 };
 
 #endif //GAMESTATEMAINMENU_H_DEFINED

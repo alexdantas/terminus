@@ -5,7 +5,6 @@
 #include "Font.hpp"
 #include "Text.hpp"
 #include "Animation.hpp"
-#include "Explosion.hpp"
 #include "Music.hpp"
 
 /// Shows that depressing screen when the player loses.
@@ -34,8 +33,6 @@ private:
     Font* font;
     Text* text1;
     Text* text2;
-    Animation* explosionAnim;
-    Explosion* explosion;
     Music* music;
 };
 

@@ -28,6 +28,8 @@ private:
     Font font;
     Text text;
     ProgressBar progressBar;
+
+    Sprite* bg;
 };
 
 #endif //LOADINGSCREEN_H_DEFINED

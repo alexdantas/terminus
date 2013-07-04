@@ -11,7 +11,6 @@
 #include "Camera.hpp"
 #include "Music.hpp"
 #include "Animation.hpp"
-#include "Explosion.hpp"
 #include "ProgressBar.hpp"
 #include "Font.hpp"
 #include "Text.hpp"
