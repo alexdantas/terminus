@@ -149,8 +149,6 @@ void CloudContainer::addAll()
     // Will forcefully try to add until it works.
     // Watch out for those infinite loops!
 
-    unsigned int previousAmmount = this->currentAmmount;
-
     while (this->currentAmmount != this->maxAmmount)
     {
         int safetyCheckToAvoidInfiniteLoops = 10;

@@ -60,7 +60,10 @@ void GameStateMainMenu::load(int stack)
     this->clouds = new CloudContainer(30, Rectangle(0, 0, Window::width, Window::height), false);
     this->clouds->addAll();
 
-    this->fade = new Fade(Fade::FADE_IN, 3);
+    this->fade = new Fade(Fade::FADE_IN, 0.2);
+    this->fade->start();
+
+    this->fadeOut = new Fade(Fade::FADE_OUT, 0.6);
 }
 int GameStateMainMenu::unload()
 {
@@ -90,6 +93,7 @@ int GameStateMainMenu::unload()
     safe_delete(this->clouds);
     safe_delete(this->detail);
     safe_delete(this->fade);
+    safe_delete(this->fadeOut);
 
     return 0;
 }
@@ -105,7 +109,7 @@ int GameStateMainMenu::update(uint32_t dt)
     if ((input->isKeyDown(SDLK_ESCAPE)) ||
         (input->isKeyPressed(SDLK_q))   ||
         (input->quitRequested()))
-        return GameState::QUIT;
+        this->fadeOut->start();
 
     // interacting with the menu
     if (menu->optionWasSelected())
@@ -120,7 +124,8 @@ int GameStateMainMenu::update(uint32_t dt)
             break;
 
         case 2:
-            return GameState::QUIT;
+//            return GameState::QUIT;
+            this->fadeOut->start();
             break;
 
         default:
@@ -129,6 +134,10 @@ int GameStateMainMenu::update(uint32_t dt)
     }
     this->clouds->update(dt);
     this->fade->update(dt);
+    this->fadeOut->update(dt);
+
+    if (this->fadeOut->isDone())
+        return GameState::QUIT;
 
     return GameState::CONTINUE;
 }
@@ -148,5 +157,6 @@ void GameStateMainMenu::render()
     this->menu->render();
 
     this->fade->render(); // Always last
+    this->fadeOut->render(); // Always last
 }
 

@@ -18,12 +18,16 @@ LoadingScreen::LoadingScreen(std::string text, std::string fontPath):
     // rendering progress bar for the first time
     this->increase(0);
 }
-
-void LoadingScreen::increase(int ammount)
+void LoadingScreen::increase(unsigned int ammount)
 {
     this->progressBar.increase(ammount);
     this->progressBar.render(200, 500);
     Window::refresh();
 }
-
+void LoadingScreen::set(unsigned int ammount)
+{
+    this->progressBar.set(ammount);
+    this->progressBar.render(200, 500);
+    Window::refresh();
+}
 

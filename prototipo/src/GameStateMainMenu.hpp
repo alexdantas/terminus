@@ -47,6 +47,7 @@ private:
     CloudContainer* clouds;
 
     Fade* fade; ///< The fade effect of the screen.
+    Fade* fadeOut;
 };
 
 #endif //GAMESTATEMAINMENU_H_DEFINED

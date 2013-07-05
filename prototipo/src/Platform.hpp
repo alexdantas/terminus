@@ -8,14 +8,23 @@
 class Platform: public GameObject
 {
 public:
-    Platform(Sprite* sprite, float x, float y, int w, int h);
+    Platform(Sprite* sprite, float x, float y, int w, int h, unsigned int id=0);
     virtual ~Platform();
 
     void render(float cameraX, float cameraY);
     void update(uint32_t dt);
 
+    void setPosition(Point p);
+
+    bool isVisible();
+    void setVisible(bool option);
+
 private:
+    unsigned int id;
+
     Sprite* sprite;
+
+    bool visible;
 };
 
 #endif //PLATFORM_H_DEFINED

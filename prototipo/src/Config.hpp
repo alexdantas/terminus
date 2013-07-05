@@ -38,6 +38,7 @@ public:
     static bool debugMode;
     static bool skipMenu;
     static bool hasMusic;
+    static bool showBoundingBoxes;
 
     static int screenWidth;
     static int screenHeight;
@@ -49,6 +50,7 @@ public:
 
     static float playerAcceleration;
     static int playerFramerate;
+    static float playerJump;
 
     static std::string audioBg;
     static int         audioRate;

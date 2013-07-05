@@ -19,7 +19,7 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     inAir(false),
     isJumping(false),
     isDoubleJumping(false),
-    thrust(68.14159265359),
+    thrust(Config::playerJump),
     flyMode(false),
     isDashing(false),
     dead(false),

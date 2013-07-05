@@ -7,6 +7,7 @@
 #include "GameStateMainMenu.hpp"
 #include "GameStateGame.hpp"
 #include "GameStateGameOver.hpp"
+#include "GameStateIntro.hpp"
 #include "Window.hpp"
 #include "Graphics.hpp"
 
@@ -28,7 +29,7 @@ StateManager::StateManager(int width, int height)
     if (Config::skipMenu)
         this->currentState = new GameStateGame();
     else
-        this->currentState = new GameStateMainMenu();
+        this->currentState = new GameStateIntro();
 
     this->currentState->load();
 
@@ -50,10 +51,19 @@ void StateManager::run()
 {
     bool letsQuit = false;
 
+    bool firstFrame = true;
+
     while (!letsQuit)
     {
         // The delta time from the last frame
         uint32_t delta = SDL::getDelta();
+
+        // Little hack to avoid things jumping around on the first frame.
+        if (firstFrame)
+        {
+            delta = 1000/30;
+            firstFrame = false;
+        }
 
         // Normally i'd refresh the input manager right here, but
         // each state must do it individually.

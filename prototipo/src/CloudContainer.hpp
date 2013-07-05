@@ -18,7 +18,12 @@ class CloudContainer
 {
 public:
     /// These are the different types of clouds we have.
-    enum CloudType { CLOUD_1, CLOUD_2, CLOUD_3, CLOUD_MAX };
+    enum CloudType
+    {
+        CLOUD_1, CLOUD_2, CLOUD_3,
+        CLOUD_MAX // This arbitrary value exists so the vector can be
+                  // safely resized to contain all possible clouds.
+    };
 
     /// Creates a cloud container that holds *maxAmmount* of clouds
     /// that will be inserted inside *areaLimit*.

@@ -23,7 +23,9 @@ public:
     LoadingScreen(std::string text, std::string fontPath);
 
     /// Increase loading bar's percentage by *ammount*.
-    void increase(int ammount);
+    void increase(unsigned int ammount);
+
+    void set(unsigned int ammount);
 
 private:
     Font font;
