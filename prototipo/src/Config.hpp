@@ -48,6 +48,7 @@ public:
     static int cloudsLimit;
 
     static float playerAcceleration;
+    static int playerFramerate;
 
     static std::string audioBg;
     static int         audioRate;

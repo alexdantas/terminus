@@ -5,6 +5,7 @@
 #include "Font.hpp"
 #include "Text.hpp"
 #include "ProgressBar.hpp"
+#include "Sprite.hpp"
 
 /// General loading screen for the transition between states.
 ///
@@ -33,4 +34,3 @@ private:
 };
 
 #endif //LOADINGSCREEN_H_DEFINED
-

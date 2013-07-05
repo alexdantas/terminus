@@ -14,6 +14,7 @@ int         Config::screenBgColorR    = 0;
 int         Config::screenBgColorG    = 0;
 int         Config::screenBgColorB    = 0;
 int         Config::cloudsLimit       = 30;
+int         Config::playerFramerate   = 12;
 
 float Config::playerAcceleration = 0.0;
 
@@ -53,6 +54,7 @@ bool Config::load(std::string fileName)
 
     file.SelectGroup("player", false);
     playerAcceleration = file.Read("acceleration", playerAcceleration);
+    playerFramerate = file.Read("framerate", playerFramerate);
 
     file.SelectGroup("camera", false);
     cameraScrollSpeed = file.Read("scroll_speed", cameraScrollSpeed);

@@ -4,6 +4,7 @@
 #include "GameStateGame.hpp"
 #include "Log.hpp"
 #include "PhysicsManager.hpp"
+#include "Config.hpp"
 
 Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     GameObject(x, y, w, h),
@@ -28,7 +29,7 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
 
     this->animations.resize(ANIMATION_MAX);
 
-    int animationSpeed = 12;
+    int animationSpeed = Config::playerFramerate;
 
     tmp = new Animation("img/apterus-standing-left.png", 12, animationSpeed);
     this->animations[STANDING_LEFT] = tmp;
