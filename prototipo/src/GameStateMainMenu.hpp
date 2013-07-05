@@ -8,6 +8,7 @@
 #include "Menu.hpp"
 #include "Sprite.hpp"
 #include "CloudContainer.hpp"
+#include "Fade.hpp"
 
 /// Everything that happens on the main menu.
 class GameStateMainMenu: public GameState
@@ -44,6 +45,8 @@ private:
     Sprite* detail;   ///< Some nice details.
 
     CloudContainer* clouds;
+
+    Fade* fade; ///< The fade effect of the screen.
 };
 
 #endif //GAMESTATEMAINMENU_H_DEFINED

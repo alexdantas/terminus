@@ -385,9 +385,13 @@ SDL_Surface* SDL::rotoZoom(SDL_Surface* surface, float angle, float scaleX, floa
 }
 SDL_Surface* SDL::newSurface(int width, int height)
 {
-    // I don't even know why the last 4 arguments (masks) must
-    // all be 0. If it ain't like this, will start bugging the
-    // f**ck out of my program.
+    // I don't even know why the last 4 arguments (masks) must all be
+    // 0. If it isn't like this, will start bugging the hell out of my
+    // program.
+    //
+    // I literally spent two fucking days browsing through SDL forums
+    // and newbie tutorials about surfaces to realize this strange
+    // behaviour.
     return (SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA,
                                  width, height,
                                  32, 0, 0, 0, 0));

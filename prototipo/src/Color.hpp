@@ -12,11 +12,15 @@ public:
     /// Creates a black opacque color.
     Color();
 
-    /// Creates an opacque color based on an integer (you can
-    //  use HTML's hex form).
-    //  For example:
-    //    Color(0xFF00FF) should give you a bright pink.
-    Color(int color);
+    /// Creates an opacque color based on a mask (you can use HTML's
+    //  hex form).
+    //
+    //  ## Example
+    //    *Color(0xFF00FF)* should give you a bright pink.
+    //    *Color(0x0000FF)* should give you full blue.
+    //    *Color(0xC0FFEE)* I don't know what this will give but it's
+    //                      a nice name for a color.
+    Color(int color_mask);
 
     /// Creates a RGBA color.
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a=255);

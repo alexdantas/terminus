@@ -16,6 +16,11 @@ GameStateMainMenu::~GameStateMainMenu()
 { }
 void GameStateMainMenu::load(int stack)
 {
+    // TODO TODO TODO
+    // setar o primeiro DT como o MAX FPS
+    //
+    // dt = 1000/MAX_FPS FUCK
+
     UNUSED(stack);
 
     LoadingScreen loading("Loading...", "ttf/LithosProRegular.ttf");
@@ -54,6 +59,8 @@ void GameStateMainMenu::load(int stack)
 
     this->clouds = new CloudContainer(30, Rectangle(0, 0, Window::width, Window::height), false);
     this->clouds->addAll();
+
+    this->fade = new Fade(Fade::FADE_IN, 3);
 }
 int GameStateMainMenu::unload()
 {
@@ -82,6 +89,7 @@ int GameStateMainMenu::unload()
     safe_delete(this->logo);
     safe_delete(this->clouds);
     safe_delete(this->detail);
+    safe_delete(this->fade);
 
     return 0;
 }
@@ -120,6 +128,7 @@ int GameStateMainMenu::update(uint32_t dt)
         }
     }
     this->clouds->update(dt);
+    this->fade->update(dt);
 
     return GameState::CONTINUE;
 }
@@ -137,5 +146,7 @@ void GameStateMainMenu::render()
     this->logo->render(0, 0);
     this->detail->render(0, 0);
     this->menu->render();
+
+    this->fade->render(); // Always last
 }
 

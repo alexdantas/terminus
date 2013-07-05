@@ -3,20 +3,17 @@
 
 Color::Color()
     : red(0), green(0), blue(0), alpha(255)
+{ }
+Color::Color(int color_mask)
 {
-}
-
-Color::Color(int color)
-{
-    this->red = (color >> 16) & 0xFF;
-    this->red = (color >>  8) & 0xFF;
-    this->red =  color        & 0xFF;
+    this->red = (color_mask >> 16) & 0xFF;
+    this->red = (color_mask >>  8) & 0xFF;
+    this->red =  color_mask        & 0xFF;
     this->alpha = 255;
 }
 Color::Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     : red(r), green(g), blue(b), alpha(a)
-{
-}
+{ }
 Color Color::operator+(const Color& color) const
 {
     int tmp  = 0;
@@ -85,19 +82,19 @@ bool Color::operator!=(const Color& color) const
 }
 uint8_t Color::r()
 {
-    return this->red;
+    return (this->red);
 }
 uint8_t Color::g()
 {
-    return this->green;
+    return (this->green);
 }
 uint8_t Color::b()
 {
-    return this->blue;
+    return (this->blue);
 }
 uint8_t Color::a()
 {
-    return this->alpha;
+    return (this->alpha);
 }
 void Color::randomize()
 {

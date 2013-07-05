@@ -31,10 +31,10 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
 
     int animationSpeed = Config::playerFramerate;
 
-    tmp = new Animation("img/apterus-standing-left.png", 12, animationSpeed);
+    tmp = new Animation("img/apterus-standing-left.png", 32, animationSpeed);
     this->animations[STANDING_LEFT] = tmp;
 
-    tmp = new Animation("img/apterus-standing-right.png", 12, animationSpeed);
+    tmp = new Animation("img/apterus-standing-right.png", 32, animationSpeed);
     this->animations[STANDING_RIGHT] = tmp;
 
     tmp = new Animation("img/apterus-running.png", 6, animationSpeed);
