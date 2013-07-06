@@ -6,7 +6,7 @@
 #
 # http:\\mxe.cc\#tutorial
 
-########## There are the things that you CAN edit 
+########## There are the things that you CAN edit
 # Executable name
 EXE = windows\prototipo.exe
 
@@ -69,20 +69,18 @@ libclean: clean
 	-rm -f $(LIBS_OBJECTS)
 
 dirs:
-	@mkdir -p windows\img windows\ogg windows\ttf windows\map
+	@mkdir -p windows\img windows\ogg windows\ttf
 	@unix2dos -n README.txt  windows\README.txt
 	@unix2dos -n config.ini windows\config.ini
 	@cp -r img\*   windows\img
 	@cp -r ogg\*   windows\ogg
 	@cp -r ttf\*   windows\ttf
-	@cp -r map\*   windows\map
 
 # Distribution zip
 ZIPNAME = sdl-test
 VERSION = 1.0
 DISTDIR = $(ZIPNAME)-$(VERSION)
-DISTDIRS = $(DISTDIR)\img $(DISTDIR)\ogg $(DISTDIR)\ttf \
-           $(DISTDIR)\map
+DISTDIRS = $(DISTDIR)\img $(DISTDIR)\ogg $(DISTDIR)\ttf
 
 # Creates a zip file with release version
 dist: all $(DISTDIR).zip
@@ -97,7 +95,6 @@ $(DISTDIR):
 	-$(MUTE)cp -r img\* $(DISTDIR)\img
 	-$(MUTE)cp -r ogg\* $(DISTDIR)\ogg
 	-$(MUTE)cp -r ttf\* $(DISTDIR)\ttf
-	-$(MUTE)cp -r map\* $(DISTDIR)\map
 
 # Uploads results on a website
 WEBSITE = alexdantas.net

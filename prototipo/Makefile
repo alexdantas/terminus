@@ -96,7 +96,7 @@ libclean: clean
 	-$(MUTE)rm -f $(LIBS_OBJECTS)
 
 dirs:
-	$(MUTE)mkdir -p img map src
+	$(MUTE)mkdir -p img src
 
 # Creates a zip to send to moodle
 zip: libclean
