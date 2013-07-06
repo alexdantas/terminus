@@ -12,12 +12,16 @@
 ///
 /// Sorry for disappointing you.
 /// This function's so small because everything is handled via the
-/// *StateManager*. It decides what to do based on the current game
-/// state (for example the main menu, or game over screen).
+/// *StateManager* class. It decides what to do based on the
+/// current game state (for example the main menu, or game over
+/// screen).
 ///
 /// If you want to understand the code, I suggest you to read the
-/// individual state files, on the order on which they appear (you
-/// can check that on *StateManager::run()*.
+/// *StateManager* first - just to get an idea on how the states are
+/// switched.
+///
+/// Then, you may see the individual state files, on the order
+/// of appearance (you can check that on *StateManager::run()*.
 ///
 int main(int argc, char* argv[])
 {
@@ -27,16 +31,17 @@ int main(int argc, char* argv[])
 
     try
     {
-        StateManager manager(800, 600); // screen (width, height)
+        // Creating the screen (width, height) and states.
+        StateManager manager(800, 600);
 
         manager.run();
     }
-    // I dont really have a nice exception-handlingh scheme right
-    // now. I must learn how to properly deal with them.
-    // As of now, everything that fucks up gets the program
-    // terminated.
     catch (...)
     {
+        // I dont really have a nice exception-handling scheme right
+        // now. I must learn how to properly deal with them.
+        // As of now, everything that fucks up gets the program
+        // terminated.
         Log::error("Exception caught! Quitting...");
         return -1;
     }

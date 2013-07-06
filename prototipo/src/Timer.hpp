@@ -58,7 +58,7 @@ public:
 	/// Returns the difference between timer's start point and now.
 	uint32_t currentTime();
 
-private:
+protected:
 	uint32_t startMark;
 	uint32_t stopMark;
 	uint32_t pausedMark;

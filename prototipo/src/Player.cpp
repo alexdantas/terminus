@@ -31,41 +31,41 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
 
     int animationSpeed = Config::playerFramerate;
 
-    tmp = new Animation("img/apterus-standing-left.png", 32, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-standing-left.png", 32, animationSpeed);
     this->animations[STANDING_LEFT] = tmp;
 
-    tmp = new Animation("img/apterus-standing-right.png", 32, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-standing-right.png", 32, animationSpeed);
     this->animations[STANDING_RIGHT] = tmp;
 
-    tmp = new Animation("img/apterus-running.png", 6, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-running.png", 6, animationSpeed);
     this->animations[RUNNING_LEFT] = tmp;
 
-    tmp = new Animation("img/apterus-running-right.png", 6, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-running-right.png", 6, animationSpeed);
     this->animations[RUNNING_RIGHT] = tmp;
 
-    tmp = new Animation("img/apterus-jumping-left.png", 6, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-jumping-left.png", 6, animationSpeed);
     this->animations[JUMPING_LEFT] = tmp;
 
-    tmp = new Animation("img/apterus-jumping-right.png", 6, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-jumping-right.png", 6, animationSpeed);
     this->animations[JUMPING_RIGHT] = tmp;
 
-    tmp = new Animation("img/apterus-dashing-left.png", 5, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/apterus-dashing-left.png", 5, animationSpeed, 1);
     tmp->setTransparentRGBColor(Color(255, 255, 255));
     this->animations[DASHING_LEFT] = tmp;
 
-    tmp = new Animation("img/apterus-dashing-right.png", 5, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/apterus-dashing-right.png", 5, animationSpeed, 1);
     this->animations[DASHING_RIGHT] = tmp;
 
-    tmp = new Animation("img/apterus-damaging-left.png", 7, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-damaging-left.png", 7, animationSpeed);
     this->animations[DAMAGING_LEFT] = tmp;
 
-    tmp = new Animation("img/apterus-damaging-right.png", 7, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-damaging-right.png", 7, animationSpeed);
     this->animations[DAMAGING_RIGHT] = tmp;
 
-    tmp = new Animation("img/apterus-death-left.png", 7, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-death-left.png", 7, animationSpeed);
     this->animations[DEATH_LEFT] = tmp;
 
-    tmp = new Animation("img/apterus-death-right.png", 7, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-death-right.png", 7, animationSpeed);
     this->animations[DEATH_RIGHT] = tmp;
 
     this->currentAnimation = this->animations[STANDING_RIGHT];

@@ -2,10 +2,14 @@
 #define COLOR_H_DEFINED
 
 #include <stdint.h>
+#include <string>
 
 /// General, platform-independent way to represent RGBA colors.
-//  Will be used as an intermediate with the engine's "true" colors.
-/// @note This class was based on the Color class from Guichan
+///
+/// Will be used as an intermediate with the engine's "true" colors.
+///
+/// @note This class was based on the Color class from Guichan.
+///
 class Color
 {
 public:
@@ -24,6 +28,11 @@ public:
 
     /// Creates a RGBA color.
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a=255);
+
+    /// Creates a opaque color based on a color name.
+    ///
+    /// You know, "red", "black", "cyan"...
+    Color(std::string colorName);
 
     /// Adds the RGB values of two colors.
     //  @note If the alpha value is different, defaults to opacque.

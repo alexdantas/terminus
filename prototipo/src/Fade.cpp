@@ -2,7 +2,7 @@
 #include "Window.hpp"
 #include "Graphics.hpp"
 
-Fade::Fade(FadeType type, float speed):
+Fade::Fade(FadeType type, float speed, Color color):
     type(type),
     speed(speed),
     surface(NULL),
@@ -12,10 +12,14 @@ Fade::Fade(FadeType type, float speed):
     this->surface = SDL::newSurface(Window::width, Window::height);
 
     if (this->type == FADE_IN)
-        this->color = Color(0, 0, 0, SDL_ALPHA_OPAQUE);
+        this->color = Color(color.r(),
+                            color.g(),
+                            color.b(), SDL_ALPHA_OPAQUE);
 
     else if (this->type == FADE_OUT)
-        this->color = Color(0, 0, 0, SDL_ALPHA_TRANSPARENT);
+        this->color = Color(color.r(),
+                            color.g(),
+                            color.b(), SDL_ALPHA_TRANSPARENT);
 
     else
     { /* FUCK */ }
@@ -72,14 +76,27 @@ void Fade::update(uint32_t dt)
     else
     { /* FUCK */ }
 
-    this->color = Color(0, 0, 0, (uint8_t)newAlpha);
+    this->color = Color(this->color.r(),
+                        this->color.g(),
+                        this->color.b(), (uint8_t)newAlpha);
+
     SDL_SetAlpha(this->surface, SDL_SRCALPHA, this->color.a());
 }
 void Fade::render()
 {
-    if (!(this->started) ||
-        (this->done))
-        return;
+    // If we've not started, fade in will show as black and fade
+    // out will not show at all.
+    //
+    // If we've finished, fade in will not show at all and fade
+    // out will be shown as black.
+
+    if (this->type == FADE_OUT)
+        if (!(this->started))
+            return;
+
+    if (this->type == FADE_IN)
+        if (this->done)
+            return;
 
     // Actually drawing the color
     SDL_Rect tmp;

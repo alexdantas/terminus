@@ -172,7 +172,7 @@ int GameStateGame::unload()
     else
         return 0;
 }
-int GameStateGame::update(uint32_t dt)
+GameState::StateCode GameStateGame::update(uint32_t dt)
 {
     if (this->will_quit)
         return GameState::QUIT;

@@ -9,9 +9,9 @@ PlatformContainer::PlatformContainer(unsigned int maxAmmount, Rectangle areaLimi
 {
     this->sprites.resize(PLATFORM_MAX);
 
-    this->sprites[GROUND]    = new Sprite("img/plataforma1.png");
-    this->sprites[CLOUD]     = new Sprite("img/plataforma2.png");
-    this->sprites[VANISHING] = new Sprite("img/plataforma3.png");
+    this->sprites[GROUND]    = new Sprite("img/sprites/plataforma1.png");
+    this->sprites[CLOUD]     = new Sprite("img/sprites/plataforma2.png");
+    this->sprites[VANISHING] = new Sprite("img/sprites/plataforma3.png");
 
     this->usedPlatforms.resize(0);
 }

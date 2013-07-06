@@ -14,25 +14,25 @@
 StateManager::StateManager(int width, int height)
 {
     Config::load("config.ini");
+
     if (Config::debugMode)
         Log::debugMode(true);
 
-    SDL::init(30);
+    SDL::init(30); // framerate
 
     Window::init(width, height, "PROTOTYPE", "prototype");
     Graphics::init(Window::screen);
 
+    // For even further debugging purposes
     Log::verboseMode(true);
 
-    // Here we start the game!
-    // The config file tells if we're going to skip themain menu
+    // Starting the game!
     if (Config::skipMenu)
         this->currentState = new GameStateGame();
     else
         this->currentState = new GameStateIntro();
 
     this->currentState->load();
-
     this->sharedInfo = 0;
 
     srand(time(NULL));
@@ -45,6 +45,8 @@ StateManager::~StateManager()
     {
         this->currentState->unload();
         delete this->currentState;
+
+        this->currentState = NULL; // you never know
     }
 }
 void StateManager::run()
@@ -58,28 +60,33 @@ void StateManager::run()
         // The delta time from the last frame
         uint32_t delta = SDL::getDelta();
 
-        // Little hack to avoid things jumping around on the first frame.
+        // Little hack to avoid things jumping around on the
+        // first frame.
         if (firstFrame)
         {
             delta = 1000/30;
             firstFrame = false;
         }
 
-        // Normally i'd refresh the input manager right here, but
-        // each state must do it individually.
+        // Just a reminder that every state handles input
+        // individually, so no need to do that here.
 
-        int whatToDoNow = this->currentState->update(delta);
+        // Updating the whole state.
+        // This value is returned from it tell us if
+        // we need to switch from the current state.
+        GameState::StateCode whatToDoNow = this->currentState->update(delta);
 
         switch (whatToDoNow)
         {
         case GameState::CONTINUE:
+            // Just continue on the current state.
             break;
 
         case GameState::QUIT:
             letsQuit = true;
             break;
 
-        case GameState::GAME_START:
+        case GameState::GAME_START: // yay, the actual game!
             this->sharedInfo = this->currentState->unload();
             delete (this->currentState);
 
@@ -87,7 +94,7 @@ void StateManager::run()
             this->currentState->load(this->sharedInfo);
             break;
 
-        case GameState::GAME_OVER:
+        case GameState::GAME_OVER: // baww, we lost!
             this->sharedInfo = this->currentState->unload();
             delete (this->currentState);
 
@@ -95,7 +102,7 @@ void StateManager::run()
             this->currentState->load(this->sharedInfo);
             break;
 
-        case GameState::MAIN_MENU:
+        case GameState::MAIN_MENU: // nothing exciting here
             this->sharedInfo = this->currentState->unload();
             delete (this->currentState);
 
@@ -107,7 +114,7 @@ void StateManager::run()
             break;
         }
 
-        // Printing everything on the screen
+        // Printing everything on the screen.
         Window::clear();
         this->currentState->render();
         Window::refresh();

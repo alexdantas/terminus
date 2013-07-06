@@ -97,7 +97,7 @@ int GameStateMainMenu::unload()
 
     return 0;
 }
-int GameStateMainMenu::update(uint32_t dt)
+GameState::StateCode GameStateMainMenu::update(uint32_t dt)
 {
     UNUSED(dt);
 

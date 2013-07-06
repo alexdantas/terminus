@@ -11,15 +11,15 @@ CloudContainer::CloudContainer(unsigned int maxAmmount, Rectangle areaLimit, boo
 
     if (blackClouds)
     {
-        this->sprites[CLOUD_1] = new Sprite("img/cloud1.png");
-        this->sprites[CLOUD_2] = new Sprite("img/cloud2.png");
-        this->sprites[CLOUD_3] = new Sprite("img/cloud3.png");
+        this->sprites[CLOUD_1] = new Sprite("img/sprites/cloud1.png");
+        this->sprites[CLOUD_2] = new Sprite("img/sprites/cloud2.png");
+        this->sprites[CLOUD_3] = new Sprite("img/sprites/cloud3.png");
     }
     else
     {
-        this->sprites[CLOUD_1] = new Sprite("img/nuvembranca1.png");
-        this->sprites[CLOUD_2] = new Sprite("img/nuvembranca2.png");
-        this->sprites[CLOUD_3] = new Sprite("img/nuvembranca3.png");
+        this->sprites[CLOUD_1] = new Sprite("img/sprites/nuvembranca1.png");
+        this->sprites[CLOUD_2] = new Sprite("img/sprites/nuvembranca2.png");
+        this->sprites[CLOUD_3] = new Sprite("img/sprites/nuvembranca3.png");
     }
 
     this->usedClouds.resize(0);
