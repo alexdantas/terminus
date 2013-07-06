@@ -23,6 +23,9 @@ public:
     /// Decreases progress by *ammount*.
     void decrease(int ammount);
 
+    /// Set progress by *ammount*.
+    void set(int ammount);
+
     /// Tells if the progress bar is currently full.
     bool isFull();
 

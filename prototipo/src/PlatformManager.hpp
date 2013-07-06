@@ -5,28 +5,24 @@
 #include "Sprite.hpp"
 #include "Platform.hpp"
 #include "Shapes.hpp"
+#include "PlatformContainer.hpp"
 
+/// Handles the platforms' inclusions and deletions on the game.
+///
+/// Has the rules to include them.
 ///
 class PlatformManager
 {
 public:
-    enum PlatformType { GROUND=0, CLOUD, VANISHING, TYPE_MAX };
-
-    PlatformManager();
+    PlatformManager(Rectangle gameArea);
     virtual ~PlatformManager();
 
-    void add(Point x, PlatformType type=GROUND);
-    void addBetween(Point a, Point b, PlatformType type=TYPE_MAX);
-
-    void render(float cameraX, float cameraY);
     void update(uint32_t dt);
-
-    bool collidesWith(GameObject* other);
+    void render(float cameraX, float cameraY);
 
 private:
-    std::vector<Platform*> container;
-    std::vector<Sprite*> sprites;
-    bool empty;
+    /// All the platforms of the game.
+    PlatformContainer* container;
 };
 
 #endif //PLATFORMMANAGER_H_DEFINED

@@ -93,6 +93,7 @@ private:
     /// The facing direction of the player.
     FacingDirection facingDirection;
 
+    /// Tells if the player's limited by some distance.
     bool hasHorizontalLimit;
     int rightmostLimitX;
     int leftmostLimitX;
@@ -102,7 +103,7 @@ private:
     int bottomLimitY;
 
     /// Tells if the player's floating on air (due to jumping
-    /// or falling
+    /// or falling.
     bool inAir;
 
     bool isJumping;

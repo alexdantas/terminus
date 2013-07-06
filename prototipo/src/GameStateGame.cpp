@@ -115,15 +115,7 @@ void GameStateGame::load(int stack)
 
     loading.increase(6);
 
-    this->platforms = new PlatformManager();
-
-    for (int i = 0; i < 10; i++)
-    {
-        Point p(this->bg->getWidth(),
-                this->bg->getHeight());
-
-        this->platforms->addBetween(Point(0, 0), p);
-    }
+    this->platforms = new PlatformManager(Rectangle(0, 0, this->bg->getWidth(), this->bg->getHeight()));
 
     loading.increase(3);
 
@@ -180,7 +172,7 @@ int GameStateGame::unload()
     else
         return 0;
 }
-int GameStateGame::update(uint32_t dt)
+GameState::StateCode GameStateGame::update(uint32_t dt)
 {
     if (this->will_quit)
         return GameState::QUIT;
@@ -208,23 +200,23 @@ int GameStateGame::update(uint32_t dt)
             this->will_quit = true;
             break;
 
-        case COMMAND_ADD_PLATFORM:
-        {
-            // Will add `n` platforms, being `n` the number passed
-            // as an argument to the command `add`.
-            int platformAmmount = 1;
+        // case COMMAND_ADD_PLATFORM:
+        // {
+        //     // Will add `n` platforms, being `n` the number passed
+        //     // as an argument to the command `add`.
+        //     int platformAmmount = 1;
 
-            // Args start counting from 1 - the command itself.
-            // If it's greater than 1 then we have an argument.
-            if (this->console->getCommandArgsAmmount() > 1)
-                platformAmmount = SDL::stringToInt(this->console->getCommandArg(1));
+        //     // Args start counting from 1 - the command itself.
+        //     // If it's greater than 1 then we have an argument.
+        //     if (this->console->getCommandArgsAmmount() > 1)
+        //         platformAmmount = SDL::stringToInt(this->console->getCommandArg(1));
 
-            for (int i = 0; i < platformAmmount; i++)
-                this->platforms->addBetween(Point(0, 0),
-                                            Point(this->bg->getWidth(),
-                                                  this->bg->getHeight()));
-        }
-            break;
+        //     for (int i = 0; i < platformAmmount; i++)
+        //         this->platforms->addBetween(Point(0, 0),
+        //                                     Point(this->bg->getWidth(),
+        //                                           this->bg->getHeight()));
+        // }
+        //     break;
 
         case COMMAND_ADD_CLOUD:
         {
@@ -362,18 +354,18 @@ void GameStateGame::checkCollision()
     if (!(this->apterus))
         return;
 
-    if (this->platforms->collidesWith(this->apterus))
-    {
-        this->apterus->undoUpdate();
-        this->apterus->jump(false);
-    }
-    else
-    {
-        // TODO
-        // what should I do to make the player fall through
-        // air without forcing him to the ground?
-//        this->apterus->fall();
-    }
+//     if (this->platforms->collidesWith(this->apterus))
+//     {
+//         this->apterus->undoUpdate();
+//         this->apterus->jump(false);
+//     }
+//     else
+//     {
+//         // TODO
+//         // what should I do to make the player fall through
+//         // air without forcing him to the ground?
+// //        this->apterus->fall();
+//     }
 
     if (this->apterus->isDead())
     {
@@ -418,9 +410,9 @@ void GameStateGame::processEvents()
 
     // Toggle bounding boxes
     if (input->isKeyDown(SDLK_F1))
-        (GameStateGame::showBoundingBoxes)?
-            GameStateGame::showBoundingBoxes = false:
-            GameStateGame::showBoundingBoxes = true;
+        (Config::showBoundingBoxes)?
+            Config::showBoundingBoxes = false:
+            Config::showBoundingBoxes = true;
 
     // Reloading config file at runtime!
     if (input->isKeyDown(SDLK_r))

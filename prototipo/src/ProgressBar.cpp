@@ -44,9 +44,23 @@ void ProgressBar::decrease(int ammount)
 
     if (this->currentValue == 0)
         this->isZero = true;
-
 }
+void ProgressBar::set(int ammount)
+{
+    this->currentValue = ammount;
 
+    if (this->currentValue >= this->maxValue)
+    {
+        this->isComplete   = true;
+        this->currentValue = this->maxValue;
+    }
+
+    if (this->currentValue < 0)
+        this->currentValue = 0;
+
+    if (this->currentValue == 0)
+        this->isZero = true;
+}
 bool ProgressBar::isFull()
 {
     return (this->isComplete);

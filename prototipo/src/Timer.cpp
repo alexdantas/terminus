@@ -47,7 +47,7 @@ void Timer::unpause()
     this->running = true;
     this->paused  = false;
 
-    this->startMark     = (SDL_GetTicks()) - (this->pausedMark);
+    this->startMark  = (SDL_GetTicks()) - (this->pausedMark);
     this->pausedMark = 0;
 }
 bool Timer::isRunning()

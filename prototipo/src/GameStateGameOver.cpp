@@ -41,7 +41,7 @@ int GameStateGameOver::unload()
 
     return 0;
 }
-int GameStateGameOver::update(uint32_t dt)
+GameState::StateCode GameStateGameOver::update(uint32_t dt)
 {
     InputManager* input = InputManager::getInstance();
     input->update();

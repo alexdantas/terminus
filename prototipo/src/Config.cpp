@@ -6,6 +6,7 @@ ConfigFile  Config::file;
 bool        Config::debugMode = false;
 bool        Config::skipMenu  = false;
 bool        Config::hasMusic  = true;
+bool        Config::showBoundingBoxes = false;
 
 int         Config::screenWidth       = 0;
 int         Config::screenHeight      = 0;
@@ -15,6 +16,7 @@ int         Config::screenBgColorG    = 0;
 int         Config::screenBgColorB    = 0;
 int         Config::cloudsLimit       = 30;
 int         Config::playerFramerate   = 12;
+float       Config::playerJump        = 68.14159265359;
 
 float Config::playerAcceleration = 0.0;
 
@@ -55,6 +57,7 @@ bool Config::load(std::string fileName)
     file.SelectGroup("player", false);
     playerAcceleration = file.Read("acceleration", playerAcceleration);
     playerFramerate = file.Read("framerate", playerFramerate);
+    playerJump = file.Read("jump", playerJump);
 
     file.SelectGroup("camera", false);
     cameraScrollSpeed = file.Read("scroll_speed", cameraScrollSpeed);
