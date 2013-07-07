@@ -36,7 +36,7 @@ public:
     virtual ~CloudContainer();
 
     ///
-    void update(uint32_t dt);
+    void update(float dt);
 
     ///
     void render(float cameraX=0, float cameraY=0);

@@ -18,7 +18,7 @@ int         Config::cloudsLimit       = 30;
 int         Config::playerFramerate   = 12;
 float       Config::playerJump        = 68.14159265359;
 
-float Config::playerAcceleration = 0.0;
+float       Config::playerAcceleration = 30.0;
 
 std::string Config::filename          = "";
 int         Config::audioRate         = 0;

@@ -39,7 +39,7 @@ void Fade::stop()
     this->done    = true;
     this->started = false;
 }
-void Fade::update(uint32_t dt)
+void Fade::update(float dt)
 {
     if (!(this->started) ||
         (this->done))

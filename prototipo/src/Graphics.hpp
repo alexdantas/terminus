@@ -57,7 +57,7 @@ public:
     static void drawSpacedLine(Point a, Point b, int spacing, Color color=Color(255, 0, 255));
 
     /// Draws a rectangle based on *rect*'s dimentions.
-    static void drawRectangle(Rectangle  rect, Color color=Color(255, 0, 255));
+    static void drawRectangle(Rectangle rect, Color color=Color(255, 0, 255));
 
     // /// Draws a circle onscreen.
     // static void drawRectangle(int x, int y, int r, Color color);

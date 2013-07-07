@@ -12,7 +12,7 @@ public:
     virtual ~Platform();
 
     void render(float cameraX, float cameraY);
-    void update(uint32_t dt);
+    void update(float dt);
 
     void setPosition(Point p);
 

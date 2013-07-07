@@ -14,12 +14,14 @@ void Platform::render(float cameraX, float cameraY)
     this->sprite->render(this->box->x - cameraX,
                          this->box->y - cameraY);
 
-    if (GameStateGame::showBoundingBoxes)
-        this->boundingBox->render(cameraX, cameraY);
+    // if (GameStateGame::showBoundingBoxes)
+    //     this->boundingBox->render(cameraX, cameraY);
 }
-void Platform::update(uint32_t dt)
+void Platform::update(float dt)
 {
-    // yeah, regular platforms just sit there, doing nothing
+    // Yeah, regular platforms just sit there, doing nothing
+    // Maybe when I implement movable platforms things will get
+    // more exciting.
     UNUSED(dt);
 }
 void Platform::setPosition(Point p)

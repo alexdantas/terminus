@@ -9,9 +9,11 @@
 Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     GameObject(x, y, w, h),
     DamageableObject(hp),
+    desiredPosition(NULL),
     vx(0), vy(0),
     ax(0), ay(0),
     acceleration(acceleration),
+    stoppedThreshold(acceleration/5.5), // 10% of the speed
     currentAnimation(NULL),
     facingDirection(RIGHT),
     hasHorizontalLimit(false),
@@ -68,86 +70,109 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     tmp = new Animation("img/spritesheets/apterus-death-right.png", 7, animationSpeed);
     this->animations[DEATH_RIGHT] = tmp;
 
+    // Let's start by looking at our right.
     this->currentAnimation = this->animations[STANDING_RIGHT];
     this->currentAnimation->start();
 
-    this->previousBoundingBox = new RectBoundingBox(this->box->x,
-                                                    this->box->y,
-                                                    this->box->w,
-                                                    this->box->h);
+    // Correcing bounding box:
+    // Now I'm changing the bounding box's position INDEPENDENTLY
+    // OF THE SPRITE.
+    this->box->stretch(0.5, 0.8); // Making it smaller
+    this->box->addX(5);           // Walk it a little to the right
+    this->box->addY(20);          // And a little down
+    this->desiredPosition = new Rectangle();
 }
 Player::~Player()
 { }
-void Player::update(uint32_t dt)
+void Player::update(float dt)
 {
-    this->previousBoundingBox->copy(this->boundingBox);
+    this->desiredPosition->copy(this->box);
 
     // The acceleration is reseted each frame
-    this->ax = 0;
     this->ay = 0;
+    this->targetVx = 0;
 
+    // These will define the resulting acceleration
+    // (adding all the forces - input force, gravity force, etc)
     this->updateInput();
-    this->updateGravity(dt);
 
-    // accelerating
-    this->vx += this->ax * dt;
+    // VERTICAL MOVEMENT
+//    if (this->flyMode)
+//        return;
+
+    // Player will ALWAYS suffer gravity.
+    // The collision resolution scheme is resposible for not
+    // letting the player go through stuff.
+    this->vy += (PhysicsManager::gravityAcceleration * dt);
+
+    // HORIZONTAL MOVEMENT
+    // Acceleration rate: How fast the player hits the
+    //                    full speed.
+    //
+    // 1: Instant Full-Speed
+    // 0: Never Moves
+    float a = 0.2612312321;
+
+    // Method 1 of accelerating
+    //
+    // http://higherorderfun.com/blog/2012/05/20/the-guide-to-implementing-2d-platformers/
+    this->vx = (a * this->targetVx) + ((1 - a) * this->vx) * dt;
+
+    // Method 2 of accelerating
+    //
+    // http://earok.net/sections/articles/game-dev/theory/simplified-acceleration-games
+    // this->vx += ((this->targetVx - this->vx) * a) * dt;
+
+    // Making sure we will not be sliding indefinitely,
+    // stopping if we hit a certain low speed.
+    if (fabs(this->vx) < this->stoppedThreshold)
+        this->vx = 0;
 
     // deaccelerating for smoothness
-    this->vx *= 0.81231;
-    this->vy *= 0.88918;
+//    this->vx *= PhysicsManager::groundFriction;
+//    this->vy *= PhysicsManager::airFriction;
 
     // actually moving the pixels on the screen
-    this->box->addX(this->vx);
-    this->box->addY(this->vy);
+    this->desiredPosition->addX(this->vx);
+    this->desiredPosition->addY(this->vy);
 
     // Limiting, if necessary
     if (this->hasHorizontalLimit)
     {
-        if (this->box->x < this->leftmostLimitX)
-            this->box->x = this->leftmostLimitX;
+        if (this->desiredPosition->x < this->leftmostLimitX)
+            this->desiredPosition->x = this->leftmostLimitX;
 
-        if ((this->box->x + this->box->w) > this->rightmostLimitX)
-            this->box->x = (this->rightmostLimitX - this->box->w);
+        if ((this->desiredPosition->x + this->desiredPosition->w) > this->rightmostLimitX)
+            this->desiredPosition->x = (this->rightmostLimitX - this->desiredPosition->w);
 
-        this->box->recalculate();
+        this->desiredPosition->update();
     }
     if (this->hasVerticalLimit)
     {
-        if (this->box->y < this->topLimitY)
-            this->box->y = this->topLimitY;
+        if (this->desiredPosition->y < this->topLimitY)
+            this->desiredPosition->y = this->topLimitY;
 
-        if ((this->box->y + this->box->h) > this->bottomLimitY)
+        if ((this->desiredPosition->y + this->desiredPosition->h) >= this->bottomLimitY)
         {
-            this->box->y = (this->bottomLimitY - this->box->h);
+            this->desiredPosition->y = (this->bottomLimitY - this->desiredPosition->h);
 
             // On this SPECIAL CASE, if the player hit the bottom
-            // of the screen, will not jump anymore
+            // of the screen, will not jump anymore.
             this->jump(false);
         }
 
-        this->box->recalculate();
+        this->desiredPosition->update();
     }
 
     // Updating visible
-    this->boundingBox->update();
+    this->desiredPosition->update();
 
     this->updateAnimation();
 }
-void Player::undoUpdate()
-{
-    this->boundingBox->copy(this->previousBoundingBox);
-    this->vx = 0;
-    this->vy = 0;
-
-    Log::debug("Player::undoUpdate");
-}
 void Player::render(float cameraX, float cameraY)
 {
-   if (GameStateGame::showBoundingBoxes)
-       this->boundingBox->render(cameraX, cameraY);
-
-    this->currentAnimation->render(this->box->x - cameraX,
-                                   this->box->y - cameraY);
+    this->currentAnimation->render(this->position->x - cameraX,
+                                   this->position->y - cameraY);
 }
 void Player::updateInput()
 {
@@ -161,21 +186,21 @@ void Player::updateInput()
     if (input->isKeyPressed(SDLK_a) ||
         input->isKeyPressed(SDLK_LEFT))
     {
+        this->targetVx = (-1 * this->acceleration);
         this->facingDirection = LEFT;
-        this->ax = -1 * this->acceleration;
 
         if (input->isKeyPressed(SDLK_LSHIFT))
-            this->ax *= turbo;
+            this->targetVx *= turbo;
     }
 
     if (input->isKeyPressed(SDLK_d) ||
         input->isKeyPressed(SDLK_RIGHT))
     {
+        this->targetVx = (this->acceleration);
         this->facingDirection = RIGHT;
-        this->ax = this->acceleration;
 
         if (input->isKeyPressed(SDLK_LSHIFT))
-            this->ax *= turbo;
+            this->targetVx *= turbo;
     }
 
     if (input->isKeyDown(SDLK_w)  ||
@@ -183,7 +208,7 @@ void Player::updateInput()
         input->isKeyPressed(SDLK_z))
     {
         if (!(this->flyMode))
-            this->jump(true);
+            this->jump();
     }
 
     if (input->isKeyPressed(SDLK_w) ||
@@ -191,7 +216,7 @@ void Player::updateInput()
     {
         if (this->flyMode)
         {
-            this->ay = -1 * this->acceleration;
+            this->ay = (-1 * this->acceleration);
 
             if (input->isKeyPressed(SDLK_LSHIFT)) // Turbo rotation
                 this->ay = -1 * 2 * this->acceleration;
@@ -237,9 +262,6 @@ void Player::updateAnimation()
         if (!(this->currentAnimation->isRunning()))
             this->isDashing = false;
     }
-
-    // How much of the speed do we consider as "stopped"
-    float stoppedTolerance = 1.90;
 
     // These will make transitions a lot easier
     bool willChangeAnimation = false;
@@ -339,7 +361,7 @@ void Player::updateAnimation()
                     }
                 }
             }
-            if (fabs(this->vx) < stoppedTolerance) // it is stopped
+            if (fabs(this->vx) < this->stoppedThreshold) // it is stopped
             {
                 if (this->facingDirection == RIGHT)
                 {
@@ -402,6 +424,15 @@ void Player::updateAnimation()
 
     this->currentAnimation->update();
 }
+void Player::commitMovement()
+{
+    // Refreshing position
+    this->position->x -= (this->box->x - this->desiredPosition->x);
+    this->position->y -= (this->box->y - this->desiredPosition->y);
+
+    // Refreshing next bounding box
+    this->box->copy(this->desiredPosition);
+}
 void Player::setHorizontalLimit(int left, int right)
 {
     this->leftmostLimitX  = left;
@@ -418,24 +449,26 @@ void Player::setVerticalLimit(int top, int bottom)
 }
 void Player::jump(bool willJump)
 {
-    if (willJump)
+    if (willJump) // Yay, let's jump!
     {
         if (this->isDoubleJumping) return;
 
         if (this->isJumping)
             this->isDoubleJumping = true;
 
-        this->inAir = true;
+        this->inAir     = true;
         this->isJumping = true;
-        this->vy = -1 * this->thrust;
-    }
-    else
-    {
-        // cancel jumping
-        if (!(this->inAir)) return;
 
-        this->inAir = false;
-        this->vy = 0;
+        // Trampoline mode: If you press the jump button twice
+        //                  in a row it will jump higher than
+        //                  pressing once and then later twice.
+        // this->vy += (-1 * this->thrust);
+        this->vy = (-1 * this->thrust);
+    }
+    else // Will cancel jumping
+    {
+        this->inAir     = false;
+        this->vy        = 0;
         this->isJumping = false;
         this->isDoubleJumping = false;
     }
@@ -443,32 +476,6 @@ void Player::jump(bool willJump)
 void Player::fall()
 {
     this->inAir = true;
-}
-
-///Calcula a gravidade exercida no Apterus
-// http://www.dreamincode.net/forums/topic/227175-c-sdl-sprite-jump/
-//Se estiver no ar, então calcule a gravidade
-//aceleração = somente a aceleração da Gravidade = 9.8
-//velocidade = v(t) + acc
-//Ou seja, é a velocidade naquele tempo t + a aceleração constante
-//posição = s(t) + v(novo t)
-void Player::updateGravity(uint32_t dt)
-{
-    if (this->flyMode)
-    {
-        this->vy += this->ay * dt;
-    }
-
-    float acc = 0;
-
-    if (this->inAir)
-    {
-        acc += PhysicsManager::gravityAcceleration * dt/15;
-
-        this->vy += acc;
-    }
-    else
-        this->vy = 0;
 }
 void Player::toggleFlyMode()
 {

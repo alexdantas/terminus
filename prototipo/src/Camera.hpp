@@ -12,7 +12,7 @@ public:
 
     /// Updates current camera position according to it's scroll speed.
     //  @note #dt is the delta time from last frame.
-    void update(uint32_t dt);
+    void update(float dt);
 
     float getX();
     float getY();

@@ -17,12 +17,12 @@ public:
     PlatformManager(Rectangle gameArea);
     virtual ~PlatformManager();
 
-    void update(uint32_t dt);
+    void update(float dt);
     void render(float cameraX, float cameraY);
 
-private:
     /// All the platforms of the game.
     PlatformContainer* container;
+private:
 };
 
 #endif //PLATFORMMANAGER_H_DEFINED

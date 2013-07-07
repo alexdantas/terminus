@@ -48,9 +48,11 @@ public:
     void limitArea(Rectangle a);
 
     void render(float cameraX, float cameraY);
-    void update(uint32_t dt);
+    void update(float dt);
 
     bool collidesWith(GameObject* other);
+
+    std::vector<Platform*> usedPlatforms;
 
 private:
     /// Maximum size of platforms allowed.
@@ -58,8 +60,6 @@ private:
 
     /// Current ammount of platforms.
     unsigned int currentAmmount;
-
-    std::vector<Platform*> usedPlatforms;
 
     std::vector<Sprite*> sprites;
 

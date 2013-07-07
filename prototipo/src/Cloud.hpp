@@ -15,7 +15,7 @@ public:
     Cloud(float x, float y, float speed, Sprite* sprite, unsigned int id=0);
     virtual ~Cloud();
 
-    void update(uint32_t dt);
+    void update(float dt);
     void render(float cameraX, float cameraY);
 
     void setPosition(Point p);

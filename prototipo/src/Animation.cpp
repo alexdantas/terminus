@@ -28,7 +28,7 @@ bool Animation::isRunning()
 {
     return (this->running);
 }
-void Animation::update(uint32_t dt)
+void Animation::update(float dt)
 {
     UNUSED(dt);
     if (this->framerate == 0) return;

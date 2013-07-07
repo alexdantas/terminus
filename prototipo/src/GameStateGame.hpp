@@ -19,6 +19,7 @@
 #include "Player.hpp"
 #include "PlatformManager.hpp"
 #include "CloudContainer.hpp"
+#include "Fade.hpp"
 
 /// This represents the actual game taking place.
 ///
@@ -41,7 +42,7 @@ public:
     /// @return A status code indicating what to do (should we
     ///         change states/quit the game?). The codes are
     ///         defined on GameState.hpp.
-    GameState::StateCode update(uint32_t dt);
+    GameState::StateCode update(float dt);
 
     /// Shows everything onscreen;
     void render();
@@ -81,10 +82,28 @@ private:
 	/// Controls events (primairly keyboard input).
 	void processEvents();
 
-    /// Checks all possible collisions during this state.
+    /// Checks and resolves all possible collisions during this state.
     ///
-    /// It handles the effects (updates the objects) internally.
-    void checkCollision();
+    /// ## For developers
+    ///
+    /// Instead of each object checking it's collision with everyone,
+    /// I've decided to make each state check AND resolve collisions
+    /// for every object it contains.
+    ///
+    /// It makes more sense since each state needs it's own collision
+    /// rules and knows which objects to check collision for.
+    /// (For example, at the main menu I might have platforms there
+    ///  but wouldn't want to check collisions for them)
+    ///
+    /// This way, every object knows how to update and move itself
+    /// but the state ALLOWS it or not.
+    ///
+    /// If the state doesn't allow the object to move, then it will
+    /// be stuck, just like when you can't pass through the ground
+    /// because the "Physics Rules of the World" don't allow you to
+    /// (even though the gravity keeps pulling you every second).
+    ///
+    void checkCollisions();
 
     bool isPaused;
 
@@ -97,6 +116,9 @@ private:
     PlatformManager* platforms;
 
     CloudContainer* cloudContainer;
+
+    /// Fade-out effect that occurs when we're quitting the game.
+    Fade* fadeOut;
 };
 
 #endif //GAMESTATEGAME_H_DEFINED

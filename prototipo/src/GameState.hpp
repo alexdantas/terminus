@@ -67,7 +67,7 @@ public:
     /// The returned value will be checked by the *StateManager*
     /// to see if we must change the current state - if so,
     /// which one should we go next.
-    virtual StateCode update(uint32_t dt) = 0;
+    virtual StateCode update(float dt) = 0;
 
     /// Called every frame, where states draw stuff on screen.
     virtual void render() = 0;

@@ -8,7 +8,7 @@ Cloud::Cloud(float x, float y, float speed, Sprite* sprite, unsigned int id):
 { }
 Cloud::~Cloud()
 { }
-void Cloud::update(uint32_t dt)
+void Cloud::update(float dt)
 {
     this->box->addX(this->speedX * dt);
 }

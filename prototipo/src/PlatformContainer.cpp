@@ -161,7 +161,7 @@ void PlatformContainer::addAll()
             break;
     }
 }
-void PlatformContainer::update(uint32_t dt)
+void PlatformContainer::update(float dt)
 {
     for (unsigned int i = 0; i < (this->currentAmmount); i++)
     {

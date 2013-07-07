@@ -22,7 +22,7 @@ AccellObject::~AccellObject()
     // if (!(this->useExternalAnimation))
     //     if (this->anim) delete this->anim;
 }
-void AccellObject::update(uint32_t dt)
+void AccellObject::update(float dt)
 {
     this->ax = 0;
     this->ay = 0;
@@ -84,8 +84,8 @@ void AccellObject::update(uint32_t dt)
 }
 void AccellObject::render(float cameraX, float cameraY)
 {
-    if (GameStateGame::showBoundingBoxes)
-        this->boundingBox->render(cameraX, cameraY);
+    // if (GameStateGame::showBoundingBoxes)
+    //     this->boundingBox->render(cameraX, cameraY);
 
     this->anim->render(this->box->x - cameraX,
                        this->box->y - cameraY);

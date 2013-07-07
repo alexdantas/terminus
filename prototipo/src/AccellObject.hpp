@@ -16,7 +16,7 @@ public:
     AccellObject(Animation* anim, float x, float y, int w, int h, int hp);
     virtual ~AccellObject();
 
-    void update(uint32_t dt);
+    void update(float dt);
     void render(float cameraX, float cameraY);
 
 private:

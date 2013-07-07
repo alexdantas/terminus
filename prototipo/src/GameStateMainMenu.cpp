@@ -60,10 +60,10 @@ void GameStateMainMenu::load(int stack)
     this->clouds = new CloudContainer(30, Rectangle(0, 0, Window::width, Window::height), false);
     this->clouds->addAll();
 
-    this->fade = new Fade(Fade::FADE_IN, 0.2);
+    this->fade = new Fade(Fade::FADE_IN, 200);
     this->fade->start();
 
-    this->fadeOut = new Fade(Fade::FADE_OUT, 0.6);
+    this->fadeOut = new Fade(Fade::FADE_OUT, 500);
 }
 int GameStateMainMenu::unload()
 {
@@ -97,7 +97,7 @@ int GameStateMainMenu::unload()
 
     return 0;
 }
-GameState::StateCode GameStateMainMenu::update(uint32_t dt)
+GameState::StateCode GameStateMainMenu::update(float dt)
 {
     UNUSED(dt);
 

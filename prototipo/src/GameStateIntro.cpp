@@ -13,11 +13,11 @@ void GameStateIntro::load(int stack)
 {
     UNUSED(stack);
 
-    this->fadeIn  = new Fade(Fade::FADE_IN,  0.3, Color("white"));
-    this->fadeOut = new Fade(Fade::FADE_OUT, 0.4);
+    this->fadeIn  = new Fade(Fade::FADE_IN,  400, Color("white"));
+    this->fadeOut = new Fade(Fade::FADE_OUT, 400);
 
     this->image      = new Sprite("img/intro1.png");
-    this->imageTimer = new TimerCounter(2000); // 2 seconds
+    this->imageTimer = new TimerCounter(2500); // 2 seconds
 
     this->fadeInTimer = new TimerCounter(500);
     this->fadeInTimer->startCounting();
@@ -32,7 +32,7 @@ int GameStateIntro::unload()
     if (this->imageTimer)  delete this->imageTimer;
     return 0;
 }
-GameState::StateCode GameStateIntro::update(uint32_t dt)
+GameState::StateCode GameStateIntro::update(float dt)
 {
     // TIMERS
     // How long the screen is black before the fade in.

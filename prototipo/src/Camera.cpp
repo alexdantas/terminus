@@ -45,7 +45,7 @@ void Camera::setVerticalLimit(int top, int bottom)
 
     this->hasVerticalLimit = true;
 }
-void Camera::update(uint32_t dt)
+void Camera::update(float dt)
 {
     this->x += (this->speedX) * dt;
     this->y += (this->speedY) * dt;

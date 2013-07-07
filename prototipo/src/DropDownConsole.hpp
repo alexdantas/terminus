@@ -182,7 +182,7 @@ public:
     ///
     /// @note You must call this every frame, to assure the console's
     ///       correct funcion!
-    void update(uint32_t dt);
+    void update(float dt);
 
     /// Tells if the console's visible (if it hasn't been dropped down).
     bool isVisible();
@@ -271,7 +271,7 @@ private:
     // Don't call these unless you know what you're doing.
     // They're already taken care of internally.
 
-    void updateAnimation(uint32_t dt); ///< Refresh animation, if necessary.
+    void updateAnimation(float dt); ///< Refresh animation, if necessary.
     void updateInput(); ///< Refresh input events.
     void renderLines(); ///< Shows all lines onscreen.
 

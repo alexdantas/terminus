@@ -1,32 +1,21 @@
+#include <iostream> // NULL
 #include "GameObject.hpp"
 
 // Almost a purely virtual class
 
 GameObject::GameObject(float x, float y, int w, int h):
-    box(NULL),
-    boundingBox(NULL),
-    previousBoundingBox(NULL)
+    position(NULL),
+    box(NULL)
 {
-    this->box = new Rectangle(x, y, w, h);
+    this->position = new Point(x, y);
+    this->box      = new Rectangle(x, y, w, h);
 
-    this->boundingBox = new RectBoundingBox(this->box);
 }
 GameObject::~GameObject()
 {
-    if (this->boundingBox) delete this->boundingBox;
-    if (this->box)         delete this->box;
+    if (this->position) delete this->position;
+    if (this->box) delete this->box;
 }
-
-// TODO create a way of changing the bounding box relative to
-//       the object.
-//       The problem is that RectBoundingBox DEPENDS on rect
-//
-// void GameObject::setBoundingBox(int x, int y, int w, int h)
-// {
-//     // remember: x/y are relative to the object!
-
-// }
-
 float GameObject::getX()
 {
     return this->box->x;
@@ -53,21 +42,26 @@ int GameObject::getHeight()
 }
 bool GameObject::collidedWith(GameObject* other)
 {
-    return (this->boundingBox->overlaps(other->boundingBox));
+    // return (this->boundingBox->overlaps(other->boundingBox));
+    return (this->box->overlaps(other->box));
 }
 bool GameObject::oneWayCollidedWith(GameObject* other)
 {
-    if (this->boundingBox->overlaps(other->boundingBox))
-    {
-        if (!(this->previousBoundingBox))
-            return false;
+    // if (this->boundingBox->overlaps(other->boundingBox))
+    // {
+    //     if (!(this->previousBoundingBox))
+    //         return false;
 
-        if (this->previousBoundingBox->bottom < other->boundingBox->top)
-            return true;
-        else
-            return false;
-    }
+    //     if (this->previousBoundingBox->bottom < other->boundingBox->top)
+    //         return true;
+    //     else
+    //         return false;
+    // }
 
     return false;
+}
+void GameObject::scaleBoundingBox(float scaleX, float scaleY)
+{
+    this->box->stretch(scaleX, scaleY);
 }
 

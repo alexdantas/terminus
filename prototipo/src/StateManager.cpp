@@ -58,13 +58,16 @@ void StateManager::run()
     while (!letsQuit)
     {
         // The delta time from the last frame
-        uint32_t delta = SDL::getDelta();
+//        uint32_t delta = SDL::getDelta();
+
+        // How many seconds have passed between last frame and this one?
+        float delta = SDL::getDeltaSeconds();
 
         // Little hack to avoid things jumping around on the
         // first frame.
         if (firstFrame)
         {
-            delta = 1000/30;
+            delta = 1000.0/30.0;
             firstFrame = false;
         }
 

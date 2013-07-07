@@ -99,7 +99,7 @@ int Sprite::getHeight()
     else
         return (this->clipRect->h);
 }
-void Sprite::update(uint32_t dt)
+void Sprite::update(float dt)
 {
     // Yep. Nothing
     UNUSED(dt);

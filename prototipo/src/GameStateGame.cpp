@@ -4,6 +4,7 @@
 #include "Log.hpp"
 #include "Window.hpp"
 #include "LoadingScreen.hpp"
+#include "Graphics.hpp"
 #include "PhysicsManager.hpp"
 
 bool GameStateGame::showBoundingBoxes = false;
@@ -31,7 +32,8 @@ GameStateGame::GameStateGame():
     pausedTitle(NULL),
     console(NULL),
     platforms(NULL),
-    cloudContainer(NULL)
+    cloudContainer(NULL),
+    fadeOut(NULL)
 { }
 GameStateGame::~GameStateGame()
 { }
@@ -103,7 +105,7 @@ void GameStateGame::load(int stack)
     this->console->setPromptForegroundColor(Color(20, 230, 20));
     this->console->setForegroundColor(Color(20, 180, 20));
     this->console->setBackgroundColor(Color(20, 20, 20, 210));
-    this->console->setScrollSpeed(1.78);
+    this->console->setScrollSpeed(1000);
     this->console->refresh();
     this->console->print("* Game console loaded *");
 
@@ -133,6 +135,8 @@ void GameStateGame::load(int stack)
     this->cloudContainer->addAtRandom();
 
     loading.increase(10);
+
+    this->fadeOut = new Fade(Fade::FADE_OUT, 1000);
 }
 int GameStateGame::unload()
 {
@@ -166,16 +170,22 @@ int GameStateGame::unload()
     safe_delete(this->lifeBar);
     safe_delete(this->lifeBarFont);
     safe_delete(this->lifeBarText);
+    safe_delete(this->fadeOut);
 
     if (we_won)
         return 1;
     else
         return 0;
 }
-GameState::StateCode GameStateGame::update(uint32_t dt)
+GameState::StateCode GameStateGame::update(float dt)
 {
-    if (this->will_quit)
+    // If we're trying to quit, the fade out effect will start.
+    // When it's finished, we will actually quit the game.
+    if (this->fadeOut->isDone())
         return GameState::QUIT;
+
+    if (this->will_quit)
+        this->fadeOut->start();
 
     if (this->will_return_to_main_menu)
         return GameState::MAIN_MENU;
@@ -248,9 +258,7 @@ GameState::StateCode GameStateGame::update(uint32_t dt)
         }
     }
     if (this->isPaused)
-    {
         return GameState::CONTINUE;
-    }
 
     // Things that are up there updates independently if the
     // game's paused.
@@ -268,35 +276,16 @@ GameState::StateCode GameStateGame::update(uint32_t dt)
     this->camera->centerOn(this->apterus->getCenterX(),
                            this->apterus->getCenterY());
 
-//    if (cameraLowestPoint > levelHeight)
-//        this->camera->setY(levelHeight - this->camera->getHeight());
-
-//     // Relative-stuff
-//     float cameraOffset  = this->camera->getY();
-//     float scrollPoint   = 200; // relative to the camera
-//     float playerCenterY = (this->apterus->getY() + this->apterus->getHeight()/2) - cameraOffset;
-
-//     if (playerCenterY < scrollPoint)
-//         this->camera->scroll(Camera::UP, (playerCenterY - cameraOffset));
-// //        this->camera->setY(playerCenterY);
-
-//     // this->camera->centerOn(this->apterus->getX() + (this->apterus->getWidth()/2),
-//     //                        this->apterus->getY() + (this->apterus->getHeight()/2));
-
-//     // Global stuff
-//     float cameraLowestPoint = cameraOffset + this->camera->getY();
-//     float levelLowestPoint  = this->bg->getHeight();
-
-//     if (cameraLowestPoint > levelLowestPoint)
-//         this->camera->setY(levelLowestPoint - cameraOffset);
-
-    if (this->apterus->getY() >= cameraLowestPoint)
-    {
-        // this is where the player dies
-    }
+    // if (this->apterus->getY() >= cameraLowestPoint)
+    // {
+    //     // this is where the player dies
+    // }
 
     this->cloudContainer->update(dt);
-    this->checkCollision();
+    this->checkCollisions();
+
+    // If we're quitting, this will update the fade out effect.
+    this->fadeOut->update(dt);
 
     return GameState::CONTINUE;
 }
@@ -305,7 +294,6 @@ void GameStateGame::render()
     int cameraX = this->camera->getX();
     int cameraY = this->camera->getY();
 
-    Window::clear();
     this->bg->render(0 - cameraX, 0 - cameraY);
 
     this->cloudContainer->render(cameraX, cameraY);
@@ -324,6 +312,16 @@ void GameStateGame::render()
     if (this->isPaused)
     {
         this->pausedTitle->render();
+    }
+
+    if (Config::showBoundingBoxes)
+    {
+        Rectangle tmp(this->apterus->box->x - cameraX,
+                      this->apterus->box->y - cameraY,
+                      this->apterus->box->w,
+                      this->apterus->box->h);
+
+        Graphics::drawRectangle(tmp);
     }
 
     this->lifeBar->render(10, 10);
@@ -345,27 +343,40 @@ void GameStateGame::render()
 
     }
 
-
-    // Must always be on top
+    // Must always be on top of the game elements
     this->console->render();
+
+    // Must always be on top of everything
+    // Will render the fade out effect if we're quitting.
+    this->fadeOut->render();
 }
-void GameStateGame::checkCollision()
+void GameStateGame::checkCollisions()
 {
+    // TODO maybe remove this later?
+    // COllisions should go independent of the player, I guess.
     if (!(this->apterus))
         return;
 
-//     if (this->platforms->collidesWith(this->apterus))
-//     {
-//         this->apterus->undoUpdate();
-//         this->apterus->jump(false);
-//     }
-//     else
-//     {
-//         // TODO
-//         // what should I do to make the player fall through
-//         // air without forcing him to the ground?
-// //        this->apterus->fall();
-//     }
+    PlatformContainer* platform = this->platforms->container;
+
+    unsigned int size = platform->usedPlatforms.size();
+    for (unsigned int i = 0; i < size; i++)
+    {
+        if (this->apterus->desiredPosition->overlaps(platform->usedPlatforms[i]->box))
+        {
+            // One-way collision
+            // Check if previously the player was above the platform
+            if (this->apterus->box->bottom <= platform->usedPlatforms[i]->box->top)
+            {
+                this->apterus->desiredPosition->placeOnTop(platform->usedPlatforms[i]->box);
+                this->apterus->jump(false);
+                break;
+            }
+        }
+    }
+
+    // We're allowing the player to move.
+    this->apterus->commitMovement();
 
     if (this->apterus->isDead())
     {

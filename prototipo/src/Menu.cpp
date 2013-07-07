@@ -138,7 +138,7 @@ void Menu::render(float cameraX, float cameraY)
     for (int i = 0; i < (this->items); i++)
         this->item[i]->text->render(cameraX, cameraY);
 }
-void Menu::update(uint32_t dt)
+void Menu::update(float dt)
 {
     UNUSED(dt);
 

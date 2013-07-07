@@ -24,7 +24,7 @@ public:
     /// @return A status code indicating what to do (should we
     ///         change states/quit the game?). The codes are
     ///         defined on GameState.hpp.
-    GameState::StateCode update(uint32_t dt);
+    GameState::StateCode update(float dt);
 
     /// Shows everything onscreen;
     void render();

@@ -48,7 +48,7 @@ public:
 	//	Screen needs to be refreshed, though.
 	virtual void render(int x=0, int y=0);
 
-    virtual void update(uint32_t dt);
+    virtual void update(float dt);
 
 	/// Sets a RGB color on this sprite as transparent.
 	//	This means when printing this image, this color will be

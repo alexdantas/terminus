@@ -48,6 +48,8 @@ public:
     /// Creates a fade to *color* with *speed* and *type*.
     ///
     /// @note By default fade-in/fade-out are from/to black.
+    ///
+    /// @note A reasonable speed is *200*.
     Fade(FadeType type, float speed, Color color=Color(0, 0, 0));
 
     virtual ~Fade();
@@ -68,7 +70,7 @@ public:
     ///       the internal settings will be screwed.
     ///       Don't worry, if the fade is over, will return
     ///       immediately.
-    void update(uint32_t dt);
+    void update(float dt);
 
     /// Renders the fade on the screen.
     ///

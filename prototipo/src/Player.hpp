@@ -29,14 +29,12 @@ public:
     Player(float x, float y, int w, int h, int hp, float acceleration);
     virtual ~Player();
 
-    void update(uint32_t dt);
-
-    /// Returns to it's position before *update()*.
+    /// Updates everything and _tries_ to move.
     ///
-    /// This is useful in case of collisions.
+    /// @note Must call *commitMovement()* to allow it to move.
     ///
-    /// @note It only goes back to _this frame's_ *update()*!
-    void undoUpdate();
+    /// @see commitMovement()
+    void update(float dt);
 
     /// Shows onscreen.
     void render(float cameraX, float cameraY);
@@ -44,19 +42,20 @@ public:
     /// Respond to any input commands.
     void updateInput();
 
-    /// Updates internal animation.
+    /// Updates internal animation status.
     void updateAnimation();
 
-    /// Updates y velocity if it's on air (jumping or falling).
-    void updateGravity(uint32_t dt);
+    /// _Actually_ moves the player.
+    void commitMovement();
 
     void setHorizontalLimit(int left, int right);
     void setVerticalLimit(int top, int bottom);
 
-    /// Makes the player jump.
+    /// Makes the player jump or stops it in mid-air.
     ///
-    /// Internally it assures that it won't jump again.
-    void jump(bool willJump);
+    /// @note If you send *jump(false)* it will stop the
+    ///       player completely (on the y axis).
+    void jump(bool willJump=true);
 
     /// Forces the player to suffer gravity.
     void fall();
@@ -71,27 +70,39 @@ public:
     /// Tells if the player's dead.
     bool isAlive();
 
+    /// Makes the player die.
     void die();
 
     void dealDamage();
 
+    /// Next position the player wants to be.
+    ///
+    /// At each frame the player updates it's position on this
+    /// *Rectangle*. Then, the *GameState* is responsible for
+    /// allowing this or not.
+    ///
+    /// It might now allow it because of collisions. Then the
+    /// player will stay at it's current position.
+    ///
+    Rectangle* desiredPosition;
+
 private:
     float vx; ///< Speed component of the x axis.
     float vy; ///< Speed component of the y axis.
+    float ax; ///< Current acceleration on the x axis.
+    float ay; ///< Current acceleration on the y axis.
 
-    float ax; ///< Acceleration component of the x axis.
-    float ay; ///< Acceleration component of the y axis.
+    float targetVx;
 
-    float acceleration;
+    float acceleration; ///< Constant walking step. Walking speed.
+    float stoppedThreshold;
 
-    /// Player's current animation.
-    Animation* currentAnimation;
+    Animation* currentAnimation; /// It's current animation.
 
     /// All possible animations, ready to be selected.
     std::vector<Animation*> animations;
 
-    /// The facing direction of the player.
-    FacingDirection facingDirection;
+    FacingDirection facingDirection; /// Current facing direction.
 
     /// Tells if the player's limited by some distance.
     bool hasHorizontalLimit;
@@ -102,26 +113,23 @@ private:
     int topLimitY;
     int bottomLimitY;
 
-    /// Tells if the player's floating on air (due to jumping
-    /// or falling.
-    bool inAir;
-
-    bool isJumping;
-    bool isDoubleJumping;
+    bool inAir;           ///< Is it on air (due to jumping or falling).
+    bool isJumping;       ///< Is it currently jumping for the first time.
+    bool isDoubleJumping; ///< Is it currently jumping for the second time.
 
     /// Ammount of strength the player has when jumping.
+    ///
+    /// Force applied to itself when jumping.
     float thrust;
 
     /// Secret mode that allows the player to fly around the
     /// scenery.
     bool flyMode;
 
-    /// Tells about the player's dashing action.
-    bool isDashing;
+    bool isDashing; ///< Is it currently dashing.
 
-    bool dead;
-
-    bool damaging;
+    bool dead;      ///< Has it died.
+    bool damaging;  ///< Is it currently having damage.
 };
 
 #endif //PLAYER_H_DEFINED

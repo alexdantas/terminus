@@ -13,7 +13,7 @@ PlatformManager::~PlatformManager()
     if (this->container)
         delete this->container;
 }
-void PlatformManager::update(uint32_t dt)
+void PlatformManager::update(float dt)
 {
     // Check inclusion rules
 

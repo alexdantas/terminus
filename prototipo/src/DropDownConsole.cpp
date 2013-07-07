@@ -287,7 +287,7 @@ void DropDownConsole::render(float cameraX, float cameraY)
     // Cursor
 
 }
-void DropDownConsole::update(uint32_t dt)
+void DropDownConsole::update(float dt)
 {
     this->updateInput();
     this->updateAnimation(dt);
@@ -316,7 +316,7 @@ void DropDownConsole::clearHistory()
 
 // Private local functions
 
-void DropDownConsole::updateAnimation(uint32_t dt)
+void DropDownConsole::updateAnimation(float dt)
 {
     switch (this->state)
     {
@@ -327,11 +327,11 @@ void DropDownConsole::updateAnimation(uint32_t dt)
         break;
 
     case DropDownConsole::SCROLLING_UP:
-        this->topOffset -= this->scrollSpeed * dt;
+        this->topOffset -= (this->scrollSpeed * dt);
         break;
 
     case DropDownConsole::SCROLLING_DOWN:
-        this->topOffset += this->scrollSpeed * dt;
+        this->topOffset += (this->scrollSpeed * dt);
         break;
 
     default:

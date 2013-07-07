@@ -167,7 +167,7 @@ public:
     ///
     /// @note Make sure you call this on an update loop,
     ///       to assure expected behaviour.
-    void update(uint32_t dt=0);
+    void update(float dt=0);
 
     /// Centralizes the text of all the items.
     void centralizeText();

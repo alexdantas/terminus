@@ -117,9 +117,18 @@ void SDL::delay_ms(int delay)
 {
     SDL_Delay(delay);
 }
+float SDL::getDeltaSeconds()
+{
+    // frame_delta is the number of miliseconds between last frame and
+    // this one.
+    //
+    // We'll transform it in SECONDS.
+
+    return ((float)(frame_delta))/1000.0;
+}
 uint32_t SDL::getDelta()
 {
-    return frame_delta;
+    return (frame_delta);
 }
 SDL_Surface* SDL::loadBMP(std::string filename)
 {

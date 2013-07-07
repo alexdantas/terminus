@@ -89,9 +89,10 @@ void CloudContainer::addAt(Point p)
     // "Creating" and adjusting
     tmp->setPosition(p);
 
-    float speed = ((float)(SDL::randomNumberBetween(1, 5)))/30.0;
+    float speed = ((float)(SDL::randomNumberBetween(30, 70)));
 
-    // Randomly deciding if the cloud's gonna go to the left or right
+    // Randomly deciding if the cloud's gonna go to the
+    // left or right
     ((SDL::randomNumberBetween(1, 10)) % 2) == 0?
         speed *= -1:
         speed *=  1;
@@ -167,7 +168,7 @@ void CloudContainer::addAll()
             break;
     }
 }
-void CloudContainer::update(uint32_t dt)
+void CloudContainer::update(float dt)
 {
     for (unsigned int i = 0; i < (this->currentAmmount); i++)
     {
