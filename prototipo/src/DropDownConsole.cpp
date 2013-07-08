@@ -170,16 +170,23 @@ DropDownConsole::DropDownConsole(Font* font, int x, int y, int w, int h):
     // TODO
     // test if w/h is bigger than screen or something
     // also check positions and stuff
-    DropDownConsole::print("________                               ________                                ");
-    DropDownConsole::print("\\______ \\   _______    ____   ______   \\______ \\     ____   __  _  __   ____   ");
-    DropDownConsole::print(" |    |  \\  \\_  __ \\  /  _ \\  \\____ \\   |    |  \\   /  _ \\  \\ \\/ \\/ /  /    \\  ");
-    DropDownConsole::print(" |    `   \\  |  | \\/ (  <_> ) |  |_> >  |    `   \\ (  <_> )  \\     /  |   |  \\ ");
-    DropDownConsole::print("/_______  /  |__|     \\____/  |   __/  /_______  /  \\____/    \\/\\_/   |___|  / ");
-    DropDownConsole::print("        \\/                    |__|             \\/                          \\/  ");
+
+    // looks ugly because I need to escape all '\' with '\'
+    DropDownConsole::print("___________                  .__                    ");
+    DropDownConsole::print("\\__    ______________  _____ |__| ____  __ __ ______");
+    DropDownConsole::print("  |    |_/ __ \\_  __ \\/     \\|  |/    \\|  |  /  ___/");
+    DropDownConsole::print("  |    |\\  ___/|  | \\|  Y Y  |  |   |  |  |  \\___ \\ ");
+    DropDownConsole::print("  |____| \\___  |__|  |__|_|  |__|___|  |____/____  >");
+    DropDownConsole::print("             \\/            \\/        \\/          \\/ ");
 }
 DropDownConsole::~DropDownConsole()
 {
+    SDL::deleteSurface(this->surface);
 
+    unsigned int size = this->commands.size();
+    for (unsigned int i = 0; i < size; ++i)
+        if (this->commands[i])
+            delete (this->commands[i]);
 }
 void DropDownConsole::addCommand(std::string command, int value)
 {

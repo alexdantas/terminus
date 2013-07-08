@@ -9,6 +9,7 @@ CloudContainer::CloudContainer(unsigned int maxAmmount, Rectangle areaLimit, boo
 {
     this->sprites.resize(CLOUD_MAX);
 
+    // HACK to make black/white clouds available
     if (blackClouds)
     {
         this->sprites[CLOUD_1] = new Sprite("img/sprites/cloud1.png");

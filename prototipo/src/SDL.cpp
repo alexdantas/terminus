@@ -250,7 +250,17 @@ bool SDL::hasAudio()
 }
 int SDL::randomNumberBetween(int min, int max)
 {
-    return rand() % (max - min + 1) + min;
+    // Just in case the called didn't read
+    // the method's documentation.
+    if (min > max)
+    {
+        // swap
+        int tmp = max;
+        max = min;
+        min = tmp;
+    }
+
+    return (rand() % (max - min + 1) + min);
 }
 void SDL::showCursor()
 {

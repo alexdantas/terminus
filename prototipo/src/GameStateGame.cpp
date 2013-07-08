@@ -117,7 +117,9 @@ void GameStateGame::load(int stack)
 
     loading.increase(6);
 
-    this->platforms = new PlatformManager(Rectangle(0, 0, this->bg->getWidth(), this->bg->getHeight()));
+    Rectangle gameArea(0, 0, this->bg->getWidth(), this->bg->getHeight());
+    this->platforms = new PlatformManager(gameArea, (Config::playerJump * 5));
+    this->platforms->addAll();
 
     loading.increase(3);
 
@@ -357,23 +359,38 @@ void GameStateGame::checkCollisions()
     if (!(this->apterus))
         return;
 
-    PlatformContainer* platform = this->platforms->container;
-
-    unsigned int size = platform->usedPlatforms.size();
-    for (unsigned int i = 0; i < size; i++)
+    // Will check if any of the platforms collide with the player
+    for (std::list<Platform*>::iterator it = this->platforms->container->platforms.begin();
+         it != this->platforms->container->platforms.end();
+         it++)
     {
-        if (this->apterus->desiredPosition->overlaps(platform->usedPlatforms[i]->box))
+        if (this->apterus->desiredPosition->overlaps((*it)->box))
         {
             // One-way collision
             // Check if previously the player was above the platform
-            if (this->apterus->box->bottom <= platform->usedPlatforms[i]->box->top)
+            if (this->apterus->box->bottom <= (*it)->box->top)
             {
-                this->apterus->desiredPosition->placeOnTop(platform->usedPlatforms[i]->box);
+                this->apterus->desiredPosition->placeOnTop((*it)->box);
                 this->apterus->jump(false);
                 break;
             }
         }
     }
+    // unsigned int size = platform->usedPlatforms.size();
+    // for (unsigned int i = 0; i < size; i++)
+    // {
+    //     if (this->apterus->desiredPosition->overlaps(platform->usedPlatforms[i]->box))
+    //     {
+    //         // One-way collision
+    //         // Check if previously the player was above the platform
+    //         if (this->apterus->box->bottom <= platform->usedPlatforms[i]->box->top)
+    //         {
+    //             this->apterus->desiredPosition->placeOnTop(platform->usedPlatforms[i]->box);
+    //             this->apterus->jump(false);
+    //             break;
+    //         }
+    //     }
+    // }
 
     // We're allowing the player to move.
     this->apterus->commitMovement();

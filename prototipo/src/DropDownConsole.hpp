@@ -205,39 +205,35 @@ public:
     std::string getCommandArg(int num);
 
 private:
-
-
     float x;    ///< The console's position on the x axis.
     float y;    ///< The console's position on the y axis.
     int width;  ///< The console's width.
     int height; ///< The console's height.
 
-    float scrollSpeed; ///< How fast the console scrolls when dropped down.
-
+    float scrollSpeed;  ///< How fast the console scrolls when dropped down.
     ConsoleState state; ///< Current state (visible/invisible/scrolling).
 
-    Font* font; ///< The font that renders all the text.
-
+    Font* font;           ///< The font that renders all the text.
     SDL_Surface* surface; ///< SDL's internal data structure.
 
-    Color background;
-    Color foreground;
-    Color promptForeground;
+    Color background; ///< Background color of all the text.
+    Color foreground; ///< Foreground color of all the text.
+    Color promptForeground; ///< Foreground color of the input prompt.
 
     int horizontalChars; ///< Number of visible chars horizontally.
     int verticalChars;   ///< Number of visible chars vertically.
 
-    /// Key that calls the dropdown function.
-    ///
-    /// By default, *F12*.
+    /// Key that calls the dropdown function - by default, *F12*.
     ///
     /// @note Must be recognizable by the InputManager.
+    ///
     /// @see InputManager
     int keybinding;
 
     /// How much scrolled the console is.
     ///
     /// The bigger this is, the farthest the console is from the top.
+    ///
     /// @note The maximum size is, of course, the console height.
     ///       Also, if it's zero, the console is full hidden.
     int topOffset;
@@ -261,7 +257,7 @@ private:
 
     std::vector<Command*> commands; ///< Has all the possible commands.
 
-    Command* currentCommand; ///< Tells the command the user just sent.
+    Command* currentCommand; ///< The command the user just sent.
 
     bool userJustSentACommand; ///< Tells if the user just sent a command.
 

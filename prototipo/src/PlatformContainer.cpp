@@ -7,32 +7,31 @@ PlatformContainer::PlatformContainer(unsigned int maxAmmount, Rectangle areaLimi
     currentAmmount(0),
     areaLimit(areaLimit)
 {
-    this->sprites.resize(PLATFORM_MAX);
+    this->sprites.resize(PLATFORM_MAX); // Maximum size of the vector
 
     this->sprites[GROUND]    = new Sprite("img/sprites/plataforma1.png");
     this->sprites[CLOUD]     = new Sprite("img/sprites/plataforma2.png");
     this->sprites[VANISHING] = new Sprite("img/sprites/plataforma3.png");
-
-    this->usedPlatforms.resize(0);
 }
 PlatformContainer::~PlatformContainer()
 {
     unsigned int size = this->sprites.size();
-    for (unsigned int i = 0; i < PLATFORM_MAX; i++)
+    for (unsigned int i = 0; i < size; i++)
         if (this->sprites[i])
             delete (this->sprites[i]);
 
-    size = this->usedPlatforms.size();
-    for (unsigned int i = 0; i < size; i++)
-    {
-        if (this->usedPlatforms[i])
-            delete this->usedPlatforms[i];
-    }
+    for (std::list<Platform*>::iterator it = this->platforms.begin();
+         it != this->platforms.end();
+         it++)
+        if (*it)
+            delete (*it);
 }
 void PlatformContainer::add(Point p, PlatformType type)
 {
-    if (this->currentAmmount >= this->maxAmmount)
-        return;
+    // It doesn't matter if we've reached the point of no return,
+    // we'll keep adding platforms 'till the end of times.
+    if (this->platforms.size() >= this->maxAmmount)
+        this->deleteLast();
 
     Platform* tmp = new Platform(this->sprites[type],
                                  p.x, p.y,
@@ -63,7 +62,7 @@ void PlatformContainer::add(Point p, PlatformType type)
         return;
     }
 
-    this->usedPlatforms.push_back(tmp);
+    this->platforms.push_back(tmp);
     this->currentAmmount++;
 
     Log::verbose("PlatformContainer::add (" + SDL::intToString(p.x) +
@@ -103,123 +102,25 @@ void PlatformContainer::addBetween(Point a, Point b, PlatformType type)
         this->add(p, type);
     }
 }
-// void PlatformContainer::addAtRandom()
-// {
-//     // Cannot add anyway
-//     if (this->currentAmmount >= this->maxAmmount)
-//         return;
-
-//     // Will forcefully try to add until it works.
-//     // Watch out for those infinite loops!
-
-//     unsigned int previousAmmount = this->currentAmmount;
-
-//     while (this->currentAmmount == previousAmmount)
-//     {
-//         int safetyCheckToAvoidInfiniteLoops = 10;
-
-
-//         int x = SDL::randomNumberBetween(this->areaLimit.leftmost,
-//                                          this->areaLimit.rightmost);
-//         int y = SDL::randomNumberBetween(this->areaLimit.top,
-//                                          this->areaLimit.bottom);
-
-//         // This will fail silentrly if (x, y) is not inside bounds
-//         this->addAt(Point(x, y));
-
-
-//         if (--safetyCheckToAvoidInfiniteLoops < 0)
-//             break;
-//     }
-// }
-void PlatformContainer::addAll()
-{
-    // Cannot add anyway
-    if (this->currentAmmount >= this->maxAmmount)
-        return;
-
-    // Will forcefully try to add until it works.
-    // Watch out for those infinite loops!
-
-    while (this->currentAmmount != this->maxAmmount)
-    {
-        int safetyCheckToAvoidInfiniteLoops = 10;
-
-
-        int x = SDL::randomNumberBetween(this->areaLimit.leftmost,
-                                         this->areaLimit.rightmost);
-        int y = SDL::randomNumberBetween(this->areaLimit.top,
-                                         this->areaLimit.bottom);
-
-        // Random type
-        unsigned int index = SDL::randomNumberBetween(GROUND, VANISHING);
-
-        // This will fail quietly if (x, y) is not inside bounds
-        this->add(Point(x, y), static_cast<PlatformType>(index));
-
-        if (--safetyCheckToAvoidInfiniteLoops < 0)
-            break;
-    }
-}
 void PlatformContainer::update(float dt)
 {
-    for (unsigned int i = 0; i < (this->currentAmmount); i++)
+    for (std::list<Platform*>::iterator it = this->platforms.begin();
+         it != this->platforms.end();
+         it++)
     {
-        if ((this->usedPlatforms[i]) &&
-            (this->usedPlatforms[i]->isVisible()))
-            this->usedPlatforms[i]->update(dt);
-
-        // testing the limits
-        Rectangle platform(this->usedPlatforms[i]->getX(),
-                        this->usedPlatforms[i]->getY(),
-                        this->usedPlatforms[i]->getWidth(),
-                        this->usedPlatforms[i]->getHeight());
-
-        // if (platform.rightmost < this->areaLimit.leftmost  ||
-        //     platform.leftmost  > this->areaLimit.rightmost ||
-        //     platform.bottom    < this->areaLimit.top       ||
-        //     platform.top       > this->areaLimit.bottom)
-        //     this->removeAt(i);
-
-        // TODO
-        // This has a MAJOR design flaw.
-        // If I deleted a platform at position i,
-        // it will get swapped to the last and removed when I call removeAt(i).
-        //
-        // But since i is still an index to the array, it will
-        // instantly point to the next one and it will skip.
+        if ((*it) &&
+            (*it)->isVisible())
+            (*it)->update(dt);
     }
 }
-// void PlatformContainer::removeAt(unsigned int index)
-// {
-//     // Double-checking to make sure I won't remove invalid stuff
-//     if (this->currentAmmount == 0)
-//         return;
-
-//     unsigned int size = this->usedPlatforms.size();
-//     if (index >= size)
-//         return;
-
-//     Platform* tmp = this->usedPlatforms[index];
-
-//     std::swap(this->usedPlatforms[index], this->usedPlatforms.back());
-
-//     Log::verbose("PlatformContainer::removeAt (" + SDL::intToString(tmp->getX()) +
-//                  ", " + SDL::intToString(tmp->getY()) +
-//                  ") " +
-//                  "Count: " + SDL::intToString(this->currentAmmount - 1));
-
-//     this->freePlatforms.push_back(tmp);
-//     this->usedPlatforms.pop_back();
-//     this->currentAmmount--;
-// }
 void PlatformContainer::render(float cameraX, float cameraY)
 {
-    for (unsigned int i = 0; i < (this->currentAmmount); i++)
+    for (std::list<Platform*>::iterator it = this->platforms.begin();
+         it != this->platforms.end();
+         it++)
     {
-        if ((this->usedPlatforms[i]) &&
-            (this->usedPlatforms[i]->isVisible()))
-            this->usedPlatforms[i]->render(cameraX, cameraY);
+        if ((*it) && (*it)->isVisible())
+            (*it)->render(cameraX, cameraY);
     }
 }
 void PlatformContainer::limitArea(Rectangle a)
@@ -228,15 +129,50 @@ void PlatformContainer::limitArea(Rectangle a)
 }
 bool PlatformContainer::collidesWith(GameObject* other)
 {
-    if (this->usedPlatforms.size() == 0) return false;
+    int size = this->platforms.size();
 
-    int size = this->usedPlatforms.size();
+    if (size == 0)
+        return false;
 
-    for (int i = 0; i < size; i++)
-        if (other->oneWayCollidedWith(this->usedPlatforms[i]))
+    // Since queues cannot be iterated, will need to use a
+    // temporary one on which we'll deposit all elements,
+    // one by one.
+    //
+    // Huge performance-taker, right?
+
+    for (std::list<Platform*>::iterator it = this->platforms.begin();
+         it != this->platforms.end();
+         it++)
+    {
+        if (other->oneWayCollidedWith(*it))
             return true;
-
+    }
     return false;
 }
+Platform* PlatformContainer::getTopPlatform()
+{
+    if (this->platforms.empty())
+        return NULL;
 
+    return (this->platforms.back());
+}
+void PlatformContainer::deleteLast()
+{
+    // Deletes the LAST platform which is the FIRST element
+    // on the queue.
+    //
+    // First-In-First-Out, remember?
+
+    if (this->platforms.empty())
+        return;
+
+    Platform* tmp = this->platforms.front();
+
+    this->platforms.pop_front();
+    if (tmp) delete tmp;
+}
+bool PlatformContainer::isFull()
+{
+    return (this->currentAmmount == this->maxAmmount);
+}
 
