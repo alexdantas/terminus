@@ -117,9 +117,11 @@ void GameStateGame::load(int stack)
 
     loading.increase(6);
 
-    Rectangle gameArea(0, 0, this->bg->getWidth(), this->bg->getHeight());
+    // The area that platforms will be spawned
+    // (will cut a little from the top)
+    Rectangle gameArea(0, 300, this->bg->getWidth(), this->bg->getHeight());
+
     this->platforms = new PlatformManager(gameArea, (Config::playerJump * 5));
-    this->platforms->addAll();
 
     loading.increase(3);
 
@@ -270,6 +272,7 @@ GameState::StateCode GameStateGame::update(float dt)
         this->apterus->update(dt);
 
     this->camera->update(dt);
+    this->platforms->update(dt);
 
     float cameraLowestPoint = this->camera->getY() + this->camera->getHeight();
     float cameraScrollPoint = cameraLowestPoint    - this->camera->getHeight()/3;

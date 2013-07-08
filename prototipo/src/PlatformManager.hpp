@@ -61,6 +61,9 @@ private:
 
     /// References the uppermost platform on the game area.
     Platform* topPlatform;
+
+    /// Holds the camera Y to generate platforms.
+    float currentCameraY;
 };
 
 #endif //PLATFORMMANAGER_H_DEFINED

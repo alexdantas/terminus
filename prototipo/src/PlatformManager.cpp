@@ -6,11 +6,13 @@ PlatformManager::PlatformManager(Rectangle gameArea, float maxHeight):
     gameArea(gameArea),
     maxHeight(maxHeight),
     minHeight(20),
-    topPlatform(NULL)
+    topPlatform(NULL),
+    currentCameraY(0)
 {
     this->container = new PlatformContainer(30, gameArea);
 
-//    this->container->addAll();
+    for (int i = 0; i < 10; i++)
+        this->add();
 }
 PlatformManager::~PlatformManager()
 {
@@ -23,9 +25,18 @@ void PlatformManager::setFrequency(int frequency)
 }
 void PlatformManager::update(float dt)
 {
-    // Check inclusion rules
+    if (this->topPlatform)
+    {
+        // Will keep adding platforms whenever the camera gets close
+        // to the topmost one.
+        //
+        // When their difference is lower than an arbitrary value, let's
+        // add another platform.
 
-    // whatever
+        float cameraDiff = (this->currentCameraY - this->topPlatform->getY());
+        if (cameraDiff < 1000) // arbitrary
+            this->add();
+    }
 
     this->container->update(dt);
 }
@@ -62,7 +73,7 @@ void PlatformManager::addAll()
 }
 void PlatformManager::render(float cameraX, float cameraY)
 {
-    // If I want to render some stats, whatever
+    this->currentCameraY = cameraY;
 
     this->container->render(cameraX, cameraY);
 }

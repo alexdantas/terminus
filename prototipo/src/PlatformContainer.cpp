@@ -31,7 +31,10 @@ void PlatformContainer::add(Point p, PlatformType type)
     // It doesn't matter if we've reached the point of no return,
     // we'll keep adding platforms 'till the end of times.
     if (this->platforms.size() >= this->maxAmmount)
+    {
         this->deleteLast();
+        this->currentAmmount--;
+    }
 
     Platform* tmp = new Platform(this->sprites[type],
                                  p.x, p.y,
