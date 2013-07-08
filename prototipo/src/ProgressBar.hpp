@@ -15,6 +15,7 @@ public:
     ///
     /// It grows from the left to the right.
     ProgressBar(int width, int height, int max=100, int starting=0);
+
     virtual ~ProgressBar();
 
     /// Increases progress by *ammount*.
@@ -32,7 +33,10 @@ public:
     /// Tells if the progress bar is still at 0%.
     bool isEmpty();
 
+    /// Color of the empty parts.
     void setBackgroundColor(Color color=Color(0, 0, 0));
+
+    /// Color of the filled parts.
     void setForegroundColor(Color color=Color(255, 255, 255));
 
     /// Shows progress bar on *x* and *y* positions of the screen.
@@ -43,13 +47,14 @@ private:
     int currentValue;
     int width;
     int height;
-    bool isComplete;
-    bool isZero;
 
-    SDL_Surface* surface;
+    bool isComplete; ///< Is the bar complete.
+    bool isZero;     ///< Is the bar empty.
 
-    Color filledColor;
-    Color emptyColor;
+    SDL_Surface* surface; ///< SDL's internal data structure.
+
+    Color filledColor; ///< Color of the filled part.
+    Color emptyColor;  ///< Color of the empty part.
 };
 
 #endif //PROGRESSBAR_H_DEFINED

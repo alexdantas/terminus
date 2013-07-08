@@ -25,6 +25,24 @@
 ///
 /// Here is defined all the game logic and rules.
 ///
+/// ## For developers:
+///
+/// Before you continue, take a deep breath.
+///
+/// Done? OK.
+/// This is the most complex class of this game and it uses
+/// pretty much every other class on the project.
+///
+/// To understand it you must have a lot of patience and that
+/// "I'll see what it means later" feeling.
+///
+/// Don't try to understand everything at once!
+/// Try to abstract a litte and follow the code thinking only in
+/// terms of what you think it's doing.
+///
+/// After you've quite guessed what a method does, start looking
+/// into the classes that it uses.
+///
 class GameStateGame: public GameState
 {
 public:
@@ -47,39 +65,19 @@ public:
     /// Shows everything onscreen;
     void render();
 
-    static bool showBoundingBoxes;
-
 private:
 
-    // Such a mess, right?
-	Sprite* bg;
+    // Internal state-specific methods.
+    //
+    // They're here to ease reading -  each one of them gets
+    // called once per frame.
 
-	bool will_quit;
-    bool will_return_to_main_menu;
-    bool game_over;
-
-    Camera* camera;
-
-    Music* bgmusic;
-
-    Player* apterus;
-
-    ProgressBar* lifeBar;
-    Font* lifeBarFont;
-    Text* lifeBarText;
-
-    // Internal state-specific functions
-
-    /// Constructs the game map
-    void buildMap();
-
-	/// Creates a planet at a random position onscreen.
-	void addPlanet();
-
-	/// Destroys any planet that's dead.
-	void checkPlanets();
-
-	/// Controls events (primairly keyboard input).
+	/// Receives input and tells what to do with it.
+	///
+	/// @note Every class that needs input deals with it internally.
+	///       For example, the Player's input-handling method is
+	///       inside the Player class!
+	///       The input here is specific to the Game State.
 	void updateInput();
 
     /// Checks and resolves all possible collisions during this state.
@@ -105,19 +103,41 @@ private:
     ///
     void checkCollisions();
 
+    /// Checks and resolves anything related to platforms.
+    ///
+    /// For example, if anything's above a moving platform, we
+    /// will move it here.
     void checkPlatforms();
 
-    bool isPaused;
+    // Now, the variables.
 
-    Font* font;
+	Sprite* bg; ///< Background of the game.
+
+	bool will_quit; ///< If we're gonna quit the game.
+    bool will_return_to_main_menu; ///< If we're gonna go to main menu.
+    bool game_over; ///< If the game's over.
+
+    Camera* camera; ///< The camera that shows part of the whole game screen.
+
+    Music* bgmusic;
+
+    Player* apterus; ///< The player - main controllable class of the game.
+
+    ProgressBar* lifeBar;
+    Font* lifeBarFont;
+    Text* lifeBarText;
+
+    bool isPaused; ///< Is the game paused?
+
+    Font* font; ///< Font that shows everything on the screen.
     Text* pausedTitle;
 
-    Font* consoleFont;
-    DropDownConsole* console;
+    Font* consoleFont;        ///< The game console font.
+    DropDownConsole* console; /// The game console.
 
-    PlatformManager* platforms;
+    PlatformManager* platforms; ///< All the game platforms.
 
-    CloudContainer* cloudContainer;
+    CloudContainer* cloudContainer; ///< All the clouds of the game.
 
     /// Fade-out effect that occurs when we're quitting the game.
     Fade* fadeOut;

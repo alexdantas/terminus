@@ -103,9 +103,12 @@ private:
     float ax; ///< Current acceleration on the x axis.
     float ay; ///< Current acceleration on the y axis.
 
+    /// How much speed the player wants to have on the current frame.
     float targetVx;
 
-    float acceleration; ///< Constant walking step. Walking speed.
+    float acceleration; ///< Walking speed.
+
+    /// How much of the speed we consider the player stopped.
     float stoppedThreshold;
 
     Animation* currentAnimation; /// It's current animation.

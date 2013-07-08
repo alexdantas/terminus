@@ -8,8 +8,6 @@
 #include "PhysicsManager.hpp"
 #include "PlatformVanishing.hpp" // whoa, do we really need this?
 
-bool GameStateGame::showBoundingBoxes = false;
-
 // All possible commands the user might type into the console
 enum GameStateGameCommands
 {
