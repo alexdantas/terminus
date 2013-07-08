@@ -69,6 +69,8 @@ public:
 
     void clip(int x, int y, int w, int h);
 
+    void setTransparency(uint8_t level);
+
 protected:
 	/// Current image's filename.
 	//

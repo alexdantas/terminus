@@ -25,7 +25,8 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     flyMode(false),
     isDashing(false),
     dead(false),
-    damaging(false)
+    damaging(false),
+    movablePlatform(NULL)
 {
     Animation* tmp = NULL;
 
@@ -135,6 +136,21 @@ void Player::update(float dt)
     // actually moving the pixels on the screen
     this->desiredPosition->addX(this->vx);
     this->desiredPosition->addY(this->vy);
+
+    // Movable Platforms
+    //
+    // If the player's standing above one, we will move the player the
+    // same ammount as the platform moved on the last frame.
+    //
+    // This will remove completely "slippery movable platforms".
+    // If that's a feature to you, uncomment below.
+    if (this->movablePlatform)
+    {
+        PlatformMovable* p  = this->movablePlatform;
+        float platformDelta = (p->box->x - p->previousBox.x);
+
+        this->desiredPosition->addX(platformDelta);
+    }
 
     // Limiting, if necessary
     if (this->hasHorizontalLimit)
@@ -506,5 +522,10 @@ bool Player::isAlive()
 void Player::dealDamage()
 {
     this->damaging = true;
+}
+void Player::stepIntoMovablePlatform(PlatformMovable* platform)
+{
+    // Watch out for NULL poiters!
+    this->movablePlatform = platform;
 }
 

@@ -5,6 +5,7 @@
 #include "GameObject.hpp"
 #include "DamageableObject.hpp"
 #include "Animation.hpp"
+#include "PlatformMovable.hpp"
 
 /// Defines the player.
 class Player: public GameObject,
@@ -75,6 +76,16 @@ public:
 
     void dealDamage();
 
+    /// Makes the player step into a movable platform *platform*.
+    ///
+    /// This is necessary if we want the player to move along with
+    /// a movable platform.
+    /// Whenever the platform moves, the player will move with it.
+    ///
+    /// @note Please send NULL if the player's not standing on
+    ///       any movable platform.
+    void stepIntoMovablePlatform(PlatformMovable* platform);
+
     /// Next position the player wants to be.
     ///
     /// At each frame the player updates it's position on this
@@ -130,6 +141,15 @@ private:
 
     bool dead;      ///< Has it died.
     bool damaging;  ///< Is it currently having damage.
+
+    /// The movable platform that the player's currently on top.
+    ///
+    /// This should point to the current movable platform.
+    /// It will make the player move along with it.
+    ///
+    /// If there is no movable platform (this is NULL), the
+    /// player will behave normally.
+    PlatformMovable* movablePlatform;
 };
 
 #endif //PLAYER_H_DEFINED

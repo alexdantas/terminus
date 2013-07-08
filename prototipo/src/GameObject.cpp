@@ -45,21 +45,21 @@ bool GameObject::collidedWith(GameObject* other)
     // return (this->boundingBox->overlaps(other->boundingBox));
     return (this->box->overlaps(other->box));
 }
-bool GameObject::oneWayCollidedWith(GameObject* other)
-{
-    // if (this->boundingBox->overlaps(other->boundingBox))
-    // {
-    //     if (!(this->previousBoundingBox))
-    //         return false;
+// bool GameObject::oneWayCollidedWith(GameObject* other)
+// {
+//     // if (this->boundingBox->overlaps(other->boundingBox))
+//     // {
+//     //     if (!(this->previousBoundingBox))
+//     //         return false;
 
-    //     if (this->previousBoundingBox->bottom < other->boundingBox->top)
-    //         return true;
-    //     else
-    //         return false;
-    // }
+//     //     if (this->previousBoundingBox->bottom < other->boundingBox->top)
+//     //         return true;
+//     //     else
+//     //         return false;
+//     // }
 
-    return false;
-}
+//     return false;
+// }
 void GameObject::scaleBoundingBox(float scaleX, float scaleY)
 {
     this->box->stretch(scaleX, scaleY);

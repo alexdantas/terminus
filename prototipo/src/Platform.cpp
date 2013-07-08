@@ -1,9 +1,9 @@
 #include "Platform.hpp"
 #include "GameStateGame.hpp"
 
-Platform::Platform(Sprite* sprite, float x, float y, int w, int h, unsigned int id):
+Platform::Platform(Sprite* sprite, float x, float y, int w, int h, PlatformType type):
     GameObject(x, y, w, h),
-    id(id),
+    type(type),
     sprite(sprite),
     visible(true)
 { }
@@ -11,10 +11,11 @@ Platform::~Platform()
 { }
 void Platform::render(float cameraX, float cameraY)
 {
-    this->sprite->render(this->box->x - cameraX,
-                         this->box->y - cameraY);
+    if (this->visible)
+        this->sprite->render(this->box->x - cameraX,
+                             this->box->y - cameraY);
 
-    // if (GameStateGame::showBoundingBoxes)
+    // if (Config::showBoundingBoxes)
     //     this->boundingBox->render(cameraX, cameraY);
 }
 void Platform::update(float dt)

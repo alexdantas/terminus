@@ -6,6 +6,7 @@
 #include "LoadingScreen.hpp"
 #include "Graphics.hpp"
 #include "PhysicsManager.hpp"
+#include "PlatformVanishing.hpp" // whoa, do we really need this?
 
 bool GameStateGame::showBoundingBoxes = false;
 
@@ -119,7 +120,7 @@ void GameStateGame::load(int stack)
 
     // The area that platforms will be spawned
     // (will cut a little from the top)
-    Rectangle gameArea(0, 300, this->bg->getWidth(), this->bg->getHeight());
+    Rectangle gameArea(0, 300, this->bg->getWidth(), this->bg->getHeight() - 300);
 
     this->platforms = new PlatformManager(gameArea, (Config::playerJump * 5));
 
@@ -194,13 +195,15 @@ GameState::StateCode GameStateGame::update(float dt)
     if (this->will_return_to_main_menu)
         return GameState::MAIN_MENU;
 
-    // Player/UFO has died.
-    // Will only go to the GAME OVER screen when the
-    // explosion ends.
+    // If we're quitting, this will update the fade out effect.
+    // If not, will do nothing.
+    this->fadeOut->update(dt);
+
+    // Player has died.
     if (this->game_over)
         return GameState::GAME_OVER;
 
-    this->processEvents();
+    this->updateInput();
 
     this->console->update(dt);
 
@@ -261,6 +264,7 @@ GameState::StateCode GameStateGame::update(float dt)
             break;
         }
     }
+
     if (this->isPaused)
         return GameState::CONTINUE;
 
@@ -268,15 +272,16 @@ GameState::StateCode GameStateGame::update(float dt)
     // game's paused.
     // From now on, they won't.
 
-    if (this->apterus)
-        this->apterus->update(dt);
-
     this->camera->update(dt);
+
+    // Will react to any object that's above movable platforms.
+    this->checkPlatforms();
+
+    // Will update all platforms.
     this->platforms->update(dt);
 
-    float cameraLowestPoint = this->camera->getY() + this->camera->getHeight();
-    float cameraScrollPoint = cameraLowestPoint    - this->camera->getHeight()/3;
-    UNUSED(cameraScrollPoint);
+    if (this->apterus)
+        this->apterus->update(dt);
 
     this->camera->centerOn(this->apterus->getCenterX(),
                            this->apterus->getCenterY());
@@ -288,9 +293,6 @@ GameState::StateCode GameStateGame::update(float dt)
 
     this->cloudContainer->update(dt);
     this->checkCollisions();
-
-    // If we're quitting, this will update the fade out effect.
-    this->fadeOut->update(dt);
 
     return GameState::CONTINUE;
 }
@@ -355,6 +357,66 @@ void GameStateGame::render()
     // Will render the fade out effect if we're quitting.
     this->fadeOut->render();
 }
+void GameStateGame::checkPlatforms()
+{
+    bool playerIsSteppingOnAnyMovablePlatform = false;
+
+    // Will check if any of the moving platforms collide with the
+    // player.
+    // Also will check if the player collides with any vanishing
+    // platforms.
+
+    for (std::list<Platform*>::iterator it = this->platforms->container->platforms.begin();
+         it != this->platforms->container->platforms.end();
+         it++)
+    {
+        // And here we are certain that it is indeed a moving platform.
+        if ((*it)->type == Platform::MOVABLE)
+        {
+            // THIS is very strange.
+            // I need to _downcast_ PlatformMovable to Platform.
+            //
+            // Since not all Platform is a PlatformMovable, what
+            // should I do to force this?
+            //
+            // Maybe my whole design is wrong.
+
+            PlatformMovable* movable = dynamic_cast<PlatformMovable*>(*it);
+
+            // dynamic_cast returns NULL if we can't dynamically cast the
+            // object.
+            // If that's the case, it can't be helped, let's just ignore it.
+            if (!movable)
+                continue;
+
+            // Player's standing above this movable platform
+            if ((movable->box->top) == (this->apterus->box->bottom))
+            {
+                this->apterus->stepIntoMovablePlatform(movable);
+                playerIsSteppingOnAnyMovablePlatform = true;
+            }
+        }
+        // Will tell them to vanish if the player's colliding with any
+        // one of them.
+        else if ((*it)->type == Platform::VANISHING)
+        {
+            // Same dynamic_cast and casting problems as above.
+
+            PlatformVanishing* vanishing = dynamic_cast<PlatformVanishing*>(*it);
+            if (!vanishing)
+                continue;
+
+            // Player's standing above this vanishing platform
+            if ((vanishing->box->top) == (this->apterus->box->bottom))
+                vanishing->vanish(); // simple, right?
+        }
+        else continue;
+        // I've always wanted to do this `else continue`.
+        // Isn't it cute?
+    }
+    if (!playerIsSteppingOnAnyMovablePlatform)
+        this->apterus->stepIntoMovablePlatform(NULL);
+}
 void GameStateGame::checkCollisions()
 {
     // TODO maybe remove this later?
@@ -406,7 +468,7 @@ void GameStateGame::checkCollisions()
         this->game_over = true;
     }
 }
-void GameStateGame::processEvents()
+void GameStateGame::updateInput()
 {
     InputManager* input = InputManager::getInstance();
     input->update(this->camera->getX(), this->camera->getY());

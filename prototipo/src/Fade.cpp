@@ -41,8 +41,7 @@ void Fade::stop()
 }
 void Fade::update(float dt)
 {
-    if (!(this->started) ||
-        (this->done))
+    if (!(this->started) || (this->done))
         return;
 
     // TODO: Create other systems.

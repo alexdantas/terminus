@@ -165,4 +165,8 @@ void Sprite::clip(int x, int y, int w, int h)
     if (this->surfaceRotoZoom)
         this->rotoZoom(this->angle, this->scaleX, this->scaleY, true);
 }
+void Sprite::setTransparency(uint8_t level)
+{
+    SDL_SetAlpha(this->surface, SDL_SRCALPHA, level);
+}
 

@@ -63,6 +63,12 @@ public:
     Point bottomRight;
     Point bottomCenter;
 
+    /// Overloaded equality operator allows us to copy a *Rectangle* to
+    /// another *Rectangle*.
+    /// If you need to copy based on a *Rectangle* pointer, see
+    /// *copy()*.
+    // TODO TODO TODO TODO
+
     /// Creates a sweet rectangle with *x* and *y* coordinates and
     /// *w* and *y* dimensions.
     Rectangle(float x, float y, int w, int h);

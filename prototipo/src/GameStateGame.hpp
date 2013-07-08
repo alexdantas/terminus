@@ -80,7 +80,7 @@ private:
 	void checkPlanets();
 
 	/// Controls events (primairly keyboard input).
-	void processEvents();
+	void updateInput();
 
     /// Checks and resolves all possible collisions during this state.
     ///
@@ -104,6 +104,8 @@ private:
     /// (even though the gravity keeps pulling you every second).
     ///
     void checkCollisions();
+
+    void checkPlatforms();
 
     bool isPaused;
 

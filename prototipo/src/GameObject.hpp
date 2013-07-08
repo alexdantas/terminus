@@ -40,7 +40,7 @@ public:
     /// They use one-way collision, on the sense that you can
     /// go through them but still they offer collision when
     /// you're coming from above.
-    bool oneWayCollidedWith(GameObject* other);
+//    bool oneWayCollidedWith(GameObject* other);
 
     float getX();
     float getY();

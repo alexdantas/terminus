@@ -4,27 +4,61 @@
 #include "GameObject.hpp"
 #include "Sprite.hpp"
 
+/// A 2D platform.
+///
+/// Hell yeah.
 ///
 class Platform: public GameObject
 {
 public:
-    Platform(Sprite* sprite, float x, float y, int w, int h, unsigned int id=0);
+    // All types of platforms.
+    //
+    // @note Some are NOT implemented at all!
+    enum PlatformType
+    {
+        GROUND=0, CLOUD, VANISHING, MOVABLE,
+
+        MAX // This arbitrary value exists so that any vector
+            // that wished to hold this enum can be safely
+            // resized to contain all possible platforms.
+    };
+
+    /// Create a platform with *sprite* on *x*, *y*, with *w* and *h*.
+    Platform(Sprite* sprite, float x, float y, int w, int h, PlatformType type=GROUND);
+
     virtual ~Platform();
 
+    /// Show the platform on the screen.
     void render(float cameraX, float cameraY);
-    void update(float dt);
+
+    /// Updates platform.
+    ///
+    /// We don't actually do nothing here (since this is a standing
+    /// platform, dammit), but other kinds of platforms may be
+    /// able to overload this (like movable platforms).
+    virtual void update(float dt);
 
     void setPosition(Point p);
 
+    /// Tells if the platform is visible.
     bool isVisible();
+
+    /// We'll set it as visible or invisible.
+    ///
+    /// @note If we set a platform as invisible, it won't appear
+    ///       at the game not even for collision-checking!
     void setVisible(bool option);
 
-private:
-    unsigned int id;
+    /// The type of the platform.
+    ///
+    /// TODO a redesign of the class hierarchy?
+    ///      Ideally one class shouldn't have an explicit thing
+    ///      saying what is their kind.
+    PlatformType type;
 
-    Sprite* sprite;
-
-    bool visible;
+protected:
+    Sprite* sprite;  ///< Appearance on the screen.
+    bool visible;    ///< Is this visible?
 };
 
 #endif //PLATFORM_H_DEFINED

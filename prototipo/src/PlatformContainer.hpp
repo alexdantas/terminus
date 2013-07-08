@@ -15,17 +15,6 @@
 class PlatformContainer
 {
 public:
-    // All types of platforms.
-    //
-    // @note Some are NOT implemented at all!
-    enum PlatformType
-    {
-        GROUND=0, CLOUD, VANISHING, MOVABLE,
-        PLATFORM_MAX // This arbitrary value exists so the vector
-                     // can be safely resized to contain all
-                     // possible platforms.
-    };
-
     /// Creates a platform container that holds *maxAmmount* of
     /// platforms that will be inserted inside *areaLimit*.
     PlatformContainer(unsigned int maxAmmount, Rectangle areaLimit);
@@ -33,7 +22,7 @@ public:
     virtual ~PlatformContainer();
 
     /// Adds a platform with *type* on point *p*.
-    void add(Point p, PlatformType type);
+    void add(Point p, Platform::PlatformType type);
 
     /// Adds a platform between points *a* and *b* with *type*.
     ///
@@ -50,7 +39,7 @@ public:
     ///     |         | <- where I'll add platforms
     ///     .---------b
     ///
-    void addBetween(Point a, Point b, PlatformType type=PLATFORM_MAX);
+    void addBetween(Point a, Point b, Platform::PlatformType type=Platform::MAX);
 
     /// Limits the platform-generation area to *a*.
     void limitArea(Rectangle a);
@@ -63,7 +52,7 @@ public:
     void update(float dt);
 
     /// Tells if any platform collides with *other*.
-    bool collidesWith(GameObject* other);
+//    bool collidesWith(GameObject* other);
 
     /// Returns the uppermost platform on the map.
     Platform* getTopPlatform();
