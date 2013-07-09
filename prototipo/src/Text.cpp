@@ -50,6 +50,8 @@ void Text::setFont(Font* font)
 }
 void Text::refresh()
 {
+    if (!(this->font)) return;
+
     SDL::deleteSurface(this->surface);
 
     // Gets the visual surface containing the text.
@@ -70,11 +72,11 @@ void Text::render(float cameraX, float cameraY)
 }
 float Text::getX()
 {
-    return this->x;
+    return (this->x);
 }
 float Text::getY()
 {
-    return this->y;
+    return (this->y);
 }
 int Text::getWidth()
 {

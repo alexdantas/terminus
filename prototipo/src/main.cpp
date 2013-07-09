@@ -2,6 +2,7 @@
 #include "StateManager.hpp"
 #include "Log.hpp"
 
+/// Macro to avoid compiler warnings on unused variables.
 #define UNUSED(x) ((void)(x))
 
 /// Starting point of the game.

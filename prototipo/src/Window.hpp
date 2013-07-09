@@ -21,7 +21,6 @@
 class Window
 {
 public:
-
     /// Initializes the program's window with *width*, *height*
     /// and the text that should appear on the program's window
     /// (*windowCaption*) and when it's minimized
@@ -70,13 +69,11 @@ public:
     // They're here for ease of access (Window::width insteadj
     // of Window::getWidth(), and such).
 
+    /// SDL's internal data structure that represents the screen.
     static SDL_Surface* screen;
 
-    /// Current window width.
-    static uint32_t width;
-
-    /// Current window height.
-    static uint32_t height;
+    static uint32_t width;  ///< Current window width.
+    static uint32_t height; ///< Current window height.
 
     /// Original window height (the height game developers had in mind
     /// when making this game).

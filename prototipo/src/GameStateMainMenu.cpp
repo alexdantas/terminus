@@ -16,35 +16,37 @@ GameStateMainMenu::~GameStateMainMenu()
 { }
 void GameStateMainMenu::load(int stack)
 {
-    // TODO TODO TODO
-    // setar o primeiro DT como o MAX FPS
-    //
-    // dt = 1000/MAX_FPS FUCK
-
     UNUSED(stack);
 
-    LoadingScreen loading("Loading...", "ttf/LithosProRegular.ttf");
+    LoadingScreen loading("Loading...");
+    loading.setBg("img/loading1.png");
+    loading.increase(0);
+    loading.setSubtitle("loading loading screen...");
 
     this->font = new Font("ttf/LithosProRegular.ttf", 42);
     this->hiliteFont = new Font("ttf/LithosProBlack.ttf", 42);
 
     loading.increase(10);
+    loading.setSubtitle("loading fonts...");
 
     this->font->setColor(Color(0, 0, 0));
     this->hiliteFont->setColor(Color(100, 100, 100));
 
     loading.increase(12);
+    loading.setSubtitle("loading colors...");
 
     this->bg   = new Sprite("img/menu-bg.png");
     this->logo = new Sprite("img/title.png");
     this->detail = new Sprite("img/pilar.png");
 
     loading.increase(12);
+    loading.setSubtitle("loading sprites...");
 
     this->music = new Music("ogg/saturno.ogg");
     music->play();
 
     loading.increase(4);
+    loading.setSubtitle("loading music...");
 
     this->menu = new Menu(this->font, this->hiliteFont,
                           Window::width/2 - 100,
@@ -56,6 +58,7 @@ void GameStateMainMenu::load(int stack)
     this->menu->centralizeText();
 
     loading.increase(6);
+    loading.setSubtitle("loading menu...");
 
     this->clouds = new CloudContainer(30, Rectangle(0, 0, Window::width, Window::height), false);
     this->clouds->addAll();
@@ -64,6 +67,9 @@ void GameStateMainMenu::load(int stack)
     this->fade->start();
 
     this->fadeOut = new Fade(Fade::FADE_OUT, 500);
+
+    loading.increase(10);
+    loading.setSubtitle("loading all the rest...");
 }
 int GameStateMainMenu::unload()
 {

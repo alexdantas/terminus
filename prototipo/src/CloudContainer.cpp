@@ -5,7 +5,8 @@
 CloudContainer::CloudContainer(unsigned int maxAmmount, Rectangle areaLimit, bool blackClouds):
     maxAmmount(maxAmmount),
     currentAmmount(0),
-    areaLimit(areaLimit)
+    areaLimit(areaLimit),
+    timer(NULL)
 {
     this->sprites.resize(CLOUD_MAX);
 
@@ -55,7 +56,7 @@ CloudContainer::~CloudContainer()
             delete this->usedClouds[i];
     }
 }
-void CloudContainer::addAt(Point p)
+void CloudContainer::addAt(Point p, float speed)
 {
     if (this->freeClouds.size() == 0)
         return;
@@ -90,20 +91,10 @@ void CloudContainer::addAt(Point p)
     // "Creating" and adjusting
     tmp->setPosition(p);
 
-    float speed = ((float)(SDL::randomNumberBetween(30, 70)));
-
-    // Randomly deciding if the cloud's gonna go to the
-    // left or right
-    ((SDL::randomNumberBetween(1, 10)) % 2) == 0?
-        speed *= -1:
-        speed *=  1;
-
     tmp->setSpeed(speed);
-
     tmp->setVisible(true);
 
     this->currentAmmount++;
-
     this->usedClouds.push_back(tmp);
     this->freeClouds.pop_back();
 
@@ -111,7 +102,6 @@ void CloudContainer::addAt(Point p)
                  ", " + SDL::intToString(p.y) +
                  ") " +
                  "Count: " + SDL::intToString(this->currentAmmount));
-
 }
 void CloudContainer::addAtRandom()
 {
@@ -123,20 +113,34 @@ void CloudContainer::addAtRandom()
     // Watch out for those infinite loops!
 
     unsigned int previousAmmount = this->currentAmmount;
+    int safetyCheckToAvoidInfiniteLoops;
 
     while (this->currentAmmount == previousAmmount)
     {
-        int safetyCheckToAvoidInfiniteLoops = 10;
+        safetyCheckToAvoidInfiniteLoops = 10;
 
+        float speed = ((float)(SDL::randomNumberBetween(30, 70)));
 
-        int x = SDL::randomNumberBetween(this->areaLimit.leftmost,
-                                         this->areaLimit.rightmost);
-        int y = SDL::randomNumberBetween(this->areaLimit.top,
-                                         this->areaLimit.bottom);
+        // Randomly deciding if the cloud's gonna go to the
+        // left or right
+        (SDL::randomBool())?
+            speed *= -1:
+            speed *=  1;
+
+        float x = (this->areaLimit.leftmost + 1);
+
+        // If the cloud's moving left then we'll add it on the
+        // right limit.
+        // If it's moving right, it'll be alright at the left
+        // limit.
+        if (speed < 0)
+            x = (this->areaLimit.rightmost - 1);
+
+        float y = SDL::randomNumberBetween(this->areaLimit.top,
+                                           this->areaLimit.bottom);
 
         // This will fail silentrly if (x, y) is not inside bounds
-        this->addAt(Point(x, y));
-
+        this->addAt(Point(x, y), speed);
 
         if (--safetyCheckToAvoidInfiniteLoops < 0)
             break;
@@ -150,20 +154,14 @@ void CloudContainer::addAll()
 
     // Will forcefully try to add until it works.
     // Watch out for those infinite loops!
+    int safetyCheckToAvoidInfiniteLoops;
 
     while (this->currentAmmount != this->maxAmmount)
     {
-        int safetyCheckToAvoidInfiniteLoops = 10;
-
-
-        int x = SDL::randomNumberBetween(this->areaLimit.leftmost,
-                                         this->areaLimit.rightmost);
-        int y = SDL::randomNumberBetween(this->areaLimit.top,
-                                         this->areaLimit.bottom);
+        safetyCheckToAvoidInfiniteLoops = 10;
 
         // This will fail silentrly if (x, y) is not inside bounds
-        this->addAt(Point(x, y));
-
+        this->addAtRandom();
 
         if (--safetyCheckToAvoidInfiniteLoops < 0)
             break;

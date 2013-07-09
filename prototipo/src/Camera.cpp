@@ -1,13 +1,10 @@
 #include "Camera.hpp"
 
-Camera::Camera(float x, float y, int w, int h, float scrollSpeed):
+Camera::Camera(float x, float y, int w, int h):
     x(x),
     y(y),
     w(w),
     h(h),
-    speedX(0),
-    speedY(0),
-    scrollSpeed(scrollSpeed),
     lockedX(false),
     lockedY(false),
     hasVerticalLimit(false),
@@ -45,11 +42,6 @@ void Camera::setVerticalLimit(int top, int bottom)
 
     this->hasVerticalLimit = true;
 }
-void Camera::update(float dt)
-{
-    this->x += (this->speedX) * dt;
-    this->y += (this->speedY) * dt;
-}
 void Camera::centerOn(int x, int y)
 {
     if (!(this->lockedX))
@@ -70,6 +62,17 @@ void Camera::centerOn(int x, int y)
             this->y = (this->bottomLimitY - this->h);
     }
 }
+void Camera::lockXAxis(bool option)
+{
+    this->lockedX = option;
+}
+
+// NOTE BUG WARNING HACK
+//
+// Look, these functions are not working and should be ignored.
+// I'm only keeping them here because they might be of some use
+// on the future.
+
 // void Camera::setScrollSpeed(float speed)
 // {
 //     this->scrollSpeed = speed;
@@ -82,22 +85,22 @@ void Camera::centerOn(int x, int y)
 // {
 //     this->scrollSpeed -= acc;
 // }
-void Camera::scroll(Direction dir, float ammount)
-{
-    float scrollAmmount;
+// void Camera::scroll(Direction dir, float ammount)
+// {
+//     float scrollAmmount;
 
-    // ammount > 0?
-    //     scrollAmmount = ammount:
-    //     scrollAmmount = this->scrollSpeed;
-    scrollAmmount = ammount;
-    switch (dir)
-    {
-    case LEFT:  this->speedX -= scrollAmmount; break;
-    case RIGHT: this->speedX += scrollAmmount; break;
-    case UP:    this->speedY -= scrollAmmount; break;
-    case DOWN:  this->speedY += scrollAmmount; break;
-    }
-}
+//     // ammount > 0?
+//     //     scrollAmmount = ammount:
+//     //     scrollAmmount = this->scrollSpeed;
+//     scrollAmmount = ammount;
+//     switch (dir)
+//     {
+//     case LEFT:  this->speedX -= scrollAmmount; break;
+//     case RIGHT: this->speedX += scrollAmmount; break;
+//     case UP:    this->speedY -= scrollAmmount; break;
+//     case DOWN:  this->speedY += scrollAmmount; break;
+//     }
+// }
 // void Camera::unscroll(Direction dir)
 // {
 //     switch (dir)
@@ -113,9 +116,4 @@ void Camera::scroll(Direction dir, float ammount)
 //     this->speedX = 0;
 //     this->speedY = 0;
 // }
-void Camera::lockXAxis()
-{
-    this->lockedX = true;
-}
-
 

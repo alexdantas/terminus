@@ -184,6 +184,9 @@ public:
     /// Returns a random integer between *min* and *max* (inclusive).
     static int randomNumberBetween(int min, int max);
 
+    /// Returns a bool selected randomly.
+    static bool randomBool();
+
     /// Hides the mouse cursor.
     static void hideCursor();
 

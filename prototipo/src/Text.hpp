@@ -35,7 +35,9 @@ public:
     /// Possible ways the text can be aligned.
     enum Alignment { CENTER, LEFT, RIGHT };
 
-    Text(Font* font);
+    /// Creates a text with *font*.
+    Text(Font* font=NULL);
+
     virtual ~Text();
 
     /// Sets the current text to *text*.
