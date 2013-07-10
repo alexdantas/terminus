@@ -7,13 +7,13 @@ BEGIN
     BLOCK "080904E4"
     BEGIN
       VALUE "CompanyName", "IDJ"
-      VALUE "FileDescription", "The greatest game ever."
+      VALUE "FileDescription", "The wonderful horse"
       VALUE "FileVersion", "1.0"
-      VALUE "InternalName", "terminus"
+      VALUE "InternalName", "Terminus"
       VALUE "LegalCopyright", "IDJ"
       VALUE "OriginalFilename", "terminus.exe"
-      VALUE "ProductName", "terminus"
-      VALUE "ProductVersion", "1.0"
+      VALUE "ProductName", "Terminus"
+      VALUE "ProductVersion", "3.14"
     END
   END
 
