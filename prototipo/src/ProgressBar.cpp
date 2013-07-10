@@ -1,6 +1,7 @@
 #include "ProgressBar.hpp"
 
-ProgressBar::ProgressBar(int width, int height, int max, int starting):
+ProgressBar::ProgressBar(float x, float y, int width, int height, int max, int starting):
+    x(x), y(y),
     maxValue(max),
     currentValue(starting),
     width(width),
@@ -69,8 +70,11 @@ bool ProgressBar::isEmpty()
 {
     return (this->isZero);
 }
-void ProgressBar::render(int x, int y)
+void ProgressBar::render(float cameraX, float cameraY)
 {
+    float actualX = this->x - cameraX;
+    float actualY = this->y - cameraY;
+
     int fullRectWidth  = (this->width/this->maxValue) * this->currentValue;
     int emptyRectWidth = (this->width - fullRectWidth);
 
@@ -92,8 +96,8 @@ void ProgressBar::render(int x, int y)
         SDL_FillRect(this->surface, &tmp, SDL::convertColorFormat(this->emptyColor));
 
     // Now, actually printing the progress bar on the "main screen"
-    tmp.x = x;
-    tmp.y = y;
+    tmp.x = actualX;
+    tmp.y = actualY;
     SDL::renderSurface(this->surface, NULL, &tmp);
 }
 void ProgressBar::setBackgroundColor(Color color)

@@ -5,6 +5,7 @@
 #include "Cloud.hpp"
 #include "Sprite.hpp"
 #include "Shapes.hpp"
+#include "TimerCounter.hpp"
 
 /// Handles cloud's inclusions and deletions on the game.
 ///
@@ -42,7 +43,7 @@ public:
     void render(float cameraX=0, float cameraY=0);
 
     ///
-    void addAt(Point p);
+    void addAt(Point p, float speed);
 
     /// Adds a cloud at random inside the delimited area.
     void addAtRandom();
@@ -72,6 +73,8 @@ private:
     std::vector<int> indirection;
 
     Rectangle areaLimit;
+
+    TimerCounter* timer;
 };
 
 #endif //CLOUDCONTAINER_H_DEFINED

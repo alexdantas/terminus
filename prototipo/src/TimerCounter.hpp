@@ -23,6 +23,9 @@ public:
     void setDelay(uint32_t delay);
 
     /// Makes the timer start counting.
+    ///
+    /// @note Don't worry, you can call this as many times
+    ///       you want, it'll restart itself.
     void startCounting();
 
     /// Tells us if the previously set delay has passed.

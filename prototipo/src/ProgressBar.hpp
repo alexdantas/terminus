@@ -14,7 +14,7 @@ public:
     /// *starting* values of the progress.
     ///
     /// It grows from the left to the right.
-    ProgressBar(int width, int height, int max=100, int starting=0);
+    ProgressBar(float x, float y, int width, int height, int max=100, int starting=0);
 
     virtual ~ProgressBar();
 
@@ -39,10 +39,13 @@ public:
     /// Color of the filled parts.
     void setForegroundColor(Color color=Color(255, 255, 255));
 
-    /// Shows progress bar on *x* and *y* positions of the screen.
-    void render(int x, int y);
+    /// Shows progress bar based on *cameraX* and *cameraY*.
+    void render(float cameraX=0, float cameraY=0);
 
 private:
+    float x; ///< X position on the screen.
+    float y; ///< Y position on the screen.
+
     int maxValue;
     int currentValue;
     int width;

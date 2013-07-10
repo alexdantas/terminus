@@ -111,7 +111,8 @@ private:
 
     // Now, the variables.
 
-	Sprite* bg; ///< Background of the game.
+	Sprite* bg;          ///< Background of the game.
+    Rectangle* gameArea; ///< Area on which the game happens.
 
 	bool will_quit; ///< If we're gonna quit the game.
     bool will_return_to_main_menu; ///< If we're gonna go to main menu.

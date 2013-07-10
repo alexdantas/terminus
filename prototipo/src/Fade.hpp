@@ -8,11 +8,12 @@
 ///
 /// This allows smooth transition between screens.
 ///
-/// The fade in paints the whole screen with the fade in color and
-/// slowly becomes transparent.
+/// The fade in paints the whole screen with the fade in color
+/// and slowly becomes transparent.
 ///
-/// The fade out starts transparent while slowly becoming visible,
-/// finally painting the whole screen with the fade out color.
+/// The fade out starts transparent while slowly becoming
+/// visible, finally painting the whole screen with the fade
+/// out color.
 ///
 /// ## How to use:
 ///

@@ -31,6 +31,7 @@ bool Animation::isRunning()
 void Animation::update(float dt)
 {
     UNUSED(dt);
+
     if (this->framerate == 0) return;
     if (!(this->isRunning())) return;
 
@@ -38,8 +39,8 @@ void Animation::update(float dt)
 
     // updating ammount of frames
 
-    int time_between_frames = 1000 / this->framerate; // milisseconds
-    int frames_passed = this->timer.delta() / time_between_frames;
+    int time_between_frames = (1000 / this->framerate); // milisseconds
+    int frames_passed  = this->timer.delta() / time_between_frames;
 
     if (frames_passed == 0)
     {
@@ -59,6 +60,7 @@ void Animation::update(float dt)
 void Animation::nextFrame()
 {
     if (this->framerate == 0) return;
+    if (!(this->running))     return;
 
     this->curFrame++;
     this->clipRect->x += this->clipRect->w;
@@ -81,24 +83,25 @@ void Animation::firstFrame()
     this->curFrame = 0;
     this->clipRect->x = 0;
 
+    // If it's -1 will repeat unlimited times.
     if (this->loops != -1)
     {
         this->timesLooped++;
-        if (this->timesLooped > this->loops)
+        if ((this->timesLooped) >= (this->loops))
             this->running = false;
     }
 }
 void Animation::lastFrame()
 {
-    this->curFrame = this->maxFrame;
+    this->curFrame    = this->maxFrame;
     this->clipRect->x = this->clipRect->w * this->maxFrame;
 }
 void Animation::goTo(int frame)
 {
-    if ((frame >= 0) && (frame <= this->maxFrame))
+    if ((frame >= 0) && (frame <= (this->maxFrame)))
     {
         this->curFrame = frame;
-        this->clipRect->x = this->clipRect->w * frame;
+        this->clipRect->x = (this->clipRect->w * frame);
     }
 }
 void Animation::setFramerate(int framerate)
@@ -108,7 +111,7 @@ void Animation::setFramerate(int framerate)
 void Animation::start()
 {
     if (this->framerate == 0) return;
-    if (this->running) return;
+    if (this->running)        return;
 
     this->timesLooped = 0;
     this->running = true;
@@ -117,7 +120,7 @@ void Animation::start()
 void Animation::stop()
 {
     if (this->framerate == 0) return;
-    if (!(this->running)) return;
+    if (!(this->running))     return;
 
     this->running = false;
     this->timer.stop();
@@ -132,3 +135,4 @@ void Animation::setLoopAmmount(int times)
     this->loops = times;
     this->timesLooped = 0;
 }
+

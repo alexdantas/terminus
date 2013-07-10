@@ -17,6 +17,7 @@ enum GameStateGameCommands
 
 GameStateGame::GameStateGame():
     bg(NULL),
+    gameArea(NULL),
     will_quit(false),
     will_return_to_main_menu(false),
     game_over(false),
@@ -38,41 +39,48 @@ GameStateGame::~GameStateGame()
 { }
 void GameStateGame::load(int stack)
 {
+    // DAMN, this method's BIG
     UNUSED(stack);
 
-    LoadingScreen loading("loading...", "ttf/LithosProRegular.ttf");
-
-    loading.increase(2);
+    LoadingScreen loading("loading...");
+    loading.setBg("img/loading2.png");
+    loading.increase(0);
+    loading.setSubtitle("Starting Level...");
 
     this->bg = new Sprite("img/fundo.png");
+    this->gameArea = new Rectangle(0, 0, this->bg->getWidth(), this->bg->getHeight());
 
     loading.increase(30);
+    loading.setSubtitle("Setting Camera");
 
-    this->camera = new Camera(0, 0,
-                              Window::width, Window::height,
-                              Config::cameraScrollSpeed);
+    this->camera = new Camera(0, 0, Window::width, Window::height);
     this->camera->lockXAxis();
-    this->camera->setVerticalLimit(0, this->bg->getHeight());
+    this->camera->setVerticalLimit(0, this->gameArea->h);
 
     loading.increase(3);
+    loading.setSubtitle("Spawning You");
 
     int playerX = 245;
-    int playerY = this->bg->getHeight() - 201;
+    int playerY = this->gameArea->h - 201;
 
     this->apterus = new Player(playerX, playerY,
                                245, 200,
                                20,
                                Config::playerAcceleration);
-    this->apterus->setHorizontalLimit(0, this->bg->getWidth());
-    this->apterus->setVerticalLimit(0, this->bg->getHeight());
+    this->apterus->setHorizontalLimit(0, this->gameArea->w);
+    this->apterus->setVerticalLimit(0, this->gameArea->h);
+    this->camera->centerOn(this->apterus->getCenterX(),
+                           this->apterus->getCenterY());
 
     loading.increase(10);
+    loading.setSubtitle("Creating Lifebar");
 
-    this->lifeBar = new ProgressBar(200, 20, this->apterus->getHitpoints(), this->apterus->getHitpoints());
+    this->lifeBar = new ProgressBar(10, 10, 200, 20, this->apterus->getHitpoints(), this->apterus->getHitpoints());
     this->lifeBar->setForegroundColor(Color(255, 0, 255));
     this->lifeBar->setBackgroundColor(Color(100, 0, 100));
 
     loading.increase(4);
+    loading.setSubtitle("Drawing Fonts");
 
     this->lifeBarFont = new Font("ttf/UbuntuMono.ttf", 16);
     this->lifeBarText = new Text(this->lifeBarFont);
@@ -80,10 +88,9 @@ void GameStateGame::load(int stack)
     this->lifeBarText->setPosition(10, 10);
 
     loading.increase(4);
+    loading.setSubtitle("(subliminar message)");
 
     this->font = new Font("ttf/UbuntuMono.ttf", 42);
-
-    loading.increase(5);
 
     this->pausedTitle = new Text(this->font);
     this->pausedTitle->setText("Paused");
@@ -91,12 +98,13 @@ void GameStateGame::load(int stack)
                                    (Window::height/2) - 100);
 
     loading.increase(5);
-
+    loading.setSubtitle("Playing Music");
 
     this->bgmusic = new Music("ogg/escaping.ogg");
     this->bgmusic->play();
 
     loading.increase(10);
+    loading.setSubtitle("Dropping Drop-Down Console");
 
     this->consoleFont = new Font("ttf/UbuntuMono.ttf", 18);
 
@@ -115,29 +123,33 @@ void GameStateGame::load(int stack)
     this->console->addCommand("whocaresaboutphysics", COMMAND_INVERT_GRAVITY);
 
     loading.increase(6);
+    loading.setSubtitle("Requesting Platforms");
 
     // The area that platforms will be spawned
     // (will cut a little from the top)
-    Rectangle gameArea(0, 300, this->bg->getWidth(), this->bg->getHeight() - 300);
+    Rectangle platformArea(0, 300, this->gameArea->w, this->gameArea->h - 300);
 
-    this->platforms = new PlatformManager(gameArea, (Config::playerJump * 5));
+    this->platforms = new PlatformManager(platformArea, (Config::playerJump * 5));
 
     loading.increase(3);
+    loading.setSubtitle("Giving Birth to Clouds");
 
     Rectangle cloudLimit(0,
-                         this->bg->getHeight() - Window::height,
+                         (this->gameArea->h - Window::height),
                          Window::width,
                          Window::height);
 
     this->cloudContainer = new CloudContainer(Config::cloudsLimit, cloudLimit);
-    this->cloudContainer->addAt(Point(this->bg->getWidth()/4,
-                                      this->bg->getHeight() - 400));
+    this->cloudContainer->addAll();
+    // this->cloudContainer->addAt(Point(this->gameArea->w/4,
+    //                                   this->gameArea->h - 400));
 
-    this->cloudContainer->addAtRandom();
-    this->cloudContainer->addAtRandom();
-    this->cloudContainer->addAtRandom();
+    // this->cloudContainer->addAtRandom();
+    // this->cloudContainer->addAtRandom();
+    // this->cloudContainer->addAtRandom();
 
     loading.increase(10);
+    loading.setSubtitle("Packing Things Up");
 
     this->fadeOut = new Fade(Fade::FADE_OUT, 1000);
 }
@@ -163,7 +175,6 @@ int GameStateGame::unload()
     safe_delete(this->bg);
     safe_delete(this->bgmusic);
     safe_delete(this->camera);
-
 
     safe_delete(this->apterus);
 
@@ -270,8 +281,6 @@ GameState::StateCode GameStateGame::update(float dt)
     // game's paused.
     // From now on, they won't.
 
-    this->camera->update(dt);
-
     // Will react to any object that's above movable platforms.
     this->checkPlatforms();
 
@@ -281,6 +290,8 @@ GameState::StateCode GameStateGame::update(float dt)
     if (this->apterus)
         this->apterus->update(dt);
 
+    // Center the game on the player!
+    // Don't forget the camera can't move on the X axis.
     this->camera->centerOn(this->apterus->getCenterX(),
                            this->apterus->getCenterY());
 
@@ -296,8 +307,8 @@ GameState::StateCode GameStateGame::update(float dt)
 }
 void GameStateGame::render()
 {
-    int cameraX = this->camera->getX();
-    int cameraY = this->camera->getY();
+    float cameraX = this->camera->getX();
+    float cameraY = this->camera->getY();
 
     this->bg->render(0 - cameraX, 0 - cameraY);
 
@@ -329,7 +340,7 @@ void GameStateGame::render()
         Graphics::drawRectangle(tmp);
     }
 
-    this->lifeBar->render(10, 10);
+    this->lifeBar->render();
     this->lifeBarText->render();
 
     if (Config::debugMode)

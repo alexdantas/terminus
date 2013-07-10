@@ -262,6 +262,11 @@ int SDL::randomNumberBetween(int min, int max)
 
     return (rand() % (max - min + 1) + min);
 }
+bool SDL::randomBool()
+{
+    // Is a random number between 0 and 10 divisible by two?
+    return (((SDL::randomNumberBetween(0, 10)) % 2) == 0);
+}
 void SDL::showCursor()
 {
     SDL_ShowCursor(SDL_ENABLE);

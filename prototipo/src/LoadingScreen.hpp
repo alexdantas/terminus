@@ -20,19 +20,36 @@ class LoadingScreen
 public:
     /// Creates a loading screen with *text*, to be rendered
     /// by the font at *fontPath*.
-    LoadingScreen(std::string text, std::string fontPath);
+    LoadingScreen(std::string title, std::string subtitle="");
+
+    ~LoadingScreen();
 
     /// Increase loading bar's percentage by *ammount*.
     void increase(unsigned int ammount);
 
+    /// Set loading bar's percentage by *ammount*.
     void set(unsigned int ammount);
 
+    /// Sets the loading screen's title (big text onscreen).
+    void setTitle(std::string text);
+
+    /// Sets the loading screen's subtitle (text that appears
+    /// above the loading bar).
+    void setSubtitle(std::string text);
+
+    /// Sets the background image of the loading screen.
+    void setBg(std::string filepath);
+
 private:
-    Font font;
-    Text text;
+    Font* titleFont;    ///< Font that will draw the title loading text.
+    Font* subtitleFont; ///< Font that will draw the subtitle loading text.
+
+    Text title;    ///< Big text.
+    Text subtitle; ///< Text that appears above the loading bar.
+
     ProgressBar progressBar;
 
-    Sprite* bg;
+    Sprite* bg; ///< Background of the loading screen.
 };
 
 #endif //LOADINGSCREEN_H_DEFINED

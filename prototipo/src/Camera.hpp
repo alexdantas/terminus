@@ -1,18 +1,40 @@
 #ifndef CAMERA_H_DEFINED
 #define CAMERA_H_DEFINED
 
-#include "stdint.h"
-
+/// Decides what things are shown on the screen.
+///
+/// This camera is VERY LIMITED.
+/// It currently only works on games that scroll up (like this one :D).
+///
+/// Here's the logic:
+///
+/// ## Object rendering relative to the camera
+///
+/// * This camera has x and y that _must_ be passed around to all
+///   objects. This way, all of them are going to be rendered
+///   _relative_ to the camera instead of _absolutely_ on the screen.
+///
+/// * Then, at each frame you must call *centerOn()* to make the
+///   camera center it's *x* and *y* on any object.
+///
+/// If you do the two steps above, all objects of the game will be
+/// shown OK, regardless of the camera position.
+///
+/// ## Camera movement limiting
+///
+/// You can limit where the camera can go. This way the game
+/// won't be infinite.
+///
+/// You can call *setVerticalLimit()* to prevent the camera from
+/// getting out of a delimited vertical area;
+/// and you can call *lockXAxis()* to make the camera only move
+/// on the Y axis.
+///
 class Camera
 {
 public:
-    enum Direction { UP, DOWN, LEFT, RIGHT };
-
-    Camera(float x, float y, int w, int h, float scrollSpeed);
-
-    /// Updates current camera position according to it's scroll speed.
-    //  @note #dt is the delta time from last frame.
-    void update(float dt);
+    /// Creates a camera at *x*, *y*, *w* and *h* with *scrollSpeed*.
+    Camera(float x, float y, int w, int h);
 
     float getX();
     float getY();
@@ -24,54 +46,25 @@ public:
     /// Centers the camera on *x* and *y*.
     void centerOn(int x, int y);
 
-    /// Stops all current movements on the camera.
-    void stop();
-
-    // NOT USING ANY OF THOSE FUNCIONS
-    // TODO implement them somehow
-
-    // /// Sets the speed that the camera will scroll at a time.
-    // void setScrollSpeed(float speed);
-
-    // void increaseScrollSpeedBy(float acc);
-    // void decreaseScrollSpeedBy(float acc);
-
-    /// Commands the camera to start scrolling to direction #dir.
-    void scroll(Direction dir, float ammount=-1);
-
-    // /// Commands the camera to stop scrolling to direction #dir.
-    // void unscroll(Direction dir);
-
     /// Prevents the camera from moving on the x axis.
-    void lockXAxis();
+    void lockXAxis(bool option=true);
 
+    /// Sets a vertical limit that the camera never scrolls over.
     void setVerticalLimit(int top, int bottom);
 
 private:
-    /// Current camera position on the x-axis.
-    float x;
+    float x; ///< Current camera position on the x-axis.
+    float y; ///< Current camera position on the y-axis.
+    int w;   ///< Current camera width.
+    int h;   ///< Current camera height.
 
-    /// Current camera position on the y-axis.
-    float y;
+    bool lockedX; ///< Is it locked on the X axis?
+    bool lockedY; ///< Is it locked on the Y axis?
 
-    int w;
-    int h;
-
-    /// Current speed that the camera is is crolling right now on the x-axis.
-    float speedX;
-
-    /// Current speed that the camera is is crolling right now on the y-axis.
-    float speedY;
-
-    /// Current speed (pixels) that the camera moves each step.
-    float scrollSpeed;
-
-    bool lockedX;
-    bool lockedY;
-
-    bool hasVerticalLimit;
-    int  topLimitY;
-    int  bottomLimitY;
+    bool hasVerticalLimit; ///< Does it have a vertical limit?
+    int  topLimitY;        ///< The top vertical limit.
+    int  bottomLimitY;     ///< The bottom vertical limit.
 };
 
 #endif /* CAMERA_H_DEFINED */
+
