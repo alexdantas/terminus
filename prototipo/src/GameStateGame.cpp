@@ -12,7 +12,8 @@
 enum GameStateGameCommands
 {
     COMMAND_QUIT, COMMAND_ADD_PLATFORM, COMMAND_INVERT_GRAVITY,
-    COMMAND_FLY,  COMMAND_ADD_CLOUD
+    COMMAND_FLY,  COMMAND_ADD_CLOUD,    COMMAND_GIVE_UP,
+    COMMAND_HELP, COMMAND_CONTROLS
 };
 
 GameStateGame::GameStateGame():
@@ -121,6 +122,9 @@ void GameStateGame::load(int stack)
     this->console->addCommand("addcloud", COMMAND_ADD_CLOUD);
     this->console->addCommand("toinfinityandbeyond", COMMAND_FLY);
     this->console->addCommand("whocaresaboutphysics", COMMAND_INVERT_GRAVITY);
+    this->console->addCommand("goodbyecruelworld", COMMAND_GIVE_UP);
+    this->console->addCommand("help", COMMAND_HELP);
+    this->console->addCommand("keys", COMMAND_CONTROLS);
 
     loading.increase(6);
     loading.setSubtitle("Requesting Platforms");
@@ -266,6 +270,34 @@ GameState::StateCode GameStateGame::update(float dt)
 
         case COMMAND_INVERT_GRAVITY:
             PhysicsManager::gravityAcceleration *= -1;
+            break;
+
+        case COMMAND_GIVE_UP:
+            this->game_over = true;
+            break;
+
+        case COMMAND_HELP: // I have 8 lines on the console
+            this->console->print("Commands:");
+            this->console->print("quit       Quits the game:");
+            this->console->print("add        Adds a platform:");
+            this->console->print("addcloud   Adds a cloud");
+            this->console->print("keys       Show all game keys");
+            this->console->print("");
+            this->console->print("Cheats:");
+            this->console->print("whocaresaboutphysics  Inverts gravity");
+            this->console->print("goodbyecruelworld     Game over");
+            break;
+
+        case COMMAND_CONTROLS:
+            this->console->print("Game Keys:");
+            this->console->print("");
+            this->console->print("WASD, Arrow Keys:   Moves around and jump");
+            this->console->print("Shift:              Run");
+            this->console->print("Space Bar:          Dash");
+            this->console->print("q, ESC:             Quit the game");
+            this->console->print("F12:                Show game console");
+            this->console->print("F1:                 Show collision bounding boxes");
+            this->console->print("i, o:               Increase/decrease gravity");
             break;
 
         default:
