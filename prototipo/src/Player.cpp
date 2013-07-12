@@ -52,11 +52,11 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     tmp = new Animation("img/spritesheets/apterus-jumping-right.png", 6, animationSpeed);
     this->animations[JUMPING_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/apterus-dashing-left.png", 5, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/apterus-dashing-left.png", 5, animationSpeed+10, 1);
     tmp->setTransparentRGBColor(Color(255, 255, 255));
     this->animations[DASHING_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/apterus-dashing-right.png", 5, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/apterus-dashing-right.png", 5, animationSpeed+10, 1);
     this->animations[DASHING_RIGHT] = tmp;
 
     tmp = new Animation("img/spritesheets/apterus-damaging-left.png", 7, animationSpeed);
@@ -271,8 +271,10 @@ void Player::updateInput()
 }
 void Player::updateAnimation()
 {
+    this->currentAnimation->update();
+
     // Since we dash until the animation stops, makes sense to check
-    // if we'll stop dashing here
+    // if we'll stop dashing here.
     if (this->isDashing)
     {
         if (!(this->currentAnimation->isRunning()))
@@ -377,7 +379,7 @@ void Player::updateAnimation()
                     }
                 }
             }
-            if (fabs(this->vx) < this->stoppedThreshold) // it is stopped
+            else if (fabs(this->vx) < this->stoppedThreshold) // it is stopped
             {
                 if (this->facingDirection == RIGHT)
                 {
@@ -437,8 +439,6 @@ void Player::updateAnimation()
 
     // int newFramerate = (int)fabs((this->vx));
     // this->currentAnimation->setFramerate(newFramerate);
-
-    this->currentAnimation->update();
 }
 void Player::commitMovement()
 {
@@ -501,15 +501,14 @@ void Player::toggleFlyMode()
 }
 void Player::dash()
 {
-    if (this->inAir) return;
+    if (this->inAir)     return;
     if (this->isDashing) return;
 
     this->isDashing = true;
 
-    if (this->facingDirection == RIGHT)
-        this->ax =  7 * this->acceleration;
-    else
-        this->ax = -7 * this->acceleration;
+    (this->facingDirection == RIGHT)?
+        this->targetVx = ( 3 * this->acceleration):
+        this->targetVx = (-3 * this->acceleration);
 }
 void Player::die()
 {

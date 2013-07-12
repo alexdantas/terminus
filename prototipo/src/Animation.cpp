@@ -37,7 +37,7 @@ void Animation::update(float dt)
 
     this->timer.pause();
 
-    // updating ammount of frames
+    // updating ammount of frames to skip since last update
 
     int time_between_frames = (1000 / this->framerate); // milisseconds
     int frames_passed  = this->timer.delta() / time_between_frames;
@@ -113,6 +113,8 @@ void Animation::start()
     if (this->framerate == 0) return;
     if (this->running)        return;
 
+    this->curFrame = 0;
+    this->clipRect->x = 0;
     this->timesLooped = 0;
     this->running = true;
     this->timer.start();

@@ -1,22 +1,3 @@
-/// @file Sprite.hpp Deals with a single image onscreen.
-//
-//	This class opens an image and can be used to print it completely
-//	or just a part of it.
-//	For example, on the class Animation, we'll deal with opening a
-//	large image and cutting parts of it.
-//
-//	Basically, you should do this:
-//
-//	  Sprite sprite("path/to/image.png");
-//	  sprite.setTransparentRGBColor(255, 255, 255);
-//	  sprite.render(50, 50);
-//
-//	This will create a new sprite, set it's transparent color and
-//	print it onscreen (on positions x and y both 50).
-//
-//	Keep in mind you should refresh the screen to see any changes.
-//	Normally that's done with SDL::refreshScreen()
-
 #ifndef SPRITE_H_DEFINED
 #define SPRITE_H_DEFINED
 
@@ -24,7 +5,22 @@
 #include "SDL.hpp"
 #include "Color.hpp"
 
-/// A wrapper on SDL things that handle images.
+/// Shows a single image onscreen.
+///
+///	This class opens an image and can be used to print it completely
+///	or just a part of it.
+///
+///	For example, on the class *Animation*, we'll deal with opening a
+///	large image and selectively printing parts of it.
+///
+/// ## How to use:
+///
+///	    Sprite sprite("path/to/image.png");
+///         /// on a loop...
+///	        sprite.render(50, 50);
+///
+///	Keep in mind you should refresh the screen to see any changes.
+///
 class Sprite
 {
 public:
@@ -65,17 +61,22 @@ public:
 
     void restore();
 
+    /// Returns current image's clip on the SDL's internal
+    /// representation of a rectangle.
     SDL_Rect* getClip();
 
     void clip(int x, int y, int w, int h);
 
+    /// Sets image's transparency (alpha channel) to *level*.
+    ///
+    /// 255 is opaque, 0 is completely transparent.
     void setTransparency(uint8_t level);
 
 protected:
 	/// Current image's filename.
-	//
-	//	Can be changed with setFilename().
-	//	Remember to load() it after.
+	///
+	///	Can be changed with setFilename().
+	///	Remember to load() it after.
 	std::string	 filename;
 
 	/// SDL's internal thingy that holds the image data.
