@@ -12,17 +12,16 @@
 enum GameStateGameCommands
 {
     COMMAND_QUIT, COMMAND_ADD_PLATFORM, COMMAND_INVERT_GRAVITY,
-    COMMAND_FLY,  COMMAND_ADD_CLOUD,    COMMAND_GIVE_UP,
-    COMMAND_HELP, COMMAND_CONTROLS
+    COMMAND_FLY,  COMMAND_ADD_CLOUD
 };
 
 GameStateGame::GameStateGame():
     bg(NULL),
-    gameArea(NULL),
     will_quit(false),
     will_return_to_main_menu(false),
     game_over(false),
     camera(NULL),
+    timer(NULL),
     bgmusic(NULL),
     apterus(NULL),
     lifeBar(NULL),
@@ -40,58 +39,54 @@ GameStateGame::~GameStateGame()
 { }
 void GameStateGame::load(int stack)
 {
-    // DAMN, this method's BIG
     UNUSED(stack);
 
-    LoadingScreen loading("loading...");
-    loading.setBg("img/loading2.png");
-    loading.increase(0);
-    loading.setSubtitle("Starting Level...");
+    LoadingScreen loading("loading...", "ttf/LithosProRegular.ttf");
+
+    loading.increase(2);
 
     this->bg = new Sprite("img/fundo.png");
-    this->gameArea = new Rectangle(0, 0, this->bg->getWidth(), this->bg->getHeight());
 
     loading.increase(30);
-    loading.setSubtitle("Setting Camera");
 
-    this->camera = new Camera(0, 0, Window::width, Window::height);
+    this->camera = new Camera(0, 0,
+                              Window::width, Window::height,
+                              Config::cameraScrollSpeed);
     this->camera->lockXAxis();
-    this->camera->setVerticalLimit(0, this->gameArea->h);
+    this->camera->setVerticalLimit(0, this->bg->getHeight());
+
+    this->timer = new TimerCounter(5000);
 
     loading.increase(3);
-    loading.setSubtitle("Spawning You");
 
     int playerX = 245;
-    int playerY = this->gameArea->h - 201;
+    int playerY = this->bg->getHeight() - 201;
 
     this->apterus = new Player(playerX, playerY,
                                245, 200,
                                20,
                                Config::playerAcceleration);
-    this->apterus->setHorizontalLimit(0, this->gameArea->w);
-    this->apterus->setVerticalLimit(0, this->gameArea->h);
-    this->camera->centerOn(this->apterus->getCenterX(),
-                           this->apterus->getCenterY());
+    this->apterus->setHorizontalLimit(0, this->bg->getWidth());
+    this->apterus->setVerticalLimit(0, this->bg->getHeight());
 
     loading.increase(10);
-    loading.setSubtitle("Creating Lifebar");
 
-    this->lifeBar = new ProgressBar(10, 10, 200, 20, this->apterus->getHitpoints(), this->apterus->getHitpoints());
+    this->lifeBar = new ProgressBar(200, 20, this->apterus->getHitpoints(), this->apterus->getHitpoints());
     this->lifeBar->setForegroundColor(Color(255, 0, 255));
     this->lifeBar->setBackgroundColor(Color(100, 0, 100));
 
     loading.increase(4);
-    loading.setSubtitle("Drawing Fonts");
 
     this->lifeBarFont = new Font("ttf/UbuntuMono.ttf", 16);
     this->lifeBarText = new Text(this->lifeBarFont);
-    this->lifeBarText->setText("Energy");
+    this->lifeBarText->setText("Life Points");
     this->lifeBarText->setPosition(10, 10);
 
     loading.increase(4);
-    loading.setSubtitle("(subliminar message)");
 
     this->font = new Font("ttf/UbuntuMono.ttf", 42);
+
+    loading.increase(5);
 
     this->pausedTitle = new Text(this->font);
     this->pausedTitle->setText("Paused");
@@ -99,13 +94,12 @@ void GameStateGame::load(int stack)
                                    (Window::height/2) - 100);
 
     loading.increase(5);
-    loading.setSubtitle("Playing Music");
+
 
     this->bgmusic = new Music("ogg/escaping.ogg");
     this->bgmusic->play();
 
     loading.increase(10);
-    loading.setSubtitle("Dropping Drop-Down Console");
 
     this->consoleFont = new Font("ttf/UbuntuMono.ttf", 18);
 
@@ -122,46 +116,39 @@ void GameStateGame::load(int stack)
     this->console->addCommand("addcloud", COMMAND_ADD_CLOUD);
     this->console->addCommand("toinfinityandbeyond", COMMAND_FLY);
     this->console->addCommand("whocaresaboutphysics", COMMAND_INVERT_GRAVITY);
-    this->console->addCommand("goodbyecruelworld", COMMAND_GIVE_UP);
-    this->console->addCommand("help", COMMAND_HELP);
-    this->console->addCommand("keys", COMMAND_CONTROLS);
 
     loading.increase(6);
-    loading.setSubtitle("Requesting Platforms");
 
     // The area that platforms will be spawned
     // (will cut a little from the top)
-    Rectangle platformArea(0, 300, this->gameArea->w, this->gameArea->h - 300);
+    Rectangle gameArea(0, 300, this->bg->getWidth(), this->bg->getHeight() - 300);
 
-    this->platforms = new PlatformManager(platformArea, (Config::playerJump * 5));
+    this->platforms = new PlatformManager(gameArea, (Config::playerJump * 5));
+
+    this->badguy = new BadGuyManager(10);
 
     loading.increase(3);
-    loading.setSubtitle("Giving Birth to Clouds");
 
     Rectangle cloudLimit(0,
-                         (this->gameArea->h - Window::height),
+                         this->bg->getHeight() - Window::height,
                          Window::width,
                          Window::height);
 
     this->cloudContainer = new CloudContainer(Config::cloudsLimit, cloudLimit);
-    this->cloudContainer->addAll();
-    // this->cloudContainer->addAt(Point(this->gameArea->w/4,
-    //                                   this->gameArea->h - 400));
+    this->cloudContainer->addAt(Point(this->bg->getWidth()/4,
+                                      this->bg->getHeight() - 400));
 
-    // this->cloudContainer->addAtRandom();
-    // this->cloudContainer->addAtRandom();
-    // this->cloudContainer->addAtRandom();
+    this->cloudContainer->addAtRandom();
+    this->cloudContainer->addAtRandom();
+    this->cloudContainer->addAtRandom();
 
     loading.increase(10);
-    loading.setSubtitle("Packing Things Up");
 
     this->fadeOut = new Fade(Fade::FADE_OUT, 1000);
 }
 int GameStateGame::unload()
 {
-    // Before deleting everything, we must see if we
-    // just won.
-    // If we did, then this->ufo will be NULL
+
     bool we_won = false;
 
 // Time to delete!
@@ -181,6 +168,7 @@ int GameStateGame::unload()
     safe_delete(this->camera);
 
     safe_delete(this->apterus);
+    safe_delete(this->badguy);
 
     safe_delete(this->font);
     safe_delete(this->pausedTitle);
@@ -213,10 +201,16 @@ GameState::StateCode GameStateGame::update(float dt)
     this->fadeOut->update(dt);
 
     // Player has died.
-    if (this->game_over)
-        return GameState::GAME_OVER;
+    if (this->game_over){
+        if(this->timer->isDone())
+            return GameState::GAME_OVER;
+    }
 
     this->updateInput();
+
+InputManager* input = InputManager::getInstance();
+    if (input->isKeyDown(SDLK_t))
+        return GameState::GAME_OVER;
 
     this->console->update(dt);
 
@@ -265,39 +259,12 @@ GameState::StateCode GameStateGame::update(float dt)
             break;
 
         case COMMAND_FLY:
-            this->apterus->toggleFlyMode();
+            if(this->apterus)
+                this->apterus->toggleFlyMode();
             break;
 
         case COMMAND_INVERT_GRAVITY:
             PhysicsManager::gravityAcceleration *= -1;
-            break;
-
-        case COMMAND_GIVE_UP:
-            this->game_over = true;
-            break;
-
-        case COMMAND_HELP: // I have 8 lines on the console
-            this->console->print("Commands:");
-            this->console->print("quit       Quits the game:");
-            this->console->print("add        Adds a platform:");
-            this->console->print("addcloud   Adds a cloud");
-            this->console->print("keys       Show all game keys");
-            this->console->print("");
-            this->console->print("Cheats:");
-            this->console->print("whocaresaboutphysics  Inverts gravity");
-            this->console->print("goodbyecruelworld     Game over");
-            break;
-
-        case COMMAND_CONTROLS:
-            this->console->print("Game Keys:");
-            this->console->print("");
-            this->console->print("WASD, Arrow Keys:   Moves around and jump");
-            this->console->print("Shift:              Run");
-            this->console->print("Space Bar:          Dash");
-            this->console->print("q, ESC:             Quit the game");
-            this->console->print("F12:                Show game console");
-            this->console->print("F1:                 Show collision bounding boxes");
-            this->console->print("i, o:               Increase/decrease gravity");
             break;
 
         default:
@@ -313,6 +280,8 @@ GameState::StateCode GameStateGame::update(float dt)
     // game's paused.
     // From now on, they won't.
 
+    this->camera->update(dt);
+
     // Will react to any object that's above movable platforms.
     this->checkPlatforms();
 
@@ -320,12 +289,13 @@ GameState::StateCode GameStateGame::update(float dt)
     this->platforms->update(dt);
 
     if (this->apterus)
+    {
         this->apterus->update(dt);
-
-    // Center the game on the player!
-    // Don't forget the camera can't move on the X axis.
-    this->camera->centerOn(this->apterus->getCenterX(),
+        this->camera->centerOn(this->apterus->getCenterX(),
                            this->apterus->getCenterY());
+    }
+    this->badguy->update(dt);
+
 
     // if (this->apterus->getY() >= cameraLowestPoint)
     // {
@@ -339,8 +309,8 @@ GameState::StateCode GameStateGame::update(float dt)
 }
 void GameStateGame::render()
 {
-    float cameraX = this->camera->getX();
-    float cameraY = this->camera->getY();
+    int cameraX = this->camera->getX();
+    int cameraY = this->camera->getY();
 
     this->bg->render(0 - cameraX, 0 - cameraY);
 
@@ -354,8 +324,10 @@ void GameStateGame::render()
 
     this->platforms->render(cameraX, cameraY);
 
-    if (!(this->apterus->isDead()))
+    if (this->apterus && !(this->apterus->isDead()))
         this->apterus->render(cameraX, cameraY);
+
+    this->badguy->render(cameraX, cameraY);
 
     if (this->isPaused)
     {
@@ -364,15 +336,17 @@ void GameStateGame::render()
 
     if (Config::showBoundingBoxes)
     {
-        Rectangle tmp(this->apterus->box->x - cameraX,
-                      this->apterus->box->y - cameraY,
-                      this->apterus->box->w,
-                      this->apterus->box->h);
+        if(this->apterus){
+            Rectangle tmp(this->apterus->box->x - cameraX,
+                          this->apterus->box->y - cameraY,
+                          this->apterus->box->w,
+                          this->apterus->box->h);
 
-        Graphics::drawRectangle(tmp);
+            Graphics::drawRectangle(tmp);
+        }
     }
 
-    this->lifeBar->render();
+    this->lifeBar->render(10, 10);
     this->lifeBarText->render();
 
     if (Config::debugMode)
@@ -431,7 +405,7 @@ void GameStateGame::checkPlatforms()
                 continue;
 
             // Player's standing above this movable platform
-            if ((movable->box->top) == (this->apterus->box->bottom))
+            if (this->apterus && ((movable->box->top) == (this->apterus->box->bottom)))
             {
                 this->apterus->stepIntoMovablePlatform(movable);
                 playerIsSteppingOnAnyMovablePlatform = true;
@@ -448,14 +422,14 @@ void GameStateGame::checkPlatforms()
                 continue;
 
             // Player's standing above this vanishing platform
-            if ((vanishing->box->top) == (this->apterus->box->bottom))
+            if (this->apterus && ((vanishing->box->top) == (this->apterus->box->bottom)))
                 vanishing->vanish(); // simple, right?
         }
         else continue;
         // I've always wanted to do this `else continue`.
         // Isn't it cute?
     }
-    if (!playerIsSteppingOnAnyMovablePlatform)
+    if (this->apterus && !playerIsSteppingOnAnyMovablePlatform)
         this->apterus->stepIntoMovablePlatform(NULL);
 }
 void GameStateGame::checkCollisions()
@@ -470,7 +444,7 @@ void GameStateGame::checkCollisions()
          it != this->platforms->container->platforms.end();
          it++)
     {
-        if (this->apterus->desiredPosition->overlaps((*it)->box))
+        if (this->apterus && this->apterus->desiredPosition->overlaps((*it)->box))
         {
             // One-way collision
             // Check if previously the player was above the platform
@@ -499,10 +473,24 @@ void GameStateGame::checkCollisions()
     // }
 
     // We're allowing the player to move.
-    this->apterus->commitMovement();
 
-    if (this->apterus->isDead())
+    std::vector<BadGuy*> badguys = this->badguy->getBadGuys();
+    unsigned int size = badguys.size();
+    for (unsigned int i = 0; i < size; i++)
     {
+        if(this->apterus && this->apterus->collidedWith(badguys[i])){
+            this->apterus->dealDamage();
+            this->apterus->damage(1);
+            this->lifeBar->decrease(1);
+        }
+    }
+
+    if(this->apterus)
+        this->apterus->commitMovement();
+
+    if (this->apterus && this->apterus->isDead())
+    {
+        this->timer->startCounting();
         delete this->apterus;
         this->apterus = NULL;
 
@@ -557,5 +545,6 @@ void GameStateGame::updateInput()
 
     if (input->isKeyDown(SDLK_F4))
         Window::setPosition(10, 10);
+
 }
 
