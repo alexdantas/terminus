@@ -17,9 +17,13 @@
 #include "Menu.hpp"
 #include "DropDownConsole.hpp"
 #include "Player.hpp"
+#include "BadGuyManager.hpp"
 #include "PlatformManager.hpp"
 #include "CloudContainer.hpp"
 #include "Fade.hpp"
+#include "TimerCounter.hpp"
+
+#include "Log.hpp"
 
 /// This represents the actual game taking place.
 ///
@@ -111,14 +115,15 @@ private:
 
     // Now, the variables.
 
-	Sprite* bg;          ///< Background of the game.
-    Rectangle* gameArea; ///< Area on which the game happens.
+	Sprite* bg; ///< Background of the game.
 
 	bool will_quit; ///< If we're gonna quit the game.
     bool will_return_to_main_menu; ///< If we're gonna go to main menu.
     bool game_over; ///< If the game's over.
 
     Camera* camera; ///< The camera that shows part of the whole game screen.
+
+    TimerCounter *timer; ///< For a not immediately game over
 
     Music* bgmusic;
 
@@ -137,6 +142,8 @@ private:
     DropDownConsole* console; /// The game console.
 
     PlatformManager* platforms; ///< All the game platforms.
+
+    BadGuyManager* badguy; ///All the enemys in the game
 
     CloudContainer* cloudContainer; ///< All the clouds of the game.
 
