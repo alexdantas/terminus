@@ -19,7 +19,7 @@ void GameStateMainMenu::load(int stack)
     UNUSED(stack);
 
     LoadingScreen loading("Loading...");
-    loading.setBg("img/loading1.png");
+    loading.setBg("img/loading2.png");
     loading.increase(0);
     loading.setSubtitle("loading loading screen...");
 

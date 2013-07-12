@@ -11,8 +11,9 @@
 // All possible commands the user might type into the console
 enum GameStateGameCommands
 {
-    COMMAND_QUIT, COMMAND_ADD_PLATFORM, COMMAND_INVERT_GRAVITY,
-    COMMAND_FLY,  COMMAND_ADD_CLOUD
+    COMMAND_QUIT,     COMMAND_ADD_PLATFORM, COMMAND_INVERT_GRAVITY,
+    COMMAND_FLY,      COMMAND_ADD_CLOUD,    COMMAND_HELP,
+    COMMAND_CONTROLS, COMMAND_GIVE_UP
 };
 
 GameStateGame::GameStateGame():
@@ -41,23 +42,27 @@ void GameStateGame::load(int stack)
 {
     UNUSED(stack);
 
-    LoadingScreen loading("loading...", "ttf/LithosProRegular.ttf");
+    LoadingScreen loading("loading...");
+    loading.setBg("img/loading2.png");
+    loading.increase(0);
 
-    loading.increase(2);
-
+    loading.setSubtitle("Loading background...");
     this->bg = new Sprite("img/fundo.png");
 
     loading.increase(30);
 
+    loading.setSubtitle("Loading camera...");
     this->camera = new Camera(0, 0,
-                              Window::width, Window::height,
-                              Config::cameraScrollSpeed);
+                              Window::width, Window::height
+                              );
     this->camera->lockXAxis();
     this->camera->setVerticalLimit(0, this->bg->getHeight());
 
     this->timer = new TimerCounter(5000);
 
+    loading.setSubtitle("Loading player...");
     loading.increase(3);
+
 
     int playerX = 245;
     int playerY = this->bg->getHeight() - 201;
@@ -82,6 +87,7 @@ void GameStateGame::load(int stack)
     this->lifeBarText->setText("Life Points");
     this->lifeBarText->setPosition(10, 10);
 
+    loading.setSubtitle("Loading font...");
     loading.increase(4);
 
     this->font = new Font("ttf/UbuntuMono.ttf", 42);
@@ -99,6 +105,7 @@ void GameStateGame::load(int stack)
     this->bgmusic = new Music("ogg/escaping.ogg");
     this->bgmusic->play();
 
+    loading.setSubtitle("Loading dropdown console...");
     loading.increase(10);
 
     this->consoleFont = new Font("ttf/UbuntuMono.ttf", 18);
@@ -119,6 +126,7 @@ void GameStateGame::load(int stack)
 
     loading.increase(6);
 
+    loading.setSubtitle("Loading platforms...");
     // The area that platforms will be spawned
     // (will cut a little from the top)
     Rectangle gameArea(0, 300, this->bg->getWidth(), this->bg->getHeight() - 300);
@@ -135,12 +143,6 @@ void GameStateGame::load(int stack)
                          Window::height);
 
     this->cloudContainer = new CloudContainer(Config::cloudsLimit, cloudLimit);
-    this->cloudContainer->addAt(Point(this->bg->getWidth()/4,
-                                      this->bg->getHeight() - 400));
-
-    this->cloudContainer->addAtRandom();
-    this->cloudContainer->addAtRandom();
-    this->cloudContainer->addAtRandom();
 
     loading.increase(10);
 
@@ -279,8 +281,6 @@ InputManager* input = InputManager::getInstance();
     // Things that are up there updates independently if the
     // game's paused.
     // From now on, they won't.
-
-    this->camera->update(dt);
 
     // Will react to any object that's above movable platforms.
     this->checkPlatforms();
