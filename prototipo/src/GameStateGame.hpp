@@ -19,7 +19,7 @@
 #include "Player.hpp"
 #include "BadGuyManager.hpp"
 #include "PlatformManager.hpp"
-#include "CloudContainer.hpp"
+#include "CloudManager.hpp"
 #include "Fade.hpp"
 #include "TimerCounter.hpp"
 
@@ -123,6 +123,8 @@ private:
 
     Camera* camera; ///< The camera that shows part of the whole game screen.
 
+    Rectangle* gameArea;
+
     TimerCounter *timer; ///< For a not immediately game over
 
     Music* bgmusic;
@@ -145,7 +147,7 @@ private:
 
     BadGuyManager* badguy; ///All the enemys in the game
 
-    CloudContainer* cloudContainer; ///< All the clouds of the game.
+    CloudManager* clouds; ///< All the clouds of the game.
 
     /// Fade-out effect that occurs when we're quitting the game.
     Fade* fadeOut;

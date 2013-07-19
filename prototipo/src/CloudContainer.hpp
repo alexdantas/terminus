@@ -36,13 +36,16 @@ public:
 
     virtual ~CloudContainer();
 
-    ///
+    /// Updates all the clouds inside it.
     void update(float dt);
 
-    ///
+    /// Renders all the clouds inside it.
     void render(float cameraX=0, float cameraY=0);
 
+    /// Inserts a Cloud at *p* with *speed*.
     ///
+    /// @note If *p* is outside of the *areaLimit* specified,
+    ///       won't create the Cloud.
     void addAt(Point p, float speed);
 
     /// Adds a cloud at random inside the delimited area.
@@ -51,10 +54,10 @@ public:
     /// Adds all possible clouds (based on the *maxAmmount*).
     void addAll();
 
-    ///
+    /// Removes Clout at *index*.
     void removeAt(unsigned int index);
 
-    ///
+    /// Limits the area on which Clouds can exist.
     void limitArea(Rectangle a);
 
 private:

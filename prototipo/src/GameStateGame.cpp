@@ -22,6 +22,7 @@ GameStateGame::GameStateGame():
     will_return_to_main_menu(false),
     game_over(false),
     camera(NULL),
+    gameArea(NULL),
     timer(NULL),
     bgmusic(NULL),
     apterus(NULL),
@@ -33,7 +34,7 @@ GameStateGame::GameStateGame():
     pausedTitle(NULL),
     console(NULL),
     platforms(NULL),
-    cloudContainer(NULL),
+    clouds(NULL),
     fadeOut(NULL)
 { }
 GameStateGame::~GameStateGame()
@@ -45,36 +46,41 @@ void GameStateGame::load(int stack)
     LoadingScreen loading("loading...");
     loading.setBg("img/loading2.png");
     loading.increase(0);
+    loading.setSubtitle("Drawing background...");
 
-    loading.setSubtitle("Loading background...");
     this->bg = new Sprite("img/fundo.png");
 
-    loading.increase(30);
+    this->gameArea = new Rectangle(0,
+                                   0,
+                                   this->bg->getWidth(),
+                                   this->bg->getHeight());
 
-    loading.setSubtitle("Loading camera...");
-    this->camera = new Camera(0, 0,
-                              Window::width, Window::height
-                              );
+    loading.increase(30);
+    loading.setSubtitle("Buying camera...");
+
+    this->camera = new Camera(0, 0, Window::width, Window::height);
     this->camera->lockXAxis();
-    this->camera->setVerticalLimit(0, this->bg->getHeight());
+    this->camera->setVerticalLimit(0, this->gameArea->h);
 
     this->timer = new TimerCounter(5000);
 
-    loading.setSubtitle("Loading player...");
+    loading.setSubtitle("Spawning you...");
     loading.increase(3);
 
-
     int playerX = 245;
-    int playerY = this->bg->getHeight() - 201;
+    int playerY = this->gameArea->h - 201;
 
     this->apterus = new Player(playerX, playerY,
                                245, 200,
                                20,
                                Config::playerAcceleration);
-    this->apterus->setHorizontalLimit(0, this->bg->getWidth());
-    this->apterus->setVerticalLimit(0, this->bg->getHeight());
+    this->apterus->setHorizontalLimit(0, this->gameArea->w);
+    this->apterus->setVerticalLimit(0, this->gameArea->h);
+    this->camera->centerOn(this->apterus->getCenterX(),
+                           this->apterus->getCenterY());
 
     loading.increase(10);
+    loading.setSubtitle("Designing lifebar...");
 
     this->lifeBar = new ProgressBar(200, 20, this->apterus->getHitpoints(), this->apterus->getHitpoints());
     this->lifeBar->setForegroundColor(Color(255, 0, 255));
@@ -84,11 +90,11 @@ void GameStateGame::load(int stack)
 
     this->lifeBarFont = new Font("ttf/UbuntuMono.ttf", 16);
     this->lifeBarText = new Text(this->lifeBarFont);
-    this->lifeBarText->setText("Life Points");
+    this->lifeBarText->setText("Energy");
     this->lifeBarText->setPosition(10, 10);
 
-    loading.setSubtitle("Loading font...");
     loading.increase(4);
+    loading.setSubtitle("Choosing fonts...");
 
     this->font = new Font("ttf/UbuntuMono.ttf", 42);
 
@@ -100,13 +106,13 @@ void GameStateGame::load(int stack)
                                    (Window::height/2) - 100);
 
     loading.increase(5);
-
+    loading.setSubtitle("Legally buying music...");
 
     this->bgmusic = new Music("ogg/escaping.ogg");
     this->bgmusic->play();
 
-    loading.setSubtitle("Loading dropdown console...");
     loading.increase(10);
+    loading.setSubtitle("Loading Quake-like console...");
 
     this->consoleFont = new Font("ttf/UbuntuMono.ttf", 18);
 
@@ -123,34 +129,43 @@ void GameStateGame::load(int stack)
     this->console->addCommand("addcloud", COMMAND_ADD_CLOUD);
     this->console->addCommand("toinfinityandbeyond", COMMAND_FLY);
     this->console->addCommand("whocaresaboutphysics", COMMAND_INVERT_GRAVITY);
+    this->console->addCommand("goodbyecruelworld", COMMAND_GIVE_UP);
+    this->console->addCommand("help", COMMAND_HELP);
+    this->console->addCommand("keys", COMMAND_CONTROLS);
 
     loading.increase(6);
+    loading.setSubtitle("Building platforms...");
 
-    loading.setSubtitle("Loading platforms...");
-    // The area that platforms will be spawned
-    // (will cut a little from the top)
-    Rectangle gameArea(0, 300, this->bg->getWidth(), this->bg->getHeight() - 300);
+    // The area on which platforms can be spawned
+    Rectangle platformArea(0, 300, this->gameArea->w, this->gameArea->h - 300);
 
-    this->platforms = new PlatformManager(gameArea, (Config::playerJump * 5));
+    this->platforms = new PlatformManager(platformArea, (Config::playerJump * 5));
 
     this->badguy = new BadGuyManager(10);
 
     loading.increase(3);
+    loading.setSubtitle("Searching for clouds...");
 
-    Rectangle cloudLimit(0,
-                         this->bg->getHeight() - Window::height,
-                         Window::width,
-                         Window::height);
+    // The area on which clouds can be spawned is determined by
+    // the camera.
+    // Rectangle cloudLimit(0,
+    //                      this->gameArea->h - Window::height,
+    //                      Window::width,
+    //                      Window::height);
 
-    this->cloudContainer = new CloudContainer(Config::cloudsLimit, cloudLimit);
+    // Limiting the area on which clouds can be spawned to the camera.
+    // (if a cloud goes completely out of the camera, will be destroyed)
+    this->clouds = new CloudManager(this->camera->getArea(),
+                                    Config::cloudsLimit);
+    this->clouds->setDelay(1500);
 
     loading.increase(10);
+    loading.setSubtitle("Done!");
 
     this->fadeOut = new Fade(Fade::FADE_OUT, 1000);
 }
 int GameStateGame::unload()
 {
-
     bool we_won = false;
 
 // Time to delete!
@@ -203,7 +218,8 @@ GameState::StateCode GameStateGame::update(float dt)
     this->fadeOut->update(dt);
 
     // Player has died.
-    if (this->game_over){
+    if (this->game_over)
+    {
         if(this->timer->isDone())
             return GameState::GAME_OVER;
     }
@@ -256,7 +272,7 @@ InputManager* input = InputManager::getInstance();
                 cloudAmmount = SDL::stringToInt(this->console->getCommandArg(1));
 
             for (int i = 0; i < cloudAmmount; i++)
-                this->cloudContainer->addAtRandom();
+                this->clouds->add();
         }
             break;
 
@@ -267,6 +283,34 @@ InputManager* input = InputManager::getInstance();
 
         case COMMAND_INVERT_GRAVITY:
             PhysicsManager::gravityAcceleration *= -1;
+            break;
+
+        case COMMAND_GIVE_UP:
+            this->game_over = true;
+            break;
+
+        case COMMAND_HELP: // I have 8 lines available on the console
+            this->console->print("Commands:");
+            this->console->print("quit       Quits the game");
+            this->console->print("add        Adds a platform");
+            this->console->print("addcloud   Adds a cloud");
+            this->console->print("keys       Shows all game keys");
+            this->console->print("");
+            this->console->print("Cheats");
+            this->console->print("whocaresaboutphysics  Inverts gravity");
+            this->console->print("goodbyecruelworld     Game Over");
+            break;
+
+        case COMMAND_CONTROLS:
+            this->console->print("Game Keys:");
+            this->console->print("");
+            this->console->print("WASD, Arrow Keys   Moves around and jump");
+            this->console->print("Shift              Run");
+            this->console->print("Space Bar          Dash");
+            this->console->print("q, ESC             Quit the game");
+            this->console->print("F12                Show game console");
+            this->console->print("F1                 Show collision bounding boxes");
+            this->console->print("i, o               Increase/decrease gravity");
             break;
 
         default:
@@ -292,35 +336,33 @@ InputManager* input = InputManager::getInstance();
     {
         this->apterus->update(dt);
         this->camera->centerOn(this->apterus->getCenterX(),
-                           this->apterus->getCenterY());
+                               this->apterus->getCenterY());
     }
     this->badguy->update(dt);
-
 
     // if (this->apterus->getY() >= cameraLowestPoint)
     // {
     //     // this is where the player dies
     // }
 
-    this->cloudContainer->update(dt);
+    this->clouds->update(dt);
     this->checkCollisions();
 
     return GameState::CONTINUE;
 }
 void GameStateGame::render()
 {
-    int cameraX = this->camera->getX();
-    int cameraY = this->camera->getY();
+    float cameraX = this->camera->getX();
+    float cameraY = this->camera->getY();
 
     this->bg->render(0 - cameraX, 0 - cameraY);
 
-    this->cloudContainer->render(cameraX, cameraY);
+    this->clouds->render(cameraX, cameraY);
 
-    // This is a BAD HACK to make sure the clouds are always added at
-    // the camera.
-    // Must find a way to always limit the area to the camera!
-    this->cloudContainer->limitArea(Rectangle(cameraX, cameraY,
-                                              Window::width, Window::height));
+
+    // At each frame, I need to refresh the Clouds area to the
+    // camera.. Could there be a better option?
+    this->clouds->setArea(this->camera->getArea());
 
     this->platforms->render(cameraX, cameraY);
 
@@ -336,7 +378,8 @@ void GameStateGame::render()
 
     if (Config::showBoundingBoxes)
     {
-        if(this->apterus){
+        if (this->apterus)
+        {
             Rectangle tmp(this->apterus->box->x - cameraX,
                           this->apterus->box->y - cameraY,
                           this->apterus->box->w,

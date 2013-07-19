@@ -27,6 +27,11 @@ int Camera::getHeight()
 {
     return this->h;
 }
+Rectangle Camera::getArea()
+{
+    return Rectangle(this->x, this->y,
+                     this->w, this->h);
+}
 void Camera::setX(float x)
 {
     this->x = x;

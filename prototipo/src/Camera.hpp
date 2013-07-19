@@ -1,6 +1,8 @@
 #ifndef CAMERA_H_DEFINED
 #define CAMERA_H_DEFINED
 
+#include "Shapes.hpp"
+
 /// Decides what things are shown on the screen.
 ///
 /// This camera is VERY LIMITED.
@@ -42,6 +44,9 @@ public:
     int   getHeight();
     void  setX(float x);
     void  setY(float y);
+
+    /// Returns the current area (rectangle) that the camera can see.
+    Rectangle getArea();
 
     /// Centers the camera on *x* and *y*.
     void centerOn(int x, int y);
