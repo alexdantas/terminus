@@ -56,14 +56,6 @@ public:
     void setHorizontalLimit(int left, int right);
     void setVerticalLimit(int top, int bottom);
 
-    /// Tells if the bad guy is visible.
-    bool isVisible();
-
-    /// We'll set it as visible or invisible.
-    ///
-    /// @note If we set a bad guy as invisible, it won't appear
-    ///       at the game not even for collision-checking!
-    void setVisible(bool option);
 
     /// Tells if he's already defeat
     bool isAlive();
@@ -77,6 +69,8 @@ public:
     void dealDamage();
     void Attacked();
 
+    ///AIN'T NOBODY HAVE TIME FOR OO
+    Thorn *beam;
 
 protected:
     float vx; ///< Speed component of the x axis.
@@ -124,8 +118,6 @@ protected:
     Rectangle* desiredPosition;
 
     BadGuyType type;
-
-    Thorn *beam;
 
 };
 

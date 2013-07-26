@@ -4,6 +4,7 @@
 #include "BadGuy.hpp"
 #include "TimerCounter.hpp"
 #include "Sprite.hpp"
+#include <cmath>
 
 /**
 * Venus is a bad godness
@@ -24,19 +25,9 @@ public:
     void update(float dt); //Thw way Venus don't move
     void updateAttack(float dt);
 
-    /// Makes the Venus step into a movable platform *platform*.
-    ///
-    /// This is necessary if we want the Venus to move along with
-    /// a movable platform.
-    /// Whenever the platform moves, the Venus will move with it.
-    ///
-    /// @note Please send NULL if Venus not standing on
-    ///       any movable platform.
-    void stepIntoMovablePlatform(PlatformMovable* platform);
 private:
     TimerCounter *timer;
-
-    PlatformMovable* movablePlatform;
+    int count;
 
 };
 

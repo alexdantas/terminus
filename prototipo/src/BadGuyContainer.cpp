@@ -1,7 +1,7 @@
 #include "BadGuyContainer.hpp"
 
 BadGuyContainer::BadGuyContainer(unsigned int maxAmmount, Rectangle *gameArea, PlatformManager *platforms) :
-    maxAmmount(2),
+    maxAmmount(maxAmmount),
     currentAmmount(0),
     platforms(platforms),
     gameArea(gameArea)

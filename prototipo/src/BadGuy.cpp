@@ -213,16 +213,6 @@ void BadGuy::dealDamage()
     this->damaging = true;
 }
 
-bool BadGuy::isVisible()
-{
-    return (this->visible);
-}
-
-void BadGuy::setVisible(bool option)
-{
-    this->visible = option;
-}
-
 void BadGuy::Attacked()
 {
     this->dealDamage();

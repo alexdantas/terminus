@@ -4,7 +4,8 @@
 #include "Config.hpp"
 
 BadGuyVenus::BadGuyVenus(float x, float y, int w, int h, int hp, float acceleration):
-    BadGuy(x, y, w, h, hp, acceleration)
+    BadGuy(x, y, w, h, hp, acceleration),
+    count(0)
 {
     Animation* tmp = NULL;
 
@@ -27,10 +28,10 @@ BadGuyVenus::BadGuyVenus(float x, float y, int w, int h, int hp, float accelerat
     tmp = new Animation("img/spritesheets/venus sprite atak_esq.png", 16, animationSpeed, 1);
     this->animations[ATTACK_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/venus sprite atak.png", 16, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/venus sprite atak.png", 16, animationSpeed + 10, 1);
     this->animations[ATTACK_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/venusmorrendosprite_esq.png", 10, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/venusmorrendosprite_esq.png", 10, animationSpeed + 10, 1);
     this->animations[DEATH_LEFT] = tmp;
 
     tmp = new Animation("img/spritesheets/venusmorrendosprite.png", 10, animationSpeed, 1);
@@ -63,13 +64,17 @@ void BadGuyVenus::updateAttack(float dt)
 {
     if(!this->currentAnimation->isRunning())
     {
-        if(this->beam->position->x <= 800)
+        if(this->beam && this->beam->position->x <= 800)
         {
-            this->beam->addPosition(5,0);
+            this->beam->addPosition(5, 10 * sin(count * 0.5));
+            count++;
 
         }
         else
         {
+            if(!this->beam)
+                this->beam = new Thorn("img/sprites/projetilvenus.png", this->position->x + 91, this->position->y + 50, 16, 15);
+
             this->isAttacking = false;
             this->beam->setPosition(this->position->x + 91, this->beam->position->y);
             this->currentAnimation->start();
@@ -100,10 +105,4 @@ void BadGuyVenus::update(float dt)
     this->desiredPosition->update();
 
     this->updateAnimation(dt);
-}
-
-void BadGuyVenus::stepIntoMovablePlatform(PlatformMovable* platform)
-{
-    // Watch out for NULL poiters!
-    this->movablePlatform = platform;
 }

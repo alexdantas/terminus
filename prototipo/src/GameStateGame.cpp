@@ -562,6 +562,22 @@ void GameStateGame::checkCollisions()
                 }
             }
         }
+        if(this->apterus && badguys[i] && badguys[i]->beam)
+        {
+            if(this->apterus->collidedWith(badguys[i]->beam)) //double ouch
+            {
+                this->apterus->dealDamage();
+
+                delete(badguys[i]->beam);
+                badguys[i]->beam = NULL;
+
+                if(this->apterus->isHittable())
+                {
+                    this->apterus->damage(1);
+                    this->lifeBar->decrease(1);
+                }
+            }
+        }
 
     }
 
