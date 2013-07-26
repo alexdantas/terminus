@@ -45,7 +45,7 @@ void GameStateGame::load(int stack)
     UNUSED(stack);
 
     LoadingScreen loading("loading...", "", 13);
-    loading.setBg("img/loading2.png");
+    loading.setBg("img/loading.png");
 
     loading.setSubtitle("Drawing background...");
 
