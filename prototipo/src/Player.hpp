@@ -16,6 +16,7 @@ public:
     enum PossibleAnimation
     {
         JUMPING_LEFT=0, JUMPING_RIGHT,
+        FALLING_LEFT,   FALLING_RIGHT,
         STANDING_LEFT,  STANDING_RIGHT,
         RUNNING_LEFT,   RUNNING_RIGHT,
         DASHING_LEFT,   DASHING_RIGHT,
@@ -72,7 +73,7 @@ public:
     bool isAlive();
     bool isHittable();
     bool Dashing();
-    bool Falling();
+    bool isFalling();
     bool Winned();
 
     /// Makes the player die.

@@ -47,11 +47,17 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     tmp = new Animation("img/spritesheets/apterus-running-right.png", 6, animationSpeed);
     this->animations[RUNNING_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/apterus-jumping-left.png", 6, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-jumping-left.png", 3, animationSpeed, 1);
     this->animations[JUMPING_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/apterus-jumping-right.png", 6, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-jumping-right.png", 3, animationSpeed, 1);
     this->animations[JUMPING_RIGHT] = tmp;
+
+    tmp = new Animation("img/spritesheets/apterus-falling-left.png", 1, animationSpeed, 1);
+    this->animations[FALLING_LEFT] = tmp;
+
+    tmp = new Animation("img/spritesheets/apterus-falling-right.png", 1, animationSpeed, 1);
+    this->animations[FALLING_RIGHT] = tmp;
 
     tmp = new Animation("img/spritesheets/apterus-dashing-left.png", 5, animationSpeed - 5, 1);
     tmp->setTransparentRGBColor(Color(255, 255, 255));
@@ -373,18 +379,45 @@ void Player::updateAnimation()
         {
             if (this->facingDirection == RIGHT)
             {
-                if (this->currentAnimation != this->animations[JUMPING_RIGHT])
+                if(!this->isFalling()) //He is the air and is jumping
                 {
-                    willChangeAnimation = true;
-                    tmp = this->animations[JUMPING_RIGHT];
+                    if (this->currentAnimation != this->animations[JUMPING_RIGHT])
+                    {
+                        willChangeAnimation = true;
+                        tmp = this->animations[JUMPING_RIGHT];
+                    }
+                    if(this->isDoubleJumping) //Jump again!
+                        this->currentAnimation->start();
                 }
+                else //Suffers the gravity
+                {
+                    if (this->currentAnimation != this->animations[FALLING_RIGHT])
+                    {
+                        willChangeAnimation = true;
+                        tmp = this->animations[FALLING_RIGHT];
+                    }
+                }
+
             }
             else // facingDirection == LEFT
             {
-                if (this->currentAnimation != this->animations[JUMPING_LEFT])
+                if(!this->isFalling()) //He is the air and is jumping
                 {
-                    willChangeAnimation = true;
-                    tmp = this->animations[JUMPING_LEFT];
+                    if (this->currentAnimation != this->animations[JUMPING_LEFT])
+                    {
+                        willChangeAnimation = true;
+                        tmp = this->animations[JUMPING_LEFT];
+                    }
+                    if(this->isDoubleJumping) //Jump again!
+                        this->currentAnimation->start();
+                }
+                else //Suffers the gravity
+                {
+                    if (this->currentAnimation != this->animations[FALLING_LEFT])
+                    {
+                        willChangeAnimation = true;
+                        tmp = this->animations[FALLING_LEFT];
+                    }
                 }
             }
         }
@@ -567,9 +600,9 @@ bool Player::Dashing()
     return isDashing;
 }
 
-bool Player::Falling()
+bool Player::isFalling()
 {
-    return (this->inAir);
+    return (this->vy > 0 ? true : false);
 }
 
 void Player::dealDamage()
