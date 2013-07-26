@@ -26,7 +26,7 @@ public:
     /// Return ammount of hitpoints left.
     int getHitpoints();
 
-private:
+protected:
     bool isAlive; ///< Is it alive?
     int  hp;      ///< Hitpoints.
 };

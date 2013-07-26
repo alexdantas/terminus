@@ -21,12 +21,11 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     inAir(false),
     isJumping(false),
     isDoubleJumping(false),
+    win(false),
     thrust(Config::playerJump),
     flyMode(false),
     isDashing(false),
-    dead(false),
     damaging(false),
-    win(false),
     movablePlatform(NULL)
 {
     Animation* tmp = NULL;
@@ -90,6 +89,7 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     this->box->stretch(0.5, 0.8); // Making it smaller
     this->box->addX(5);           // Walk it a little to the right
     this->box->addY(20);          // And a little down
+
     this->desiredPosition = new Rectangle();
 }
 Player::~Player()
@@ -161,7 +161,7 @@ void Player::update(float dt)
 //    this->vy *= PhysicsManager::airFriction;
 
     // actually moving the pixels on the screen
-    if(this->isAlive())
+    if (this->isAlive)
     {
         this->desiredPosition->addX(this->vx);
         this->desiredPosition->addY(this->vy);
@@ -211,7 +211,7 @@ void Player::update(float dt)
     }
 
     // Updating visible
-    if(this->isAlive())
+    if (this->isAlive)
         this->desiredPosition->update();
 
     this->updateAnimation();
@@ -328,33 +328,8 @@ void Player::updateAnimation()
     // And there's a whole tree of possible animations depending
     // on a lot of circumstances... Damn, dude.
 
-    if (this->damaging)
-    {
-        if (this->facingDirection == RIGHT)
-        {
-            if (this->currentAnimation != this->animations[DAMAGING_RIGHT])
-            {
-                willChangeAnimation = true;
-                tmp = this->animations[DAMAGING_RIGHT];
-            }
-        }
-        else
-        {
-            if (this->currentAnimation != this->animations[DAMAGING_LEFT])
-            {
-                willChangeAnimation = true;
-                tmp = this->animations[DAMAGING_LEFT];
-            }
-        }
-
-        if(!this->currentAnimation->isRunning())
-        {
-            this->damaging = false;
-            this->currentAnimation->start();
-        }
-
-    }
-    else if (this->dead)
+    // The first thing we should worry about is whether he's alive
+    if (!(this->isAlive))
     {
         if (this->facingDirection == RIGHT)
         {
@@ -373,7 +348,34 @@ void Player::updateAnimation()
             }
         }
     }
-    else // NOT dead AND not hurt
+    // Then we see if he's taking tamage
+    else if (this->damaging)
+    {
+        if (this->facingDirection == RIGHT)
+        {
+            if (this->currentAnimation != this->animations[DAMAGING_RIGHT])
+            {
+                willChangeAnimation = true;
+                tmp = this->animations[DAMAGING_RIGHT];
+            }
+        }
+        else
+        {
+            if (this->currentAnimation != this->animations[DAMAGING_LEFT])
+            {
+                willChangeAnimation = true;
+                tmp = this->animations[DAMAGING_LEFT];
+            }
+        }
+
+        if (!(this->currentAnimation->isRunning()))
+        {
+            this->damaging = false;
+            this->currentAnimation->start();
+        }
+    }
+    // Finally, the other cases (NOT dead AND not hurt)
+    else
     {
         if (this->inAir)
         {
@@ -575,36 +577,32 @@ void Player::dash()
 }
 void Player::die()
 {
-    this->dead = true;
+    this->isAlive = false;
 }
-
 bool Player::died()
 {
-    if(this->currentAnimation == this->animations[DEATH_RIGHT] || this->currentAnimation == this->animations[DEATH_LEFT])
-        return (this->currentAnimation->isRunning() ? false : true);
+    if (this->currentAnimation == this->animations[DEATH_RIGHT] ||
+        this->currentAnimation == this->animations[DEATH_LEFT])
+        return (this->currentAnimation->isRunning()?
+                false:
+                true);
+
     return false;
 }
-
-bool Player::isAlive()
-{
-    return (!this->dead);
-}
-
 bool Player::isHittable()
 {
-    return (!this->damaging && !this->dead && !this->isDashing);
+    return (!(this->damaging)   &&
+             (this->isAlive)    &&
+            !(this->isDashing));
 }
-
 bool Player::Dashing()
 {
     return isDashing;
 }
-
 bool Player::isFalling()
 {
     return (this->vy > 0 ? true : false);
 }
-
 void Player::dealDamage()
 {
     this->damaging = true;

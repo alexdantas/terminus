@@ -26,7 +26,6 @@ GameStateGame::GameStateGame():
     timer(NULL),
     bgmusic(NULL),
     apterus(NULL),
-    spikes(NULL),
     lifeBar(NULL),
     lifeBarFont(NULL),
     lifeBarText(NULL),
@@ -35,6 +34,7 @@ GameStateGame::GameStateGame():
     pausedTitle(NULL),
     console(NULL),
     platforms(NULL),
+    spikes(NULL),
     clouds(NULL),
     fadeOut(NULL)
 { }
@@ -73,7 +73,7 @@ void GameStateGame::load(int stack)
 
     this->apterus = new Player(playerX, playerY,
                                245, 200,
-                               20,
+                               5,
                                Config::playerAcceleration);
     this->apterus->setHorizontalLimit(0, this->gameArea->w);
     this->apterus->setVerticalLimit(0, this->gameArea->h);
@@ -84,7 +84,8 @@ void GameStateGame::load(int stack)
     loading.increase();
     loading.setSubtitle("Designing lifebar...");
 
-    this->lifeBar = new ProgressBar(200, 20, this->apterus->getHitpoints(), this->apterus->getHitpoints());
+    // x, y, w, h, max, starting
+    this->lifeBar = new ProgressBar(10, 10, 200, 20, this->apterus->getHitpoints(), this->apterus->getHitpoints());
     this->lifeBar->setForegroundColor(Color(255, 0, 255));
     this->lifeBar->setBackgroundColor(Color(100, 0, 100));
 
@@ -102,7 +103,7 @@ void GameStateGame::load(int stack)
     this->font = new Font("ttf/UbuntuMono.ttf", 42);
 
     loading.increase();
-    loading.setSubtitle("Writhing things...");
+    loading.setSubtitle("Writing things...");
 
     this->pausedTitle = new Text(this->font);
     this->pausedTitle->setText("Paused");
@@ -210,7 +211,6 @@ int GameStateGame::unload()
 }
 GameState::StateCode GameStateGame::update(float dt)
 {
-
     // If we're trying to quit, the fade out effect will start.
     // When it's finished, we will actually quit the game.
     if (this->fadeOut->isDone())
@@ -362,7 +362,8 @@ GameState::StateCode GameStateGame::update(float dt)
      //if (this->apterus && (this->apterus->getY() > cameraLowestPoint + 600 - 48 - this->apterus->getHeight()))
      if (this->apterus && this->apterus->collidedWith(this->spikes))
      {
-         this->apterus->die();
+         this->apterus->damage(666); // kure: metal on the veins
+         this->lifeBar->decrease(666);
      }
 
     this->clouds->update(dt);
@@ -410,7 +411,7 @@ void GameStateGame::render()
         }
     }
 
-    this->lifeBar->render(10, 10);
+    this->lifeBar->render();
     this->lifeBarText->render();
 
     if (Config::debugMode)
@@ -550,42 +551,40 @@ void GameStateGame::checkCollisions()
     unsigned int size = badguys.size();
     for (unsigned int i = 0; i < size; i++)
     {
-        if(this->apterus && badguys[i] && this->apterus->collidedWith(badguys[i])){
-
+        if (this->apterus && badguys[i] && this->apterus->collidedWith(badguys[i]))
+        {
             if(this->apterus->Dashing() && badguys[i]->isHittable())
             {
                 (badguys[i])->Attacked(); //Take that!
             }
             else if(badguys[i]->isAlive())
             {
-                this->apterus->dealDamage(); //Ouch!
-                if(this->apterus->isHittable())
+                if (this->apterus->isHittable())
                 {
                     this->apterus->damage(1);
                     this->lifeBar->decrease(1);
                 }
+                this->apterus->dealDamage(); //Ouch!
             }
         }
-        if(this->apterus && badguys[i] && badguys[i]->beam)
+        if (this->apterus && badguys[i] && badguys[i]->beam)
         {
-            if(this->apterus->collidedWith(badguys[i]->beam)) //double ouch
+            if (this->apterus->collidedWith(badguys[i]->beam)) //double ouch
             {
-                this->apterus->dealDamage();
-
                 delete(badguys[i]->beam);
                 badguys[i]->beam = NULL;
 
-                if(this->apterus->isHittable())
+                if (this->apterus->isHittable())
                 {
                     this->apterus->damage(1);
                     this->lifeBar->decrease(1);
                 }
+                this->apterus->dealDamage();
             }
         }
-
     }
 
-    if(this->apterus)
+    if (this->apterus)
         this->apterus->commitMovement();
 
     //*Diez*
@@ -596,6 +595,7 @@ void GameStateGame::checkCollisions()
     {
         this->timer->startCounting();
         delete this->apterus;
+
         this->apterus = NULL;
         this->game_over = true;
     }

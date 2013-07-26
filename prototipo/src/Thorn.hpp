@@ -11,6 +11,7 @@ class Thorn : public GameObject
 {
 public:
     Thorn(std::string file, int x, int y, int w, int h);
+    virtual ~Thorn();
 
     void update(float dt);
     void render(float cameraX, float cameraY);

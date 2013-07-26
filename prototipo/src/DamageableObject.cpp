@@ -3,8 +3,7 @@
 DamageableObject::DamageableObject(int initialHp):
     isAlive(true),
     hp(initialHp)
-{
-}
+{ }
 int DamageableObject::getHitpoints()
 {
     return this->hp;

@@ -70,7 +70,6 @@ public:
     void dash();
 
     /// Tells if the player's dead.
-    bool isAlive();
     bool isHittable();
     bool Dashing();
     bool isFalling();
@@ -149,7 +148,6 @@ private:
 
     bool isDashing; ///< Is it currently dashing.
 
-    bool dead;      ///< Has it died.
     bool damaging;  ///< Is it currently having damage.
 
     /// The movable platform that the player's currently on top.

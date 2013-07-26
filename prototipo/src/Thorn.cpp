@@ -1,12 +1,15 @@
  #include "Thorn.hpp"
 
- Thorn::Thorn(std::string file, int x, int y, int w, int h):
-     GameObject(x,y,w,h)
- {
+Thorn::Thorn(std::string file, int x, int y, int w, int h):
+    GameObject(x,y,w,h)
+{
     sprite = new Sprite(file);
     this->desiredPosition = new Rectangle();
- }
-
+}
+Thorn::~Thorn()
+{
+    // putting this so the compiler doesn't complain
+}
 void Thorn::update(float dt)
 {
     this->position->x -= (this->box->x - this->desiredPosition->x);

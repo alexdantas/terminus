@@ -8,7 +8,7 @@ LoadingScreen::LoadingScreen(std::string title, std::string subtitle, int amount
     amount(amount),
     percent(0)
 {
-    this->loadingBar = new Sprite("img/barrinha.png");
+    this->loadingBar   = new Sprite("img/loading-bar.png");
     this->titleFont    = new Font("ttf/UbuntuMono.ttf", 42);
     this->subtitleFont = new Font("ttf/UbuntuMono.ttf", 20);
 
