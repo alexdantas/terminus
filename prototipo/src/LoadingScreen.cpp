@@ -4,9 +4,11 @@
 LoadingScreen::LoadingScreen(std::string title, std::string subtitle, int amount):
     progressBar(390, 570, 400, 20, 100, 0),
     bg(NULL),
+    loadingBar(NULL),
     amount(amount),
     percent(0)
 {
+    this->loadingBar = new Sprite("img/barrinha.png");
     this->titleFont    = new Font("ttf/UbuntuMono.ttf", 42);
     this->subtitleFont = new Font("ttf/UbuntuMono.ttf", 20);
 
@@ -46,6 +48,7 @@ void LoadingScreen::increase(unsigned int ammount)
         this->progressBar.increase(ammount);
 
     this->progressBar.render();
+    this->loadingBar->render(387,565);
     Window::refresh();
 }
 void LoadingScreen::set(unsigned int ammount)

@@ -51,6 +51,7 @@ private:
     ProgressBar progressBar;
 
     Sprite* bg; ///< Background of the loading screen.
+    Sprite* loadingBar; ///< Fancy loading
 
     int amount; ///< How many objects will be loaded
     int percent; ///< How much loading bar will be increased
