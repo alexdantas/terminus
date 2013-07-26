@@ -5,7 +5,9 @@
 #include "GameObject.hpp"
 #include "DamageableObject.hpp"
 #include "Animation.hpp"
+#include "OtherAnimation.h"
 #include "PlatformMovable.hpp"
+#include "Thorn.hpp"
 
 /// Defines the bad guy.
 //Actually, pretty similar to the Player's class
@@ -28,8 +30,8 @@ public:
     };
 
     enum BadGuyType{
-        GRIFFIN = 0,
-        VENUS,
+        VENUS = 0,
+        GRIFFIN,
 
         MAX /// This arbitrary value exists so that any vector
             // that wished to hold this enum can be safely
@@ -46,7 +48,7 @@ public:
     void render(float cameraX, float cameraY);
 
     /// Updates internal animation status.
-    void updateAnimation();
+    void updateAnimation(int dt);
 
     /// _Actually_ moves the bad guy.
     void commitMovement();
@@ -65,11 +67,15 @@ public:
 
     /// Tells if he's already defeat
     bool isAlive();
+    bool Attacking();
+    bool isHittable();
+    bool died();
 
     /// Bad guys never wins in the end
     void die();
 
     void dealDamage();
+    void Attacked();
 
 
 protected:
@@ -118,6 +124,8 @@ protected:
     Rectangle* desiredPosition;
 
     BadGuyType type;
+
+    Thorn *beam;
 
 };
 

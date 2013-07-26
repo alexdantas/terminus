@@ -9,7 +9,7 @@ class BadGuyManager
 {
 public:
     /// Will create *ammout* bad guys
-    BadGuyManager(unsigned int ammout);
+    BadGuyManager(unsigned int ammout, Rectangle *gameArea, PlatformManager *platforms);
     virtual ~BadGuyManager();
 
     /// Show time
@@ -20,12 +20,10 @@ public:
     /// Everyone
     BadGuyContainer* container;
 
-    void add();
-
-    void addAll();
-
     ///Get everyone
     std::vector<BadGuy*> getBadGuys();
+
+    BadGuy* badguy;
 
 private:
 
@@ -33,8 +31,6 @@ private:
     float maxHeight;
 
     float minHeight;
-
-    BadGuy* badguy;
 
     /// Holds the camera Y to generate platforms.
     float currentCameraY;

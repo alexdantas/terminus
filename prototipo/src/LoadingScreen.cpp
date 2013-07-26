@@ -1,9 +1,11 @@
 #include "LoadingScreen.hpp"
 #include "Window.hpp"
 
-LoadingScreen::LoadingScreen(std::string title, std::string subtitle):
+LoadingScreen::LoadingScreen(std::string title, std::string subtitle, int amount):
     progressBar(390, 570, 400, 20, 100, 0),
-    bg(NULL)
+    bg(NULL),
+    amount(amount),
+    percent(0)
 {
     this->titleFont    = new Font("ttf/UbuntuMono.ttf", 42);
     this->subtitleFont = new Font("ttf/UbuntuMono.ttf", 20);
@@ -27,6 +29,9 @@ LoadingScreen::LoadingScreen(std::string title, std::string subtitle):
 
     // rendering progress bar for the first time
     this->increase(0);
+
+    if(this->amount != 0)
+        this->percent = 100/amount;
 }
 LoadingScreen::~LoadingScreen()
 {
@@ -35,7 +40,11 @@ LoadingScreen::~LoadingScreen()
 }
 void LoadingScreen::increase(unsigned int ammount)
 {
-    this->progressBar.increase(ammount);
+    if(percent != 0)
+        this->progressBar.increase(percent);
+    else
+        this->progressBar.increase(ammount);
+
     this->progressBar.render();
     Window::refresh();
 }

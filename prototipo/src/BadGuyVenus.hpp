@@ -3,6 +3,7 @@
 
 #include "BadGuy.hpp"
 #include "TimerCounter.hpp"
+#include "Sprite.hpp"
 
 /**
 * Venus is a bad godness
@@ -21,6 +22,7 @@ public:
     BadGuyVenus(float x, float y, int w, int h, int hp, float acceleration);
     virtual ~BadGuyVenus();
     void update(float dt); //Thw way Venus don't move
+    void updateAttack(float dt);
 
     /// Makes the Venus step into a movable platform *platform*.
     ///
@@ -35,6 +37,7 @@ private:
     TimerCounter *timer;
 
     PlatformMovable* movablePlatform;
+
 };
 
 #endif //BADGUYVENUS_H_DEFINED

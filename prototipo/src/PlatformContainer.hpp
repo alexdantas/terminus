@@ -57,6 +57,8 @@ public:
     /// Returns the uppermost platform on the map.
     Platform* getTopPlatform();
 
+    Platform* getBottomPlatform();
+
     /// Deletes the last platform (bottom platform
     /// on the game area).
     void deleteLast();

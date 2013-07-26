@@ -20,12 +20,13 @@ class LoadingScreen
 public:
     /// Creates a loading screen with *text*, to be rendered
     /// by the font at *fontPath*.
-    LoadingScreen(std::string title, std::string subtitle="");
+    //If amount = 0, then we don't know how many things will be loaded
+    LoadingScreen(std::string title, std::string subtitle="", int amount = 0);
 
     ~LoadingScreen();
 
     /// Increase loading bar's percentage by *ammount*.
-    void increase(unsigned int ammount);
+    void increase(unsigned int ammount = 0);
 
     /// Set loading bar's percentage by *ammount*.
     void set(unsigned int ammount);
@@ -50,6 +51,9 @@ private:
     ProgressBar progressBar;
 
     Sprite* bg; ///< Background of the loading screen.
+
+    int amount; ///< How many objects will be loaded
+    int percent; ///< How much loading bar will be increased
 };
 
 #endif //LOADINGSCREEN_H_DEFINED

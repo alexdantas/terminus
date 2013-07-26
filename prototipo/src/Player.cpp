@@ -52,23 +52,25 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     tmp = new Animation("img/spritesheets/apterus-jumping-right.png", 6, animationSpeed);
     this->animations[JUMPING_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/apterus-dashing-left.png", 5, animationSpeed+10, 1);
+    tmp = new Animation("img/spritesheets/apterus-dashing-left.png", 5, animationSpeed - 5, 1);
     tmp->setTransparentRGBColor(Color(255, 255, 255));
     this->animations[DASHING_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/apterus-dashing-right.png", 5, animationSpeed+10, 1);
+    tmp = new Animation("img/spritesheets/apterus-dashing-right.png", 5, animationSpeed - 5, 1);
     this->animations[DASHING_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/apterus-damaging-left.png", 7, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-damaging-left.png", 7, animationSpeed, 1);
+    tmp->setTransparentRGBColor(Color(255, 255, 255));
     this->animations[DAMAGING_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/apterus-damaging-right.png", 7, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-damaging-right.png", 7, animationSpeed, 1);
+    tmp->setTransparentRGBColor(Color(255, 255, 255));
     this->animations[DAMAGING_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/apterus-death-left.png", 7, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-death-left.png", 7, animationSpeed, 1);
     this->animations[DEATH_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/apterus-death-right.png", 7, animationSpeed);
+    tmp = new Animation("img/spritesheets/apterus-death-right.png", 7, animationSpeed, 1);
     this->animations[DEATH_RIGHT] = tmp;
 
     // Let's start by looking at our right.
@@ -129,13 +131,31 @@ void Player::update(float dt)
     if (fabs(this->vx) < this->stoppedThreshold)
         this->vx = 0;
 
+    if(this->damaging)
+    {
+        if(this->facingDirection == RIGHT)
+            this->vx = -10;
+        else
+            this->vx = 10;
+    }
+    else if(this->isDashing)
+    {
+         if(this->facingDirection == RIGHT)
+            this->vx = 25;
+        else
+            this->vx = -25;
+    }
+
     // deaccelerating for smoothness
 //    this->vx *= PhysicsManager::groundFriction;
 //    this->vy *= PhysicsManager::airFriction;
 
     // actually moving the pixels on the screen
-    this->desiredPosition->addX(this->vx);
-    this->desiredPosition->addY(this->vy);
+    if(this->isAlive())
+    {
+        this->desiredPosition->addX(this->vx);
+        this->desiredPosition->addY(this->vy);
+    }
 
     // Movable Platforms
     //
@@ -181,7 +201,8 @@ void Player::update(float dt)
     }
 
     // Updating visible
-    this->desiredPosition->update();
+    if(this->isAlive())
+        this->desiredPosition->update();
 
     this->updateAnimation();
 }
@@ -278,7 +299,10 @@ void Player::updateAnimation()
     if (this->isDashing)
     {
         if (!(this->currentAnimation->isRunning()))
+        {
             this->isDashing = false;
+            this->currentAnimation->start();
+        }
     }
 
     // These will make transitions a lot easier
@@ -312,13 +336,15 @@ void Player::updateAnimation()
                 tmp = this->animations[DAMAGING_LEFT];
             }
         }
-        if (this->damaging)
+
+        if(!this->currentAnimation->isRunning())
         {
-            if (!(this->currentAnimation->isRunning()))
-                this->damaging = false;
+            this->damaging = false;
+            this->currentAnimation->start();
         }
+
     }
-    if (this->dead)
+    else if (this->dead)
     {
         if (this->facingDirection == RIGHT)
         {
@@ -337,7 +363,7 @@ void Player::updateAnimation()
             }
         }
     }
-    else // NOT dead
+    else // NOT dead AND not hurt
     {
         if (this->inAir)
         {
@@ -479,7 +505,7 @@ void Player::jump(bool willJump)
         //                  in a row it will jump higher than
         //                  pressing once and then later twice.
         // this->vy += (-1 * this->thrust);
-        this->vy = (-1 * this->thrust);
+        this->vy = (-0.7 * this->thrust);
     }
     else // Will cancel jumping
     {
@@ -514,10 +540,34 @@ void Player::die()
 {
     this->dead = true;
 }
+
+bool Player::died()
+{
+    if(this->currentAnimation == this->animations[DEATH_RIGHT] || this->currentAnimation == this->animations[DEATH_LEFT])
+        return (this->currentAnimation->isRunning() ? false : true);
+    return false;
+}
+
 bool Player::isAlive()
 {
     return (!this->dead);
 }
+
+bool Player::isHittable()
+{
+    return (!this->damaging && !this->dead && !this->isDashing);
+}
+
+bool Player::Dashing()
+{
+    return isDashing;
+}
+
+bool Player::Falling()
+{
+    return (this->inAir);
+}
+
 void Player::dealDamage()
 {
     this->damaging = true;

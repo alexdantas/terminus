@@ -18,7 +18,7 @@ class BadGuyContainer
 public:
     /// Creates a bad guy container that holds *maxAmmount* of
     /// bad guys
-    BadGuyContainer(unsigned int maxAmmount);
+    BadGuyContainer(unsigned int maxAmmount, Rectangle *gameArea, PlatformManager *platforms);
 
     virtual ~BadGuyContainer();
 
@@ -35,6 +35,8 @@ public:
     //But easier to manipulate, SORRY!!!!!
     std::vector<BadGuy*>badguy;
 
+    BadGuy::BadGuyType type;
+
 
 private:
     /// Maximum ammount of bad guys allowed.
@@ -42,6 +44,10 @@ private:
 
     /// Current bad guy.
     unsigned int currentAmmount;
+
+    Rectangle *gameArea;
+
+    PlatformManager *platforms;
 
     /// Contains indexes to active objects.
     std::vector<int> indirection;

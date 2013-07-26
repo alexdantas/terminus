@@ -18,6 +18,7 @@
 #include "DropDownConsole.hpp"
 #include "Player.hpp"
 #include "BadGuyManager.hpp"
+#include "Thorn.hpp"
 #include "PlatformManager.hpp"
 #include "CloudManager.hpp"
 #include "Fade.hpp"
@@ -136,6 +137,7 @@ private:
     Text* lifeBarText;
 
     bool isPaused; ///< Is the game paused?
+    int cameraLowestPoint;
 
     Font* font; ///< Font that shows everything on the screen.
     Text* pausedTitle;
@@ -146,6 +148,7 @@ private:
     PlatformManager* platforms; ///< All the game platforms.
 
     BadGuyManager* badguy; ///All the enemys in the game
+    Thorn *spikes;
 
     CloudManager* clouds; ///< All the clouds of the game.
 

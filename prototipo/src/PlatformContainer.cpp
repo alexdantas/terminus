@@ -238,6 +238,14 @@ Platform* PlatformContainer::getTopPlatform()
 
     return (this->platforms.back());
 }
+
+Platform* PlatformContainer::getBottomPlatform()
+{
+    if (this->platforms.empty())
+        return NULL;
+
+    return (this->platforms.front());
+}
 void PlatformContainer::deleteLast()
 {
     // Deletes the LAST platform which is the FIRST element

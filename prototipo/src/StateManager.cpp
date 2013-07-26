@@ -20,7 +20,7 @@ StateManager::StateManager(int width, int height)
 
     SDL::init(30); // framerate
 
-    Window::init(width, height, "PROTOTYPE", "prototype");
+    Window::init(width, height, "Terminus", "terminus");
     Graphics::init(Window::screen);
 
     // For even further debugging purposes

@@ -40,7 +40,7 @@ bool Sprite::load()
     // Will print image at it's original size
     this->crop(0, 0, (this->surface->w), (this->surface->h));
 
-    Log::debug("Sprite::load '" + this->filename + "'");
+    //Log::debug("Sprite::load '" + this->filename + "'");
     return true;
 }
 void Sprite::crop(int x, int y, int w, int h)

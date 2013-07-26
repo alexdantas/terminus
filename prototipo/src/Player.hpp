@@ -70,9 +70,13 @@ public:
 
     /// Tells if the player's dead.
     bool isAlive();
+    bool isHittable();
+    bool Dashing();
+    bool Falling();
 
     /// Makes the player die.
     void die();
+    bool died();
 
     void dealDamage();
 

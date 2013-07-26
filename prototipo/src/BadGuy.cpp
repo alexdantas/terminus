@@ -4,12 +4,14 @@
 #include "Log.hpp"
 #include "PhysicsManager.hpp"
 #include "Config.hpp"
+#include "Graphics.hpp"
 
 BadGuy::BadGuy(float x, float y, int w, int h, int hp, float acceleration):
     GameObject(x, y, w, h),
     DamageableObject(hp),
     vx(0), vy(0),
     ax(0), ay(0),
+    targetVx(0), targetVy(0),
     acceleration(acceleration),
     currentAnimation(NULL),
     facingDirection(RIGHT),
@@ -17,17 +19,31 @@ BadGuy::BadGuy(float x, float y, int w, int h, int hp, float acceleration):
     hasVerticalLimit(false),
     isAttacking(false),
     dead(false),
-    damaging(false)
+    damaging(false),
+    visible(true)
 {
-    this->desiredPosition = new Rectangle();
+
 }
 BadGuy::~BadGuy()
-{ }
+{
+
+}
 
 void BadGuy::render(float cameraX, float cameraY)
 {
     this->currentAnimation->render(this->position->x - cameraX,
                                    this->position->y - cameraY);
+    if(this->beam && this->isAttacking)
+        this->beam->render(cameraX, cameraY);
+
+    if(Config::showBoundingBoxes){
+        Rectangle tmp(this->desiredPosition->x - cameraX,
+                          this->desiredPosition->y - cameraY,
+                          this->desiredPosition->w,
+                          this->desiredPosition->h);
+
+        Graphics::drawRectangle(tmp);
+    }
 }
 
 void BadGuy::setHorizontalLimit(int left, int right)
@@ -46,8 +62,16 @@ void BadGuy::setVerticalLimit(int top, int bottom)
     this->hasVerticalLimit = true;
 }
 
-void BadGuy::updateAnimation()
+void BadGuy::updateAnimation(int dt)
 {
+    if (this->damaging && !this->dead)
+    {
+        if (!(this->currentAnimation->isRunning()))
+        {
+            this->damaging = false;
+            this->currentAnimation->start();
+        }
+    }
 
     // These will make transitions a lot easier
     bool willChangeAnimation = false;
@@ -62,7 +86,7 @@ void BadGuy::updateAnimation()
     // And there's a whole tree of possible animations depending
     // on a lot of circumstances... Damn, dude.
 
-    if (this->damaging)
+    if (this->damaging && !this->dead)
     {
         if (this->facingDirection == RIGHT)
         {
@@ -124,7 +148,7 @@ void BadGuy::updateAnimation()
             }
         }
     }
-    else //Just flying
+    else //Stand by
     {
         if (this->facingDirection == RIGHT)
         {
@@ -148,10 +172,10 @@ void BadGuy::updateAnimation()
     {
         this->currentAnimation->stop();
         this->currentAnimation = tmp;
-        this->currentAnimation->start();
+        this->currentAnimation->start() ;
     }
 
-    this->currentAnimation->update();
+    this->currentAnimation->update(dt);
 }
 
 void BadGuy::commitMovement()
@@ -174,6 +198,16 @@ bool BadGuy::isAlive()
     return (!this->dead);
 }
 
+bool BadGuy::Attacking()
+{
+    return this->isAttacking;
+}
+
+bool BadGuy::isHittable()
+{
+    return (this->isAlive() && !this->Attacking() && !this->damaging);
+}
+
 void BadGuy::dealDamage()
 {
     this->damaging = true;
@@ -187,5 +221,19 @@ bool BadGuy::isVisible()
 void BadGuy::setVisible(bool option)
 {
     this->visible = option;
+}
+
+void BadGuy::Attacked()
+{
+    this->dealDamage();
+    this->damage(1);
+
+}
+
+bool BadGuy::died()
+{
+    if(this->currentAnimation == this->animations[DEATH_RIGHT] || this->currentAnimation == this->animations[DEATH_LEFT])
+        return (this->currentAnimation->isRunning() ? false : true);
+    return false;
 }
 

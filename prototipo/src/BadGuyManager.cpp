@@ -1,17 +1,13 @@
 #include "BadGuyManager.hpp"
 
-BadGuyManager::BadGuyManager(unsigned int ammout):
+BadGuyManager::BadGuyManager(unsigned int ammout, Rectangle *gameArea, PlatformManager *platforms):
     container(NULL),
     maxHeight(maxHeight),
     minHeight(20),
     currentCameraY(0)
 {
-    this->container = new BadGuyContainer(10);
+    this->container = new BadGuyContainer(ammout, gameArea, platforms);
 
-    //To do
-
-    //for (int i = 0; i < 10; i++)
-    //    this->add();
 }
 BadGuyManager::~BadGuyManager()
 {
@@ -21,7 +17,7 @@ BadGuyManager::~BadGuyManager()
 
 void BadGuyManager::update(float dt)
 {
-    this->container->update(dt);
+    this->container->update(30);
 }
 
 void BadGuyManager::render(float cameraX, float cameraY)
@@ -29,16 +25,6 @@ void BadGuyManager::render(float cameraX, float cameraY)
     this->currentCameraY = cameraY;
 
     this->container->render(cameraX, cameraY);
-}
-
-void BadGuyManager::add()
-{
-    //TO DO
-}
-
-void BadGuyManager::addAll()
-{
-    //TO DO
 }
 
 std::vector<BadGuy*> BadGuyManager::getBadGuys()

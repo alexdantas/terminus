@@ -26,6 +26,7 @@ GameStateGame::GameStateGame():
     timer(NULL),
     bgmusic(NULL),
     apterus(NULL),
+    spikes(NULL),
     lifeBar(NULL),
     lifeBarFont(NULL),
     lifeBarText(NULL),
@@ -43,9 +44,9 @@ void GameStateGame::load(int stack)
 {
     UNUSED(stack);
 
-    LoadingScreen loading("loading...");
+    LoadingScreen loading("loading...", "", 13);
     loading.setBg("img/loading2.png");
-    loading.increase(0);
+
     loading.setSubtitle("Drawing background...");
 
     this->bg = new Sprite("img/fundo.png");
@@ -55,7 +56,7 @@ void GameStateGame::load(int stack)
                                    this->bg->getWidth(),
                                    this->bg->getHeight());
 
-    loading.increase(30);
+    loading.increase();
     loading.setSubtitle("Buying camera...");
 
     this->camera = new Camera(0, 0, Window::width, Window::height);
@@ -65,7 +66,7 @@ void GameStateGame::load(int stack)
     this->timer = new TimerCounter(5000);
 
     loading.setSubtitle("Spawning you...");
-    loading.increase(3);
+    loading.increase();
 
     int playerX = 245;
     int playerY = this->gameArea->h - 201;
@@ -78,40 +79,43 @@ void GameStateGame::load(int stack)
     this->apterus->setVerticalLimit(0, this->gameArea->h);
     this->camera->centerOn(this->apterus->getCenterX(),
                            this->apterus->getCenterY());
+    this->cameraLowestPoint = this->camera->getY();
 
-    loading.increase(10);
+    loading.increase();
     loading.setSubtitle("Designing lifebar...");
 
     this->lifeBar = new ProgressBar(200, 20, this->apterus->getHitpoints(), this->apterus->getHitpoints());
     this->lifeBar->setForegroundColor(Color(255, 0, 255));
     this->lifeBar->setBackgroundColor(Color(100, 0, 100));
 
-    loading.increase(4);
+    loading.increase();
+    loading.setSubtitle("Still designing lifebar...");
 
     this->lifeBarFont = new Font("ttf/UbuntuMono.ttf", 16);
     this->lifeBarText = new Text(this->lifeBarFont);
     this->lifeBarText->setText("Energy");
     this->lifeBarText->setPosition(10, 10);
 
-    loading.increase(4);
+    loading.increase();
     loading.setSubtitle("Choosing fonts...");
 
     this->font = new Font("ttf/UbuntuMono.ttf", 42);
 
-    loading.increase(5);
+    loading.increase();
+    loading.setSubtitle("Writhing things...");
 
     this->pausedTitle = new Text(this->font);
     this->pausedTitle->setText("Paused");
     this->pausedTitle->setPosition((Window::width/2) - 50,
                                    (Window::height/2) - 100);
 
-    loading.increase(5);
+    loading.increase();
     loading.setSubtitle("Legally buying music...");
 
     this->bgmusic = new Music("ogg/escaping.ogg");
     this->bgmusic->play();
 
-    loading.increase(10);
+    loading.increase();
     loading.setSubtitle("Loading Quake-like console...");
 
     this->consoleFont = new Font("ttf/UbuntuMono.ttf", 18);
@@ -133,7 +137,7 @@ void GameStateGame::load(int stack)
     this->console->addCommand("help", COMMAND_HELP);
     this->console->addCommand("keys", COMMAND_CONTROLS);
 
-    loading.increase(6);
+    loading.increase();
     loading.setSubtitle("Building platforms...");
 
     // The area on which platforms can be spawned
@@ -141,9 +145,12 @@ void GameStateGame::load(int stack)
 
     this->platforms = new PlatformManager(platformArea, (Config::playerJump * 5));
 
-    this->badguy = new BadGuyManager(10);
+    loading.increase();
+    loading.setSubtitle("Let the bad guys out...");
+    this->badguy = new BadGuyManager(10, this->gameArea, this->platforms);
+    this->spikes = new Thorn("img/espinho.png", this->gameArea->x, this->gameArea->h + 50, 800, 48);
 
-    loading.increase(3);
+    loading.increase();
     loading.setSubtitle("Searching for clouds...");
 
     // The area on which clouds can be spawned is determined by
@@ -159,7 +166,7 @@ void GameStateGame::load(int stack)
                                     Config::cloudsLimit);
     this->clouds->setDelay(1500);
 
-    loading.increase(10);
+    loading.increase();
     loading.setSubtitle("Done!");
 
     this->fadeOut = new Fade(Fade::FADE_OUT, 1000);
@@ -202,6 +209,7 @@ int GameStateGame::unload()
 }
 GameState::StateCode GameStateGame::update(float dt)
 {
+
     // If we're trying to quit, the fade out effect will start.
     // When it's finished, we will actually quit the game.
     if (this->fadeOut->isDone())
@@ -336,14 +344,22 @@ InputManager* input = InputManager::getInstance();
     {
         this->apterus->update(dt);
         this->camera->centerOn(this->apterus->getCenterX(),
-                               this->apterus->getCenterY());
+                                this->apterus->getCenterY());
+
+         if(this->apterus->getY() + 200< this->gameArea->h - 48)
+        {
+            this->spikes->setPositionSprite(camera->getY() + 600 - 48);
+            this->spikes->setPositionCollision( cameraLowestPoint + 600);
+        }
     }
+
     this->badguy->update(dt);
 
-    // if (this->apterus->getY() >= cameraLowestPoint)
-    // {
-    //     // this is where the player dies
-    // }
+     //if (this->apterus && (this->apterus->getY() > cameraLowestPoint + 600 - 48 - this->apterus->getHeight()))
+     if (this->apterus && this->apterus->collidedWith(this->spikes))
+     {
+         this->apterus->die();
+     }
 
     this->clouds->update(dt);
     this->checkCollisions();
@@ -365,8 +381,9 @@ void GameStateGame::render()
     this->clouds->setArea(this->camera->getArea());
 
     this->platforms->render(cameraX, cameraY);
+    this->spikes->render(cameraX,cameraY);
 
-    if (this->apterus && !(this->apterus->isDead()))
+    if (this->apterus)
         this->apterus->render(cameraX, cameraY);
 
     this->badguy->render(cameraX, cameraY);
@@ -499,6 +516,12 @@ void GameStateGame::checkCollisions()
             }
         }
     }
+    //WATCHOUT!!! BAD PROGRAMING PRACTICE OVER HERE!!!!!!
+    //SORRY, GUYS! T_T
+    //Let's get always the position of the last platform, which doesn't anymore
+    //NOT THE BETTER WAY
+    if(this->platforms->container->getBottomPlatform()->getY() < cameraLowestPoint)
+        this->cameraLowestPoint = this->platforms->container->getBottomPlatform()->getY();
     // unsigned int size = platform->usedPlatforms.size();
     // for (unsigned int i = 0; i < size; i++)
     // {
@@ -517,28 +540,46 @@ void GameStateGame::checkCollisions()
 
     // We're allowing the player to move.
 
+
+    //Let's check if enemys are colliding with poor Apterus
     std::vector<BadGuy*> badguys = this->badguy->getBadGuys();
     unsigned int size = badguys.size();
     for (unsigned int i = 0; i < size; i++)
     {
-        if(this->apterus && this->apterus->collidedWith(badguys[i])){
-            this->apterus->dealDamage();
-            this->apterus->damage(1);
-            this->lifeBar->decrease(1);
+        if(this->apterus && badguys[i] && this->apterus->collidedWith(badguys[i])){
+
+            if(this->apterus->Dashing() && badguys[i]->isHittable())
+            {
+                (badguys[i])->Attacked(); //Take that!
+            }
+            else if(badguys[i]->isAlive())
+            {
+                this->apterus->dealDamage(); //Ouch!
+                if(this->apterus->isHittable())
+                {
+                    this->apterus->damage(1);
+                    this->lifeBar->decrease(1);
+                }
+            }
         }
+
     }
 
     if(this->apterus)
         this->apterus->commitMovement();
 
+    //*Diez*
     if (this->apterus && this->apterus->isDead())
+        this->apterus->die();
+
+    if(this->apterus->died())
     {
         this->timer->startCounting();
         delete this->apterus;
         this->apterus = NULL;
-
         this->game_over = true;
     }
+
 }
 void GameStateGame::updateInput()
 {

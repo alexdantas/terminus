@@ -22,11 +22,11 @@
 #ifndef _SDL_CONFIG_LIB_H
 #define _SDL_CONFIG_LIB_H
 
-#include "SDL_rwops.h"
-#include "SDL_error.h"
-#include "SDL_version.h"
+#include <SDL/SDL_rwops.h>
+#include <SDL/SDL_error.h>
+#include <SDL/SDL_version.h>
 
-#include "begin_code.h"
+#include <SDL/begin_code.h>
 
 
 #include "SDL_config_cfg.h"
@@ -57,7 +57,7 @@
 
 /* Setup for C function definitions, even when using C++ */
 #ifdef __cplusplus
-    
+
     #include <string> /* for CFG_String in CFG_Settings::keyword_bool */
     extern "C" {
 
@@ -96,7 +96,7 @@
  /*
 
  They belong to public API are also used internally to distinguish between the four entry types.
- 
+
  */
 
  #define CFG_BOOL 1
@@ -126,7 +126,7 @@
  #define CFG_SORT_ORIGINAL 1
  #define CFG_SORT_CONTENT 2
  #define CFG_SORT_TYPE_CONTENT 3
- #define CFG_SORT_ALPHABET 4 
+ #define CFG_SORT_ALPHABET 4
 
  #define CFG_SPACE_ENTRIES          1
  /*#define CFG_SPACE_ALL              2*/
@@ -157,24 +157,24 @@ extern DECLSPEC
 
  Version of the dynamically linked SDL_Config library. It may be used for checking
  that DLL is compatible with our staticly-linked library version, or just to print
- version information somewhere to user. It may be used even when you're using *staticaly* linked SDL_Config. 
- 
- 
+ version information somewhere to user. It may be used even when you're using *staticaly* linked SDL_Config.
+
+
  Example:
- 
+
  (start code)
- 
+
  const SDL_version * sdl_cfg_version = CFG_LinkedVersion();
  CFG_Char buffer[20];
  sprintf(buffer, "%u.%u.%u", sdl_cfg_version->major, sdl_cfg_version->minor, sdl_cfg_version->patch);
  // buffer contains version info
-  
+
   (end code)
 
  If you want to obtatin the compile-time version of the SDL_Config library, use macro SDL_CFG_VERSION(X).
 
  Example:
- 
+
  (start code)
 
  SDL_version sdl_cfg_version;
@@ -238,7 +238,7 @@ struct CFG_Settings;
 
 typedef struct CFG_File
  {
-   struct CFG_Internal_File * internal_file;   
+   struct CFG_Internal_File * internal_file;
  } CFG_File;
 
 /* ------------------------------------------------------- */
@@ -259,7 +259,7 @@ extern DECLSPEC
  If you pass null (0) as filename, then new config file will be created, but initially it will be empty.
  You can once again pass it to CFG_OpenFile for parsing, but you don't have to - ie. you can fill it
  with groups and entries manually, and than save somewhere.
- 
+
  You should call <CFG_CloseFile> on *file* only if this function returns CFG_OK.
 
  Returns:
@@ -312,7 +312,7 @@ extern DECLSPEC
 
   Searches for entries which value depends on another entry, and performs necessary substitutions. Works for currently selected file.
   Since all keys in all groups have to be scanned letter after letter, you can choose not to do it - simply don't call this function.
-  You should call this after CFG_OpenFile if you know that the .cfg file uses value substitution.   
+  You should call this after CFG_OpenFile if you know that the .cfg file uses value substitution.
 
   If you want to be able to specify directly in .cfg file whether to perform value substitution, consider doing it like this:
 
@@ -322,7 +322,7 @@ extern DECLSPEC
 
   Those two line allow you to use data driven approach to .cfg file parsing.
 
-  If *recheck_types* == true, then after all substitutions for entry are performed, it's type is rechecked since it 
+  If *recheck_types* == true, then after all substitutions for entry are performed, it's type is rechecked since it
   could have changed, ie:
 
  > five = 5
@@ -337,7 +337,7 @@ extern DECLSPEC
  > third = c
  > foo = $(first), $(second), $(third)
 
- it will still be treated like multi value entry (with three entries), and each of them will be 
+ it will still be treated like multi value entry (with three entries), and each of them will be
  separately substituted: foo = a, b, c
 
 
@@ -356,19 +356,19 @@ extern DECLSPEC
  It works even for multi value entries substituted by multi value entries (!)
 
  > numbers = 4, 7
- > cartesian = $(numbers) $(numbers) 
- 
- 
- You'll get real cartesian product = "44", "47", "74", "77" 
+ > cartesian = $(numbers) $(numbers)
+
+
+ You'll get real cartesian product = "44", "47", "74", "77"
 
 
 */
 
- void CFG_PerformValueSubstitution(CFG_Bool recheck_types = false); 
+ void CFG_PerformValueSubstitution(CFG_Bool recheck_types = false);
 #else
  void CFG_PerformValueSubstitution(CFG_Bool recheck_types);
 #endif
-                
+
 
 
 
@@ -491,7 +491,7 @@ extern DECLSPEC
 
  If file is not null (!0), it operates on file that was passed in.
  Otherwise, if file equals *CFG_SELECTED* or it is null, function operates on currently selected file.
- 
+
 
  Notes:
 
@@ -499,7 +499,7 @@ extern DECLSPEC
   - obviously, global group isn't removed, only its entries are removed
   - file that was selected, stays selected
   - if groups were successfully removed from file, global group is selected
- 
+
  Returns:
 
    - *CFG_OK* - file was cleared successfully.
@@ -716,7 +716,7 @@ extern DECLSPEC
 #ifdef CFG_USE_DEFAULT_VALUES
 
 
-/* 
+/*
 
 Function: CFG_GetEntriesInSelectedGroup
 
@@ -725,7 +725,7 @@ Returns the number of entries in currently selected group.
 By default (passing *0*) it counts all entries.
 Pass:
 
-- CFG_BOOL 
+- CFG_BOOL
 - CFG_INTEGER
 - CFG_FLOAT
 - CFG_TEXT
@@ -760,7 +760,7 @@ extern DECLSPEC
 
  Returns the type of one particular entry:
 
-  - CFG_BOOL 
+  - CFG_BOOL
   - CFG_INTEGER
   - CFG_FLOAT
   - CFG_TEXT
@@ -838,7 +838,7 @@ extern DECLSPEC CFG_Bool CFG_TextEntryExists(CFG_String_Arg entry);
 
    - pass *CFG_ENTRY_ITERATION* as entry to *obtain* the current value of iterator during the iteration over entries.
      For more details, see <CFG_StartEntryIteration>
- 
+
  Multiple value entry iteration:
 
    - pass *CFG_MULTI_VALUE_ENTRY_ITERATION* as entry to *obtain* the current value of iterator during the iteration over values of one entry.
@@ -869,7 +869,7 @@ extern DECLSPEC CFG_String_Arg CFG_ReadText ( CFG_String_Arg entry, CFG_String_A
  > int CFG_WriteInt   ( CFG_String_Arg entry, Sint32 value         );
  > int CFG_WriteFloat ( CFG_String_Arg entry, CFG_Float value      );
  > int CFG_WriteText  ( CFG_String_Arg entry, CFG_String_Arg value );
- 
+
  Multiple value entry iteration:
 
    - pass *CFG_MULTI_VALUE_ENTRY_ITERATION* as entry to *change* the current value of iterator.
@@ -969,7 +969,7 @@ extern DECLSPEC
  Selects next group, in the order which was specified in <CFG_StartGroupIteration>.  Likewise that function,
  global group is ignored (it won't be selected ever when iterating through groups).
 
- For more informations about iteration, see <CFG_StartGroupIteration>. 
+ For more informations about iteration, see <CFG_StartGroupIteration>.
 
 */
 
@@ -1017,12 +1017,12 @@ extern DECLSPEC
 
  for ( CFG_StartGroupIteration(); !CFG_IsLastGroup(); )
    {
-    if (sth)          
+    if (sth)
      {
-      CFG_RemoveSelectedGroup();      
+      CFG_RemoveSelectedGroup();
      }
     else
-     {    
+     {
       CFG_SelectNextGroup();
      }
    }
@@ -1074,7 +1074,7 @@ extern DECLSPEC
  You must call this function before using <CFG_SelectNextEntry> or <CFG_IsLastEntry>, so that
  iterator initialization will be performed. Forgetting to do it may lead to some nasty bugs!
 
- You use CFG_Read*() with CFG_ENTRY_ITERATION passed in place of *entry*, to obtain the value of currently selected entry (just 
+ You use CFG_Read*() with CFG_ENTRY_ITERATION passed in place of *entry*, to obtain the value of currently selected entry (just
  like with multi value entry iteration).
 
  You iterate through entries in *alphabethical* order (see: <CFG_SelectNextEntry>).
@@ -1087,7 +1087,7 @@ extern DECLSPEC
    {
     switch ( CFG_GetEntryType( CFG_ENTRY_ITERATION ) )
     {
-     case CFG_BOOL:    CFG_ReadBool(CFG_ENTRY_ITERATION, 0); break;      
+     case CFG_BOOL:    CFG_ReadBool(CFG_ENTRY_ITERATION, 0); break;
      case CFG_INTEGER: CFG_ReadInt(CFG_ENTRY_ITERATION, 0); break;
      case CFG_FLOAT:   CFG_ReadFloat(CFG_ENTRY_ITERATION, 0); break;
      case CFG_TEXT:    CFG_ReadText(CFG_ENTRY_ITERATION, 0); break;
@@ -1108,14 +1108,14 @@ extern DECLSPEC
 
  Function: CFG_SelectNextEntry
 
- Selects next entry, in *alphabethical* order.  
+ Selects next entry, in *alphabethical* order.
  For more informations about iteration, see <CFG_StartEntryIteration>.
 
  Additional functionality:
 
  If someone needs the ability to iterate through entries in order, in which they were found in the original file,
- then sorry, but currently there's no way to do it. Unfortunately, even if there would be big public appeal for such 
- functionality, it's very unlikely that it would be implemented, since it would require big changes in CFG_InternalGroup - 
+ then sorry, but currently there's no way to do it. Unfortunately, even if there would be big public appeal for such
+ functionality, it's very unlikely that it would be implemented, since it would require big changes in CFG_InternalGroup -
  currently list of entries is stored in std::map which sorts entries by name, and sorting them by their appeareance order
  would be quite hard.
 
@@ -1138,20 +1138,20 @@ extern DECLSPEC
 
  CFG_Bool CFG_IsLastEntry( void );
 
- extern DECLSPEC 
-  
+ extern DECLSPEC
+
 /*
 
  Function: CFG_RemoveSelectedEntry
- 
+
  Removes the currently selected entry (during iteration).
- You shouldn't call this function without iteration, as well you shouldn't try to use normal removal 
+ You shouldn't call this function without iteration, as well you shouldn't try to use normal removal
  functions (<CFG_RemoveBoolEntry> etc.) during iteration.
 
  For more informations about iteration, see <CFG_StartEntryIteration>.
 
  */
-  
+
  void CFG_RemoveSelectedEntry( void );
 
 extern DECLSPEC
@@ -1181,7 +1181,7 @@ extern DECLSPEC
 
  /*
 
- Function: CFG_IsEntryMultiValue 
+ Function: CFG_IsEntryMultiValue
 
  Returns true if entry has multiple values. Searches for entry in currently selected group of currently selected file.
  If no such value exists, function returns false.
@@ -1196,7 +1196,7 @@ extern DECLSPEC
 
  Function: CFG_StartMultiValueEntryIteration
 
- After calling, it selects entry for the iteration over its values. 
+ After calling, it selects entry for the iteration over its values.
  Key is a entry name from currently selected group of currently selected file.
 
  If specified entry doesn't exist, whole iteration will fail after first <CFG_IsLastMultiValueEntry>.
@@ -1215,7 +1215,7 @@ extern DECLSPEC
  for ( CFG_StartMultiValueEntryIteration("entry"); !CFG_IsLastMultiValueEntry(); CFG_SelectNextMultiValueEntry() )
    {
     // now you can use those functions to operate on entries:
-    // reading: CFG_Read*(CFG_MULTI_VALUE_ENTRY_ITERATION, 0);    
+    // reading: CFG_Read*(CFG_MULTI_VALUE_ENTRY_ITERATION, 0);
     // writing: CFG_Write*(CFG_MULTI_VALUE_ENTRY_ITERATION, value);
    }
 
@@ -1260,7 +1260,7 @@ extern DECLSPEC
  Removes currently selected entry from multiple value list iteration.
  When you use it, don't call <CFG_SelectNextMultiValueEntry> in for loop, since *CFG_RemoveMultiValueEntry*
  automatically selects next entry after removal.
- 
+
  So, you rather would be iterating like this:
 
  (start code)
@@ -1271,9 +1271,9 @@ extern DECLSPEC
      {
       CFG_RemoveMultiValueEntry();
      }
-    else 
+    else
      {
-      CFG_SelectNextMultiValueEntry();     
+      CFG_SelectNextMultiValueEntry();
      }
    }
 
@@ -1290,8 +1290,8 @@ extern DECLSPEC
   Function: CFG_GetNumberOfMultiValueEntries
 
   Returns the number of values that belong to *entry* entry found in currently selected group, or 0 if there's no such entry. Returns 1 for single valued entries.
- 
- 
+
+
  */
 
   int CFG_GetNumberOfMultiValueEntries( CFG_String_Arg entry );
@@ -1327,18 +1327,18 @@ extern DECLSPEC
    CFG_SelectMultiValueEntry("friends", 1);
 
   (end code)
- 
+
  */
 
   int CFG_SelectMultiValueEntry( CFG_String_Arg entry, int index );
 
 
- /* 
- 
+ /*
+
  Functions: CFG_AddMultiValueToBool, CFG_AddMultiValueToInt, CFG_AddMultiValueToFloat, CFG_AddMultiValueToText
- 
+
  Adds new empty value at the end of multi value entry (with default *where* == -1) or after the *where* position ( values after new position are moved forward).
- You can't create entirely new entries with it, only add multi values to existing ones. 
+ You can't create entirely new entries with it, only add multi values to existing ones.
  It works also for single valued entries (which are a special case of multi values).
 
  > int CFG_AddMultiValueToBool ( CFG_String_Arg entry, CFG_Bool value, int where = -1  );
@@ -1353,7 +1353,7 @@ extern DECLSPEC
  Returns:
   - *CFG_OK* - everything went fine
   - *CFG_ERROR* - if for some reason it couldn't add new value (entry didn't exist or isn't the same type)
- 
+
  */
 
 #ifdef CFG_USE_DEFAULT_VALUES
@@ -1450,10 +1450,10 @@ extern DECLSPEC
  To remove comment, simply set *new_comment* to "" (you musn't pass 0).
 
  Parameters:
-  - group - name of the group. You may pass CFG_ENTRY_ITERATION to work on groups during iteration.  
+  - group - name of the group. You may pass CFG_ENTRY_ITERATION to work on groups during iteration.
   - comment_pos - pre comment (*CFG_COMMENT_PRE*) or post comment (*CFG_COMMENT_POST*)
   - new_comment - pretty self explaining
- 
+
 
 */
 
@@ -1525,20 +1525,20 @@ struct CFG_Settings
    If true, they'll be removed, otherwise they will stay untouched. For example:
 
    > [  my group  ]
-   
+
    If remove_group_spaces == true, you will get "mygroup", otherwise you'll get "  my group  ".
 
 
    *By default, true.*
 
   */
-  
-  CFG_Bool remove_group_spaces; 
+
+  CFG_Bool remove_group_spaces;
 
   /* Variables: syntax_group_start, syntax_group_end
 
    They define the enclosing characters of a group definition.
-    
+
    Default values:
 
    - syntax_group_start - [
@@ -1550,9 +1550,9 @@ struct CFG_Settings
    - syntax_group_end - >, }, )
 
   */
-  
-  CFG_Char syntax_group_start;   
-  CFG_Char syntax_group_end; 
+
+  CFG_Char syntax_group_start;
+  CFG_Char syntax_group_end;
 
   /* Variables: syntax_entry_equals, syntax_multiple_value_separator
 
@@ -1564,13 +1564,13 @@ struct CFG_Settings
   The *syntax_multiple_value_separator* is a charater used to separate multiple values of the same entry, ie.
 
   > name = value_1, value_2, value_3 // , is syntax_multiple_value_separator
-  
+
   Default values:
   - syntax_entry_equals - =
   - syntax_multiple_value_separator - ,
 
   Other reasonable values:
-  - syntax_entry_equals - : 
+  - syntax_entry_equals - :
   - syntax_multiple_value_separator - |, /, ^, &, .
 
   */
@@ -1585,11 +1585,11 @@ struct CFG_Settings
    > i_am_string = "yes"
    > i_am_bool = yes
 
-   The *syntax_escape_sequence* is used to determine whether found *syntax_double_quote* is a real double quote found inside string, or 
+   The *syntax_escape_sequence* is used to determine whether found *syntax_double_quote* is a real double quote found inside string, or
    is it syntax element, ie.
 
    > quote = "He said \"Punkz not dead\", smiling at my face."
-  
+
   Default values:
   - syntax_double_quote - "
   - syntax_escape_sequence - \
@@ -1606,7 +1606,7 @@ struct CFG_Settings
 
 #ifdef CFG_REDEFINE_BOOL_KEYWORDS
 
-/* Variables: keyword_bool_true_1, keyword_bool_true_2, keyword_bool_true_3, 
+/* Variables: keyword_bool_true_1, keyword_bool_true_2, keyword_bool_true_3,
               keyword_bool_false_1, keyword_bool_false_2, keyword_bool_false_3
 
 
@@ -1614,13 +1614,13 @@ You can freely change those, but make sure that they can't be categorized as:
 
 	1. Integer - don't use only digits inside
 	2. Float - don't use only digits and one dot inside
-	3. Text - don't use CFG_OPERATOR_DBL_QUOTE characters at start and end    
+	3. Text - don't use CFG_OPERATOR_DBL_QUOTE characters at start and end
 
    They're case insensitive.
 
    Read also <CFG_REDEFINE_BOOL_KEYWORDS>.
 
-   Default values: 
+   Default values:
 
    - keyword_bool_true_1 - true
    - keyword_bool_true_2 - yes
@@ -1636,11 +1636,11 @@ You can freely change those, but make sure that they can't be categorized as:
   CFG_String keyword_bool_false_1, keyword_bool_false_2, keyword_bool_false_3;
 
 #endif
-  
+
 
 /*
   Variables: syntax_comment_1, syntax_comment_2, syntax_comment_3
- 
+
   You can also change comment chars.
 
   Beware: *syntax_comment_1* is always treated as two chars (ie. if syntax_comment_1 == / then //
@@ -1654,18 +1654,18 @@ You can freely change those, but make sure that they can't be categorized as:
    - syntax_comment_3 - ;
 
   Other reasonable values: !, @, $, %, *, |, ', ?
- 
+
 */
 
   CFG_Char syntax_comment_1, syntax_comment_2, syntax_comment_3;
 
  /* Variables: syntax_comment_clike_1, syntax_comment_clike_2
- 
-  They define the C-like multiline comment. 
+
+  They define the C-like multiline comment.
   First occurence (start) is is recognized by sequence *syntax_comment_clike_1* *syntax_comment_clike_2*,
   end of comment is is recognized by sequence *syntax_comment_clike_2* *syntax_comment_clike_1*.
-  
-  Default values: 
+
+  Default values:
 
    - syntax_comment_clike_1 - /
    - syntax_comment_clike_2 - *
@@ -1675,20 +1675,20 @@ You can freely change those, but make sure that they can't be categorized as:
   CFG_Char syntax_comment_clike_1, syntax_comment_clike_2;
 
   /* Variables: substitution_start, substitution_end
-  
+
   They're used in value substitution, ie.
-  
+
   > that = 123
   > this = $(that)
-  
-  Default values: 
+
+  Default values:
 
 	- substitution_start[0] - $
 	- substitution_start[1] - (
 	- substitution_end - )
-	
+
   Other reasonable values: !, @, #, %, *, &, <, >, {, }
-  
+
   */
 
 
@@ -1702,7 +1702,7 @@ extern DECLSPEC
 
 /* Function: CFG_GetDefaultSettings
 
- Returns default settings. 
+ Returns default settings.
  You should use it when changing the value of only some of them. See <CFG_Settings>.
 
 */
@@ -1728,7 +1728,7 @@ Handy wrapper for all the functions, makes using SDL_Config much easier.
 
 Automatically closes file in destructor (or before another Open() call).
 
-It's not without disadadvantages, ie. if you're doing a lot of one config file parsing in many different functions, passing around 
+It's not without disadadvantages, ie. if you're doing a lot of one config file parsing in many different functions, passing around
 ConfigFile instance might be tedious - making it global variable springs to mind, but it has its own flaws.
 
 You should be really careful when mixing usage of this class with normal functions. For example, every operation on ConfigFile
@@ -1744,11 +1744,11 @@ class DECLSPEC ConfigFile
     Group: Special
    */
 
-   /*    
+   /*
    Constructor: ConfigFile
 
    Default constructor doesn't do anything. Later on you can open file using <Open>.
-   
+
    */
 
    ConfigFile();
@@ -1756,7 +1756,7 @@ class DECLSPEC ConfigFile
    /* Constructor: ConfigFile
 
    Essentialy the same thing as <CFG_File::CFG_OpenFile>.
-   
+
    */
 
    ConfigFile( const char * filename, const CFG_Settings * settings = 0 );
@@ -1765,25 +1765,25 @@ class DECLSPEC ConfigFile
    /* Constructor: ConfigFile
 
    Essentialy the same thing as <CFG_File::CFG_OpenFile_RW>.
-   
+
    */
    ConfigFile( SDL_RWops * source, const CFG_Settings * settings = 0 );
 
    /* Destructor: ConfigFile
 
    Automatically closes file, if was open.
-   
+
    */
    ~ConfigFile();
 
    /* Function: GetDefaultSettings
-     
-    Essentialy the same thing as <CFG_Settings::CFG_GetDefaultSettings>.	
-   */         
+
+    Essentialy the same thing as <CFG_Settings::CFG_GetDefaultSettings>.
+   */
    static void GetDefaultSettings( CFG_Settings * settings ) { CFG_GetDefaultSettings(settings); }
 
    /* Function: Get_CFG_File
-   
+
     Gives you access to *CFG_File* that this *ConfigFile* instance uses inside. Be careful with it!
     Any changes to it will also affect this *ConfigFile*.
     Returns 0 if file wasn't open.
@@ -1794,12 +1794,12 @@ class DECLSPEC ConfigFile
     Group: Loading and saving
    */
 
-   /* Function: Open   
+   /* Function: Open
     Essentialy the same thing as <CFG_File::CFG_OpenFile>.
    */
    bool Open( const char * filename, const CFG_Settings * settings = 0 );
 
-   /* Function: Open   
+   /* Function: Open
     Essentialy the same thing as <CFG_File::CFG_OpenFile_RW>.
    */
    bool Open( SDL_RWops * source, const CFG_Settings * settings = 0 );
@@ -1820,23 +1820,23 @@ class DECLSPEC ConfigFile
     Essentialy the same thing as <CFG_File::CFG_ClearFile>.
    */
    void Clear();
-   
+
    /* Function: Save
-     
-    Essentialy the same thing as <CFG_File::CFG_SaveFile>.	
+
+    Essentialy the same thing as <CFG_File::CFG_SaveFile>.
    */
    bool Save( const char * filename = 0, int mode = CFG_SORT_ORIGINAL, int flags = CFG_SPACE_ENTRIES, const CFG_Settings * settings	= 0);
 
    /* Function: Save
-     
-    Essentialy the same thing as <CFG_File::CFG_SaveFile_RW>.	
+
+    Essentialy the same thing as <CFG_File::CFG_SaveFile_RW>.
    */
    bool Save( SDL_RWops * destination, int mode = CFG_SORT_ORIGINAL, int flags = CFG_SPACE_ENTRIES, const CFG_Settings * settings	= 0 );
 
    /* Function: GetFilename
-     
-    Essentialy the same thing as <CFG_File::CFG_GetSelectedFileName>: returns the filename of this ConfigFile.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_GetSelectedFileName>: returns the filename of this ConfigFile.
+   */
    CFG_String_Arg GetFilename() const;
 
    /*
@@ -1844,58 +1844,58 @@ class DECLSPEC ConfigFile
    */
 
    /* Function: SelectGroup
-     
-    Essentialy the same thing as <CFG_File::CFG_SelectGroup>.	
-   */   
+
+    Essentialy the same thing as <CFG_File::CFG_SelectGroup>.
+   */
    int SelectGroup(CFG_String_Arg group = CFG_GLOBAL, CFG_Bool create = CFG_True);
 
 
    /* Function: RemoveGroup
-     
-    Essentialy the same thing as <CFG_File::CFG_RemoveGroup>.	
-   */   
+
+    Essentialy the same thing as <CFG_File::CFG_RemoveGroup>.
+   */
    int RemoveGroup(CFG_String_Arg group);
 
    /* Function: ClearGroup
-     
-    Essentialy the same thing as <CFG_File::CFG_ClearGroup>.	
-   */   
+
+    Essentialy the same thing as <CFG_File::CFG_ClearGroup>.
+   */
    int ClearGroup(CFG_String_Arg group);
 
    /* Function: GroupExists
-     
-    Essentialy the same thing as <CFG_File::CFG_GroupExists>.	
-   */   
+
+    Essentialy the same thing as <CFG_File::CFG_GroupExists>.
+   */
    bool GroupExists(CFG_String_Arg group);
 
    /* Function: GetSelectedGroupName
-     
-    Essentialy the same thing as <CFG_File::CFG_GetSelectedGroupName>.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_GetSelectedGroupName>.
+   */
    CFG_String_Arg GetSelectedGroupName( );
 
    /* Function: GetGroupCount
-     
-    Essentialy the same thing as <CFG_File::CFG_GetGroupCount>.	
-   */         
+
+    Essentialy the same thing as <CFG_File::CFG_GetGroupCount>.
+   */
    Uint32 GetGroupCount( );
-   
+
 
    /*
     Group: Entries
    */
 
-   /* 
+   /*
     Function: GetEntryType
-     
-    Essentialy the same thing as <CFG_File::CFG_GetEntryType>.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_GetEntryType>.
+   */
    int GetEntryType( CFG_String_Arg entry );
 
    /* Functions: BoolEntryExists, IntEntryExists, FloatEntryExists, TextEntryExists
 
     Essentialy the same thing as *CFG_BoolEntryExists*, *IntEntryExists*, *FloatEntryExists*, *TextEntryExists*
-   */      
+   */
    bool BoolEntryExists  ( CFG_String_Arg entry );
    bool IntEntryExists   ( CFG_String_Arg entry );
    bool FloatEntryExists ( CFG_String_Arg entry );
@@ -1913,7 +1913,7 @@ class DECLSPEC ConfigFile
    CFG_String_Arg ReadText  ( CFG_String_Arg entry, CFG_String_Arg defaultVal );
 
    /* Function: Read
-   
+
    Overloaded versions of *ReadBool* etc.
 
    */
@@ -1947,11 +1947,11 @@ class DECLSPEC ConfigFile
    int Write ( CFG_String_Arg entry, CFG_String_Arg value );
 
 
-   /* Functions: RemoveBoolEntry, RemoveIntEntry, RemoveFloatEntry, RemoveTextEntry 
+   /* Functions: RemoveBoolEntry, RemoveIntEntry, RemoveFloatEntry, RemoveTextEntry
 
-    Essentialy the same thing as *CFG_RemoveBoolEntry*, *CFG_RemoveIntEntry*, *CFG_RemoveFloatEntry*, *CFG_RemoveTextEntry*.	
+    Essentialy the same thing as *CFG_RemoveBoolEntry*, *CFG_RemoveIntEntry*, *CFG_RemoveFloatEntry*, *CFG_RemoveTextEntry*.
    */
-   
+
    int RemoveBoolEntry ( CFG_String_Arg entry );
    int RemoveIntEntry  ( CFG_String_Arg entry );
    int RemoveFloatEntry( CFG_String_Arg entry );
@@ -1963,118 +1963,118 @@ class DECLSPEC ConfigFile
 
    /*
    Function: StartGroupIteration
-     
-    Essentialy the same thing as <CFG_File::CFG_StartGroupIteration>.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_StartGroupIteration>.
+   */
    void StartGroupIteration( int sorting_type = CFG_SORT_ALPHABET );
 
    /* Function: SelectNextGroup
-     
-    Essentialy the same thing as <CFG_File::CFG_SelectNextGroup>.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_SelectNextGroup>.
+   */
    void SelectNextGroup();
 
    /* Function: IsLastGroup
-     
-    Essentialy the same thing as <CFG_File::CFG_IsLastGroup>.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_IsLastGroup>.
+   */
    bool IsLastGroup();
 
    /* Function: RemoveSelectedGroup
-     
-    Essentialy the same thing as <CFG_File::CFG_RemoveSelectedGroup>.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_RemoveSelectedGroup>.
+   */
    void RemoveSelectedGroup();
 
    /* Function: SetGroupIterationDirection
-     
-    Essentialy the same thing as <CFG_File::CFG_SetGroupIterationDirection>.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_SetGroupIterationDirection>.
+   */
    int SetGroupIterationDirection( int direction );
- 
+
    /*
     Group: Entry iteration
    */
 
    /*
     Function: StartEntryIteration
-     
-    Essentialy the same thing as <CFG_File::CFG_StartEntryIteration>.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_StartEntryIteration>.
+   */
    void StartEntryIteration();
 
    /* Function: SelectNextEntry
-     
-    Essentialy the same thing as <CFG_File::CFG_SelectNextEntry>.	
-   */     
+
+    Essentialy the same thing as <CFG_File::CFG_SelectNextEntry>.
+   */
    void SelectNextEntry();
 
    /* Function: IsLastEntry
-     
-    Essentialy the same thing as <CFG_File::CFG_IsLastEntry>.	
-   */      
-   bool IsLastEntry();
-   
-   /* Function: RemoveSelectedEntry
-     
-    Essentialy the same thing as <CFG_File::CFG_RemoveSelectedEntry>.	
-   */         
-   void RemoveSelectedEntry();
-   
-   /* Function: GetSelectedEntryName
-     
-    Essentialy the same thing as <CFG_File::CFG_GetSelectedEntryName>.	
-   */         
-   CFG_String_Arg GetSelectedEntryName();      
 
-   /* 
+    Essentialy the same thing as <CFG_File::CFG_IsLastEntry>.
+   */
+   bool IsLastEntry();
+
+   /* Function: RemoveSelectedEntry
+
+    Essentialy the same thing as <CFG_File::CFG_RemoveSelectedEntry>.
+   */
+   void RemoveSelectedEntry();
+
+   /* Function: GetSelectedEntryName
+
+    Essentialy the same thing as <CFG_File::CFG_GetSelectedEntryName>.
+   */
+   CFG_String_Arg GetSelectedEntryName();
+
+   /*
     Group: Multi value entry
    */
 
    /*
    Function: IsEntryMultiValue
-     
-    Essentialy the same thing as <CFG_File::CFG_IsEntryMultiValue>.	
-   */            
+
+    Essentialy the same thing as <CFG_File::CFG_IsEntryMultiValue>.
+   */
    bool IsEntryMultiValue( CFG_String_Arg entry );
-   
+
    /* Function: StartMultiValueEntryIteration
-     
-    Essentialy the same thing as <CFG_File::CFG_StartMultiValueEntryIteration>.	
-   */         
+
+    Essentialy the same thing as <CFG_File::CFG_StartMultiValueEntryIteration>.
+   */
    void StartMultiValueEntryIteration( CFG_String_Arg entry );
-   
+
    /* Function: IsLastMultiValueEntry
-     
-    Essentialy the same thing as <CFG_File::CFG_IsLastMultiValueEntry>.	
-   */         
+
+    Essentialy the same thing as <CFG_File::CFG_IsLastMultiValueEntry>.
+   */
    bool IsLastMultiValueEntry();
-   
+
    /* Function: SelectNextMultiValueEntry
-     
-    Essentialy the same thing as <CFG_File::CFG_SelectNextMultiValueEntry>.	
-   */         
+
+    Essentialy the same thing as <CFG_File::CFG_SelectNextMultiValueEntry>.
+   */
    void SelectNextMultiValueEntry();
 
-   
+
    /* Function: RemoveMultiValueEntry
-     
-    Essentialy the same thing as <CFG_File::CFG_RemoveMultiValueEntry>.	
-   */         
+
+    Essentialy the same thing as <CFG_File::CFG_RemoveMultiValueEntry>.
+   */
    void RemoveMultiValueEntry();
 
-   
+
    /* Function: GetNumberOfMultiValueEntries
-     
-    Essentialy the same thing as <CFG_File::CFG_GetNumberOfMultiValueEntries>.	
-   */         
+
+    Essentialy the same thing as <CFG_File::CFG_GetNumberOfMultiValueEntries>.
+   */
    int GetNumberOfMultiValueEntries( CFG_String_Arg entry );
 
-   
+
    /* Function: SelectMultiValueEntry
-     
-    Essentialy the same thing as <CFG_File::CFG_SelectMultiValueEntry>.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_SelectMultiValueEntry>.
+   */
    int SelectMultiValueEntry( CFG_String_Arg entry, int index );
 
 
@@ -2089,61 +2089,61 @@ class DECLSPEC ConfigFile
    int AddMultiValueTo( CFG_String_Arg entry, CFG_Float value, int where = -1  );
    int AddMultiValueTo( CFG_String_Arg entry, CFG_String_Arg value, int where = -1 );
 
-   
+
    /*
     Group: Comments
    */
 
    /*
     Function: GetEntryPreComment
-     
-    Essentialy the same thing as <CFG_File::CFG_GetEntryComment> with *CFG_COMMENT_PRE* passed as *comment_pos*.	
-   */         
+
+    Essentialy the same thing as <CFG_File::CFG_GetEntryComment> with *CFG_COMMENT_PRE* passed as *comment_pos*.
+   */
    CFG_String_Arg GetEntryPreComment(CFG_String_Arg entry, int entry_type);
 
    /* Function: GetEntryPostComment
-   
-    Essentialy the same thing as <CFG_File::CFG_GetEntryComment> with *CFG_COMMENT_POST* passed as *comment_pos*.	
-   */      
+
+    Essentialy the same thing as <CFG_File::CFG_GetEntryComment> with *CFG_COMMENT_POST* passed as *comment_pos*.
+   */
    CFG_String_Arg GetEntryPostComment(CFG_String_Arg entry, int entry_type);
 
 
    /* Function: SetEntryPreComment
-     
-    Essentialy the same thing as <CFG_File::CFG_SetEntryComment> with *CFG_COMMENT_PRE* passed as *comment_type*.	
-   */             
+
+    Essentialy the same thing as <CFG_File::CFG_SetEntryComment> with *CFG_COMMENT_PRE* passed as *comment_type*.
+   */
    void SetEntryPreComment(CFG_String_Arg entry, int entry_type, CFG_String_Arg new_comment);
 
    /* Function: SetEntryPostComment
-     
-    Essentialy the same thing as <CFG_File::CFG_SetEntryComment> with *CFG_COMMENT_POST* passed as *comment_type*.	
-   */        
+
+    Essentialy the same thing as <CFG_File::CFG_SetEntryComment> with *CFG_COMMENT_POST* passed as *comment_type*.
+   */
    void SetEntryPostComment(CFG_String_Arg entry, int entry_type, CFG_String_Arg new_comment);
 
-   
+
    /* Function: GetGroupPreComment
-     
-    Essentialy the same thing as <CFG_File::CFG_GetGroupComment> with *CFG_COMMENT_PRE* passed as *comment_type*.	
-   */             
+
+    Essentialy the same thing as <CFG_File::CFG_GetGroupComment> with *CFG_COMMENT_PRE* passed as *comment_type*.
+   */
    CFG_String_Arg GetGroupPreComment(CFG_String_Arg group);
 
    /* Function: GetGroupPostComment
-     
-    Essentialy the same thing as <CFG_File::CFG_GetGroupComment> with *CFG_COMMENT_POST* passed as *comment_type*.	
-   */             
+
+    Essentialy the same thing as <CFG_File::CFG_GetGroupComment> with *CFG_COMMENT_POST* passed as *comment_type*.
+   */
    CFG_String_Arg GetGroupPostComment(CFG_String_Arg group);
 
-   
+
    /* Function: SetGroupPreComment
-     
+
     Essentialy the same thing as <CFG_File::CFG_SetGroupComment> with *CFG_COMMENT_PRE* passed as *comment_type*.
-   */                
+   */
    void SetGroupPreComment(CFG_String_Arg group, CFG_String_Arg new_comment);
 
    /* Function: SetGroupPostComment
-     
+
     Essentialy the same thing as <CFG_File::CFG_SetGroupComment> with *CFG_COMMENT_POST* passed as *comment_type*.
-   */             
+   */
    void SetGroupPostComment(CFG_String_Arg group, CFG_String_Arg new_comment);
 
 
@@ -2185,13 +2185,13 @@ Still, undefs prevent you from accidentaly using those defines in your own code
   #undef CFG_USE_STD_STRINGS
   #undef CFG_GCC_STRING_PROBLEMS
   #undef CFG_LOG_CRITICAL_ERROR
-  #undef CFG_MAX_INTEGER_WARNING 
+  #undef CFG_MAX_INTEGER_WARNING
   #undef CFG_ASSERT_NULL
   #undef DECLSPEC
 
 #endif
 
 
-#include "close_code.h"
+#include <SDL/close_code.h>
 
 #endif /* file inclusion guard */
