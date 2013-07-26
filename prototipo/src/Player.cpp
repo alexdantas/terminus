@@ -26,6 +26,7 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     isDashing(false),
     dead(false),
     damaging(false),
+    win(false),
     movablePlatform(NULL)
 {
     Animation* tmp = NULL;
@@ -90,6 +91,9 @@ Player::~Player()
 void Player::update(float dt)
 {
     this->desiredPosition->copy(this->box);
+
+    if(this->desiredPosition->y == this->topLimitY)
+        this->win = true;
 
     // The acceleration is reseted each frame
     this->ay = 0;
@@ -576,5 +580,10 @@ void Player::stepIntoMovablePlatform(PlatformMovable* platform)
 {
     // Watch out for NULL poiters!
     this->movablePlatform = platform;
+}
+
+bool Player::Winned()
+{
+    return this->win;
 }
 

@@ -73,6 +73,7 @@ public:
     bool isHittable();
     bool Dashing();
     bool Falling();
+    bool Winned();
 
     /// Makes the player die.
     void die();
@@ -134,6 +135,7 @@ private:
     bool inAir;           ///< Is it on air (due to jumping or falling).
     bool isJumping;       ///< Is it currently jumping for the first time.
     bool isDoubleJumping; ///< Is it currently jumping for the second time.
+    bool win; ///< If player already reach the end of the game AND wins
 
     /// Ammount of strength the player has when jumping.
     ///

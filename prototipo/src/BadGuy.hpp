@@ -5,7 +5,6 @@
 #include "GameObject.hpp"
 #include "DamageableObject.hpp"
 #include "Animation.hpp"
-#include "OtherAnimation.h"
 #include "PlatformMovable.hpp"
 #include "Thorn.hpp"
 

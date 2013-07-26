@@ -169,11 +169,12 @@ void GameStateGame::load(int stack)
     loading.increase();
     loading.setSubtitle("Done!");
 
+    this->we_won = false;
+
     this->fadeOut = new Fade(Fade::FADE_OUT, 1000);
 }
 int GameStateGame::unload()
 {
-    bool we_won = false;
 
 // Time to delete!
 // This macro deletes a thing only if it's non-NULL,
@@ -234,9 +235,12 @@ GameState::StateCode GameStateGame::update(float dt)
 
     this->updateInput();
 
-InputManager* input = InputManager::getInstance();
-    if (input->isKeyDown(SDLK_t))
+    if(this->apterus && this->apterus->Winned())
+    {
+        we_won = true;
         return GameState::GAME_OVER;
+    }
+
 
     this->console->update(dt);
 

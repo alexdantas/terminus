@@ -138,6 +138,7 @@ private:
 
     bool isPaused; ///< Is the game paused?
     int cameraLowestPoint;
+    bool we_won;
 
     Font* font; ///< Font that shows everything on the screen.
     Text* pausedTitle;
