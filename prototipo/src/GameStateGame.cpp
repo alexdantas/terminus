@@ -63,7 +63,8 @@ void GameStateGame::load(int stack)
     this->camera->lockXAxis();
     this->camera->setVerticalLimit(0, this->gameArea->h);
 
-    this->timer = new TimerCounter(5000);
+    // How much time we wait when the player dies to show Game Over screen
+    this->timer = new TimerCounter(2000);
 
     loading.setSubtitle("Spawning you...");
     loading.increase();
@@ -229,7 +230,7 @@ GameState::StateCode GameStateGame::update(float dt)
     // Player has died.
     if (this->game_over)
     {
-        if(this->timer->isDone())
+        if (this->timer->isDone())
             return GameState::GAME_OVER;
     }
 

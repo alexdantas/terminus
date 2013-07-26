@@ -3,8 +3,8 @@
 BadGuyContainer::BadGuyContainer(unsigned int maxAmmount, Rectangle *gameArea, PlatformManager *platforms) :
     maxAmmount(maxAmmount),
     currentAmmount(0),
-    platforms(platforms),
-    gameArea(gameArea)
+    gameArea(gameArea),
+    platforms(platforms)
  {
     unsigned int i;
     int occupied = 0; //Say's if platform already occupied by Venus copy

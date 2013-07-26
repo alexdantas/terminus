@@ -11,10 +11,10 @@ PlatformContainer::PlatformContainer(unsigned int maxAmmount, Rectangle areaLimi
 {
     this->sprites.resize(Platform::MAX); // Maximum size of the vector
 
-    this->sprites[Platform::GROUND]    = new Sprite("img/sprites/plataforma1.png");
-    this->sprites[Platform::CLOUD]     = new Sprite("img/sprites/plataforma2.png");
-    this->sprites[Platform::VANISHING] = new Sprite("img/sprites/plataforma3.png");
-    this->sprites[Platform::MOVABLE]   = new Sprite("img/sprites/plataforma4.png");
+    this->sprites[Platform::GROUND]    = new Sprite("img/sprites/platform-1.png");
+    this->sprites[Platform::CLOUD]     = new Sprite("img/sprites/platform-2.png");
+    this->sprites[Platform::VANISHING] = new Sprite("img/sprites/platform-3.png");
+    this->sprites[Platform::MOVABLE]   = new Sprite("img/sprites/platform-4.png");
 }
 PlatformContainer::~PlatformContainer()
 {
