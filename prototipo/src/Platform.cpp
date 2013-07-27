@@ -5,7 +5,8 @@ Platform::Platform(Sprite* sprite, float x, float y, int w, int h, PlatformType 
     GameObject(x, y, w, h),
     type(type),
     sprite(sprite),
-    visible(true)
+    visible(true),
+    occupied(false)
 { }
 Platform::~Platform()
 { }

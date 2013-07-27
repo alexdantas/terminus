@@ -48,8 +48,8 @@ BadGuyVenus::BadGuyVenus(float x, float y, int w, int h, int hp, float accelerat
     this->timer = new TimerCounter(5000);
     this->timer->startCounting();
 
-    this->box->stretch(0.5, 1); // Making it smaller
-    this->box->addX(5); //Venus' center position
+    // Adjusting the hitbox according to the sprite
+    this->box->stretch(0.5, 1);
     this->desiredPosition = new Rectangle();
     this->currentAnimation->start();
 
@@ -99,7 +99,14 @@ void BadGuyVenus::update(float dt)
     {
         this->timer->startCounting();
         this->isAttacking = true;
-        this->attackSFX->play();
+
+        // Will only play the sound once in 30 times
+        static int counterToAvoidThisAnnoyingSFXFromPlayingEveryTime = 0;
+
+        if ((counterToAvoidThisAnnoyingSFXFromPlayingEveryTime % 30) == 0)
+            this->attackSFX->play();
+
+        counterToAvoidThisAnnoyingSFXFromPlayingEveryTime++;
     }
     else if((this->currentAnimation == this->animations[ATTACK_LEFT] ||
              this->currentAnimation == this->animations[ATTACK_RIGHT]))

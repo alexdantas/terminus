@@ -29,7 +29,8 @@ public:
                       // to contain all possible animations
     };
 
-    enum BadGuyType{
+    enum BadGuyType
+    {
         VENUS = 0,
         GRIFFIN,
 
@@ -70,6 +71,8 @@ public:
 
     ///AIN'T NOBODY HAVE TIME FOR OO
     Thorn *beam;
+
+    BadGuyType type;
 
 protected:
     float vx; ///< Speed component of the x axis.
@@ -116,7 +119,6 @@ protected:
     ///
     Rectangle* desiredPosition;
 
-    BadGuyType type;
     SFX* deathSFX;
 };
 

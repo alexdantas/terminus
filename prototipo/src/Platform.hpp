@@ -16,7 +16,7 @@ public:
     // @note Some are NOT implemented at all!
     enum PlatformType
     {
-        GROUND=0, CLOUD, VANISHING, MOVABLE,
+        GROUND=0, NORMAL, VANISHING, MOVABLE, CLOUD,
 
         MAX // This arbitrary value exists so that any vector
             // that wished to hold this enum can be safely
@@ -55,6 +55,9 @@ public:
     ///      Ideally one class shouldn't have an explicit thing
     ///      saying what is their kind.
     PlatformType type;
+
+    /// If it's currently (or it ever was) occupied by some entity.
+    bool occupied;
 
 protected:
     Sprite* sprite;  ///< Appearance on the screen.
