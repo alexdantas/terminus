@@ -30,13 +30,25 @@ public:
 
     void update(float dt);
 
+    void addVenus();
+    void addVenusTo(Platform* p);
+
+    void addGriffin();
     /// The whole raw list of bad guys.
     //In a vector, which is the ~~~~~same~~~~~~ as list
     //But easier to manipulate, SORRY!!!!!
     std::vector<BadGuy*>badguy;
 
+    /// Replicas of the venuses on the raw badguy vector.
+    std::vector<BadGuy*> venus;
+
+    /// Replicas of the griffins on the raw badguy vector.
+    std::vector<BadGuy*> griffin;
+
     BadGuy::BadGuyType type;
 
+    int venusCount;
+    int griffinCount;
 
 private:
     /// Maximum ammount of bad guys allowed.
@@ -45,12 +57,14 @@ private:
     /// Current bad guy.
     unsigned int currentAmmount;
 
-    Rectangle *gameArea;
+    Rectangle* gameArea;
 
-    PlatformManager *platforms;
+    PlatformManager* platforms;
 
     /// Contains indexes to active objects.
     std::vector<int> indirection;
+
+    float cameraY;
 };
 
 #endif //BADGUYCONTAINER_H_DEFINED

@@ -253,7 +253,7 @@ void Player::updateInput()
         if (input->isKeyPressed(SDLK_LSHIFT))
             this->targetVx *= turbo;
 
-        this->walkSFX->play();
+//        this->walkSFX->play();
     }
 
     if (input->isKeyPressed(SDLK_d) ||
@@ -265,7 +265,7 @@ void Player::updateInput()
         if (input->isKeyPressed(SDLK_LSHIFT))
             this->targetVx *= turbo;
 
-        this->walkSFX->play();
+//        this->walkSFX->play();
     }
 
     if (input->isKeyDown(SDLK_w)  ||

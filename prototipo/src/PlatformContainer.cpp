@@ -12,9 +12,10 @@ PlatformContainer::PlatformContainer(unsigned int maxAmmount, Rectangle areaLimi
     this->sprites.resize(Platform::MAX); // Maximum size of the vector
 
     this->sprites[Platform::GROUND]    = new Sprite("img/sprites/platform-1.png");
-    this->sprites[Platform::CLOUD]     = new Sprite("img/sprites/platform-2.png");
+    this->sprites[Platform::NORMAL]    = new Sprite("img/sprites/platform-2.png");
     this->sprites[Platform::VANISHING] = new Sprite("img/sprites/platform-3.png");
     this->sprites[Platform::MOVABLE]   = new Sprite("img/sprites/platform-4.png");
+    this->sprites[Platform::CLOUD]     = new Sprite("img/sprites/platform-cloud-1.png");
 }
 PlatformContainer::~PlatformContainer()
 {
@@ -93,7 +94,7 @@ void PlatformContainer::add(Point p, Platform::PlatformType type)
         tmp = (Platform*)tmp2;
         tmp->type = Platform::VANISHING;
     }
-    else
+    else // All other kinds of platforms
     {
         /// Things are simple when you'll just spawn a regular *Platform*.
         tmp = new Platform(this->sprites[type],
@@ -144,7 +145,7 @@ void PlatformContainer::addBetween(Point a, Point b, Platform::PlatformType type
         // between int and enums.
 
         int num = SDL::randomNumberBetween(static_cast<int>(Platform::GROUND),
-                                           static_cast<int>(Platform::MOVABLE));
+                                           static_cast<int>(Platform::CLOUD));
 
         Platform::PlatformType Type = static_cast<Platform::PlatformType>(num);
 

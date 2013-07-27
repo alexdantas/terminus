@@ -3,7 +3,8 @@
 
 #include "BadGuyContainer.hpp"
 #include "BadGuy.hpp"
-
+#include "PlatformContainer.hpp"
+#include "TimerCounter.hpp"
 
 class BadGuyManager
 {
@@ -17,6 +18,10 @@ public:
     void update(float dt);
 
     void render(float cameraX, float cameraY);
+
+    void addVenus(float cameraX, float cameraY, PlatformContainer* platforms);
+
+    // Public stuff that shouldn't be here
 
     /// Everyone
     BadGuyContainer* container;
@@ -35,6 +40,9 @@ private:
 
     /// Holds the camera Y to generate platforms.
     float currentCameraY;
+
+    /// Timer to (possibly) create new venuses.
+    TimerCounter* venusTimer;
 };
 
 
