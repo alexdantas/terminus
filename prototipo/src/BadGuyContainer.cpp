@@ -14,6 +14,16 @@ BadGuyContainer::BadGuyContainer(unsigned int maxAmmount, Rectangle *gameArea, P
     unsigned int i;
     int occupied = 0; // Say's if platform already occupied by Venus copy
 
+    this->addGriffin();
+    this->addGriffin();
+    this->addGriffin();
+    this->addGriffin();
+    this->addGriffin();
+    this->addGriffin();
+    this->addGriffin();
+    this->addGriffin();
+    this->addGriffin();
+    this->addGriffin();
     // ADDING EVERYONE
     // for (i = 0; i < this->maxAmmount; i++)
     // {
@@ -170,8 +180,7 @@ void BadGuyContainer::addGriffin()
 {
     Point p;
     p.x = SDL::randomNumberBetween(0, this->gameArea->w);
-    p.y = SDL::randomNumberBetween(this->cameraY - 100,
-                                   this->cameraY);
+    p.y = SDL::randomNumberBetween(0, this->gameArea->h);
 
     BadGuyGriffin* g = new BadGuyGriffin(p.x - 292,
                                          p.y - 215,
@@ -181,7 +190,7 @@ void BadGuyContainer::addGriffin()
                                          Config::playerAcceleration);
 
     g->setHorizontalLimit(60, this->gameArea->w - 119);
-//    g->setVerticalLimit(215, SDL::randomNumberBetween(p.y - 1000, p.y + 1000));
+    g->setVerticalLimit(215, SDL::randomNumberBetween(0, this->gameArea->h));
 
     this->badguy.push_back(g);
     this->griffinCount++;
