@@ -10,6 +10,9 @@ BadGuyManager::BadGuyManager(unsigned int ammout, Rectangle *gameArea, PlatformM
 
     this->venusTimer = new TimerCounter(1500);
     this->venusTimer->startCounting();
+
+    this->griffinTimer = new TimerCounter(1000);
+    this->griffinTimer->startCounting();
 }
 BadGuyManager::~BadGuyManager()
 {
@@ -24,6 +27,13 @@ void BadGuyManager::update(float dt)
         if (this->container->venusCount < 5)
             if (SDL::randomBool()) // adding a nice ammount of randomness
                 this->container->addVenus();
+    }
+    if (this->griffinTimer->isDone())
+    {
+        this->griffinTimer->startCounting();
+        if (this->container->griffinCount < 3)
+            if (SDL::randomBool()) // adding a nice ammount of randomness
+                this->container->addGriffin();
     }
 
 //    this->container->update(30);

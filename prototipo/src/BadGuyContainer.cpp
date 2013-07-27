@@ -170,8 +170,8 @@ void BadGuyContainer::addGriffin()
 {
     Point p;
     p.x = SDL::randomNumberBetween(0, this->gameArea->w);
-    p.y = SDL::randomNumberBetween(this->gameArea->y - 100,
-                                   this->gameArea->y);
+    p.y = SDL::randomNumberBetween(this->cameraY - 100,
+                                   this->cameraY);
 
     BadGuyGriffin* g = new BadGuyGriffin(p.x - 292,
                                          p.y - 215,
@@ -181,9 +181,10 @@ void BadGuyContainer::addGriffin()
                                          Config::playerAcceleration);
 
     g->setHorizontalLimit(60, this->gameArea->w - 119);
-    g->setVerticalLimit(215, SDL::randomNumberBetween(this->gameArea->x - 300, this->gameArea->x + 600));
+//    g->setVerticalLimit(215, SDL::randomNumberBetween(p.y - 1000, p.y + 1000));
 
     this->badguy.push_back(g);
+    this->griffinCount++;
 
     Log::verbose("Griffin");
     Log::verbose("BadGuy::add (" + SDL::intToString(p.x) +
