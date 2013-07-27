@@ -91,7 +91,7 @@ void GameStateGame::load(int stack)
 
     // x, y, w, h, max, starting
     this->lifeBar = new ProgressBar(10, 10, 200, 20, this->apterus->getHitpoints(), this->apterus->getHitpoints());
-    this->lifeBar->setForegroundColor(Color(255, 0, 255));
+    this->lifeBar->setForegroundColor(Color(249, 246, 149));
     this->lifeBar->setBackgroundColor(Color(100, 0, 100));
 
     loading.increase();
@@ -663,4 +663,3 @@ void GameStateGame::updateInput()
         Window::setPosition(10, 10);
 
 }
-

@@ -36,7 +36,7 @@ void GameStateIntro::load(int stack)
     this->imageTimer = new TimerCounter(5000); // 2 seconds
 
     this->fadeInTimer = new TimerCounter(200);
-    this->trasitionTimer = new TimerCounter(500);
+    this->trasitionTimer = new TimerCounter(1000);
     this->fadeInTimer->startCounting();
     this->music = new Music("ogg/op.ogg");
     this->music->play();
@@ -120,4 +120,3 @@ void GameStateIntro::render()
     this->fadeIn->render();
     this->fadeOut->render();
 }
-
