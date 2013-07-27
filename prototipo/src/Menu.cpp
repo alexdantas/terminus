@@ -7,7 +7,6 @@ MenuItem::MenuItem(Text* text, int value):
     text(text),
     value(value)
 { }
-
 Menu::Menu(Font* font, Font* hiliteFont, float x, float y):
     font(font),
     hiliteFont(hiliteFont),
@@ -20,13 +19,21 @@ Menu::Menu(Font* font, Font* hiliteFont, float x, float y):
     itemWasJustSelected(false),
     selectedItem(NULL),
     cameraX(0.0),
-    cameraY(0.0)
-{ }
+    cameraY(0.0),
+    selectionSFX(NULL),
+    confirmSFX(NULL)
+{
+    this->selectionSFX = new SFX("ogg/sfx/menu-select.ogg");
+    this->confirmSFX   = new SFX("ogg/sfx/menu-confirm.ogg");
+}
 Menu::~Menu()
 {
     for (int i = 0; i < (this->items); i++)
         if (this->item[i])
             delete this->item[i];
+
+    delete this->selectionSFX;
+    delete this->confirmSFX;
 }
 void Menu::addItem(std::string text, int value)
 {
@@ -87,6 +94,8 @@ void Menu::next()
     this->item[currentItem]->text->setFont(this->font);
     this->currentItem++;
     this->item[currentItem]->text->setFont(this->hiliteFont);
+
+    this->selectionSFX->play();
 }
 void Menu::previous()
 {
@@ -98,18 +107,24 @@ void Menu::previous()
     this->item[currentItem]->text->setFont(this->font);
     this->currentItem--;
     this->item[currentItem]->text->setFont(this->hiliteFont);
+
+    this->selectionSFX->play();
 }
 void Menu::first()
 {
     this->item[currentItem]->text->setFont(this->font);
     this->currentItem = 0;
     this->item[currentItem]->text->setFont(this->hiliteFont);
+
+    this->selectionSFX->play();
 }
 void Menu::last()
 {
     this->item[currentItem]->text->setFont(this->font);
     this->currentItem = (items - 1); // counts from zero
     this->item[currentItem]->text->setFont(this->hiliteFont);
+
+    this->selectionSFX->play();
 }
 void Menu::random()
 {
@@ -118,6 +133,8 @@ void Menu::random()
     this->item[currentItem]->text->setFont(this->font);
     this->currentItem = index;
     this->item[currentItem]->text->setFont(this->hiliteFont);
+
+    this->selectionSFX->play();
 }
 void Menu::render(float cameraX, float cameraY)
 {
@@ -189,6 +206,7 @@ void Menu::update(float dt)
     {
         this->itemWasJustSelected = true;
         this->selectedItem = this->item[this->currentItem];
+        this->confirmSFX->play();
     }
 }
 void Menu::centralizeText()

@@ -6,6 +6,7 @@
 #include "DamageableObject.hpp"
 #include "Animation.hpp"
 #include "PlatformMovable.hpp"
+#include "SFX.hpp"
 
 /// Defines the player.
 class Player: public GameObject,
@@ -158,6 +159,11 @@ private:
     /// If there is no movable platform (this is NULL), the
     /// player will behave normally.
     PlatformMovable* movablePlatform;
+
+    SFX* damageSFX;
+    SFX* deathSFX;
+    SFX* walkSFX;
+    SFX* dashSFX;
 };
 
 #endif //PLAYER_H_DEFINED

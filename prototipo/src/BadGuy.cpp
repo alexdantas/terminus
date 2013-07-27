@@ -20,15 +20,15 @@ BadGuy::BadGuy(float x, float y, int w, int h, int hp, float acceleration):
     isAttacking(false),
     dead(false),
     damaging(false),
-    visible(true)
+    visible(true),
+    deathSFX(NULL)
 {
-
+    this->deathSFX = new SFX("ogg/sfx/enemies-death.ogg");
 }
 BadGuy::~BadGuy()
 {
-
+    delete this->deathSFX;
 }
-
 void BadGuy::render(float cameraX, float cameraY)
 {
     this->currentAnimation->render(this->position->x - cameraX,
@@ -177,7 +177,6 @@ void BadGuy::updateAnimation(int dt)
 
     this->currentAnimation->update(dt);
 }
-
 void BadGuy::commitMovement()
 {
 
@@ -187,12 +186,11 @@ void BadGuy::commitMovement()
     // Refreshing next bounding box
     this->box->copy(this->desiredPosition);
 }
-
 void BadGuy::die()
 {
     this->dead = true;
+    this->deathSFX->play();
 }
-
 bool BadGuy::isAlive()
 {
     return (!this->dead);

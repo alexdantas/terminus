@@ -5,7 +5,8 @@
 
 BadGuyVenus::BadGuyVenus(float x, float y, int w, int h, int hp, float acceleration):
     BadGuy(x, y, w, h, hp, acceleration),
-    count(0)
+    count(0),
+    attackSFX(NULL)
 {
     Animation* tmp = NULL;
 
@@ -52,11 +53,17 @@ BadGuyVenus::BadGuyVenus(float x, float y, int w, int h, int hp, float accelerat
     this->box->addX(5); //Venus' center position
     this->desiredPosition = new Rectangle();
     this->currentAnimation->start();
+
+    this->attackSFX = new SFX("ogg/sfx/venus-attack.ogg");
 }
 
 BadGuyVenus::~BadGuyVenus()
 {
+    delete this->attackSFX;
 
+    // TODO TODO BUG HACK OMG
+    //
+    // NEED TO DELETE ALL THINGS I'VE MALLOCED
 }
 
 //OHMYGOD, I FORGET HOW TO CODE
@@ -92,9 +99,10 @@ void BadGuyVenus::update(float dt)
     if(this->isDead())
         this->dead = true;
 
-    if(this->timer->isDone())
+    if (this->timer->isDone())
     {
         this->isAttacking = true;
+        this->attackSFX->play();
     }
     else if((this->currentAnimation == this->animations[ATTACK_LEFT] || this->currentAnimation == this->animations[ATTACK_RIGHT]))
     {
@@ -106,3 +114,4 @@ void BadGuyVenus::update(float dt)
 
     this->updateAnimation(dt);
 }
+

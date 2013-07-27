@@ -119,7 +119,7 @@ void GameStateGame::load(int stack)
     loading.setSubtitle("Legally buying music...");
 
     this->bgmusic = new Music("ogg/escaping.ogg");
-    this->bgmusic->play();
+//    this->bgmusic->play();
 
     loading.increase();
     loading.setSubtitle("Loading Quake-like console...");

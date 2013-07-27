@@ -10,6 +10,7 @@ class BadGuyManager
 public:
     /// Will create *ammout* bad guys
     BadGuyManager(unsigned int ammout, Rectangle *gameArea, PlatformManager *platforms);
+
     virtual ~BadGuyManager();
 
     /// Show time

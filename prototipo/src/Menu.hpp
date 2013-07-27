@@ -5,6 +5,7 @@
 #include <vector>
 #include "Font.hpp"
 #include "Text.hpp"
+#include "SFX.hpp"
 
 /// Container for individual menu item's stuff.
 ///
@@ -202,6 +203,9 @@ private:
 
     float cameraX; ///< Stores the last-frame's camera x.
     float cameraY; ///< Stores the last0frame's camera y.
+
+    SFX* selectionSFX;
+    SFX* confirmSFX;
 };
 
 #endif //MENU_H_DEFINED

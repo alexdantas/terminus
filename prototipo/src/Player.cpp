@@ -26,7 +26,11 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     flyMode(false),
     isDashing(false),
     damaging(false),
-    movablePlatform(NULL)
+    movablePlatform(NULL),
+    damageSFX(NULL),
+    deathSFX(NULL),
+    walkSFX(NULL),
+    dashSFX(NULL)
 {
     Animation* tmp = NULL;
 
@@ -91,9 +95,19 @@ Player::Player(float x, float y, int w, int h, int hp, float acceleration):
     this->box->addY(20);          // And a little down
 
     this->desiredPosition = new Rectangle();
+
+    this->damageSFX = new SFX("ogg/sfx/apterus-damage.ogg");
+    this->deathSFX  = new SFX("ogg/sfx/apterus-death.ogg");
+    this->walkSFX   = new SFX("ogg/sfx/apterus-walk.ogg");
+    this->dashSFX   = new SFX("ogg/sfx/apterus-dash.ogg");
 }
 Player::~Player()
-{ }
+{
+    // TODO TODO BUG HACK OMG
+    //
+    // NEED TO DELETE ALL THINGS I'VE MALLOCED
+
+}
 void Player::update(float dt)
 {
     this->desiredPosition->copy(this->box);
@@ -238,6 +252,8 @@ void Player::updateInput()
 
         if (input->isKeyPressed(SDLK_LSHIFT))
             this->targetVx *= turbo;
+
+        this->walkSFX->play();
     }
 
     if (input->isKeyPressed(SDLK_d) ||
@@ -248,6 +264,8 @@ void Player::updateInput()
 
         if (input->isKeyPressed(SDLK_LSHIFT))
             this->targetVx *= turbo;
+
+        this->walkSFX->play();
     }
 
     if (input->isKeyDown(SDLK_w)  ||
@@ -574,10 +592,13 @@ void Player::dash()
     (this->facingDirection == RIGHT)?
         this->targetVx = ( 3 * this->acceleration):
         this->targetVx = (-3 * this->acceleration);
+
+    this->dashSFX->play();
 }
 void Player::die()
 {
     this->isAlive = false;
+    this->deathSFX->play();
 }
 bool Player::died()
 {
@@ -606,6 +627,7 @@ bool Player::isFalling()
 void Player::dealDamage()
 {
     this->damaging = true;
+    this->damageSFX->play();
 }
 void Player::stepIntoMovablePlatform(PlatformMovable* platform)
 {

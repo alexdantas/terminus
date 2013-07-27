@@ -12,6 +12,8 @@ Thorn::~Thorn()
 }
 void Thorn::update(float dt)
 {
+    UNUSED(dt);
+
     this->position->x -= (this->box->x - this->desiredPosition->x);
     this->position->y -= (this->box->y - this->desiredPosition->y);
 

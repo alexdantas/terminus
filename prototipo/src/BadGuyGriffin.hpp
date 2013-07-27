@@ -24,6 +24,7 @@ private:
 
     bool goDown; //if griffin now haves to go down and attacks
 
+    SFX* attackSFX;
 };
 
 #endif //BADGUYGRIFFIN_H_DEFINED

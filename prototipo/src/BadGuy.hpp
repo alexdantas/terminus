@@ -7,6 +7,7 @@
 #include "Animation.hpp"
 #include "PlatformMovable.hpp"
 #include "Thorn.hpp"
+#include "SFX.hpp"
 
 /// Defines the bad guy.
 //Actually, pretty similar to the Player's class
@@ -117,7 +118,7 @@ protected:
     Rectangle* desiredPosition;
 
     BadGuyType type;
-
+    SFX* deathSFX;
 };
 
 #endif //BadGuy_H_DEFINED

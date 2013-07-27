@@ -43,7 +43,7 @@ void GameStateMainMenu::load(int stack)
     loading.setSubtitle("loading sprites...");
 
     this->music = new Music("ogg/saturno.ogg");
-    music->play();
+//    music->play();
 
     loading.increase(4);
     loading.setSubtitle("loading music...");

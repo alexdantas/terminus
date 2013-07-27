@@ -51,11 +51,16 @@ BadGuyGriffin::BadGuyGriffin(float x, float y, int w, int h, int hp, float accel
     this->desiredPosition = new Rectangle();
     this->currentAnimation->start();
 
+    this->attackSFX = new SFX("ogg/sfx/venus-attack.ogg");
 }
 
 BadGuyGriffin::~BadGuyGriffin()
 {
+    delete this->attackSFX;
 
+    // TODO TODO BUG HACK OMG
+    //
+    // NEED TO DELETE ALL THINGS I'VE MALLOCED
 }
 
 void BadGuyGriffin::update(float dt)
@@ -68,9 +73,9 @@ void BadGuyGriffin::update(float dt)
     this->targetVy = 0;
     this->vy = 0;
 
-    if(!this->damaging && !this->isDead())
+    if (!this->damaging && !this->isDead())
     {
-     if((this->desiredPosition->y + this->desiredPosition->h) <= this->topLimitY)
+        if((this->desiredPosition->y + this->desiredPosition->h) <= this->topLimitY)
             this->goDown = true;
         else if((this->desiredPosition->y + this->desiredPosition->h) >= this->bottomLimitY)
             this->goDown = false;
@@ -96,19 +101,19 @@ void BadGuyGriffin::update(float dt)
                 targetVx = (1 * this->acceleration);
             else
                 targetVx = (-1 * this->acceleration);
+
+            this->attackSFX->play();
         }
     }
-
-    else if(this->damaging)
+    else if (this->damaging)
     {
-         if(facingDirection == RIGHT)
+        if (facingDirection == RIGHT)
             targetVx = 15;
         else
             targetVx = -15;
     }
     else
         this->dead = true;
-
 
 
     // HORIZONTAL MOVEMENT
@@ -131,5 +136,5 @@ void BadGuyGriffin::update(float dt)
 
     this->desiredPosition->update();
     this->updateAnimation(dt);
-
 }
+
