@@ -6,38 +6,46 @@ GameStateGameOver::GameStateGameOver():
     font(NULL),
     text1(NULL),
     text2(NULL),
-    music(NULL)
+    music(NULL),
+    zeus(NULL)
 { }
 void GameStateGameOver::load(int stack)
 {
-    UNUSED(stack);
+    std::string fala;
+    this->stack = stack;
+    this->nextScene = 0; //First scene
 
-    this->font = new Font("ttf/UbuntuMono.ttf", 72);
-    font->setColor(Color(255, 12, 12));
+    this->fadeWin  = new Fade(Fade::FADE_IN,  400, Color("white"));
+    this->fadeLose = new Fade(Fade::FADE_IN, 400);
 
-    this->text1 = new Text(this->font);
-    this->text2 = new Text(this->font);
+    this->win      = new Sprite("img/apterus ending 1.png");
+    this->lose      = new Sprite("img/apterus ende2.png");
+    this->imageTimer = new TimerCounter(2500); // 2 seconds
+    this->textTimer = new TimerCounter(1000); // 5 seconds
 
-    if (stack == 0)
-    {
-        text1->setText("Game Over");
-        text1->setPosition(250, 200);
-    }
-    else
-    {
-        text1->setText("Congratulations");
-        text1->setPosition(150, 200);
-    }
+    this->music = new Music("ogg/gameover.ogg");
 
-    text2->setText("Press 'r' to retry");
-    text2->setPosition(60, 400);
+    fala = (this->stack == 0 ? "ogg/zeus_lose.wav" : "ogg/zeus_win.wav");
+    this->zeus = new SFX(fala);
 
-    this->music = new Music("ogg/cliffs.ogg");
+    //fala = (this->stack == 0 ? "img/game_over.png" : "img/press_enter.png");
+    //this->gameover      = new Sprite("img/game_over.png");
     this->music->play();
+    this->zeus->play(1);
+
+    this->textTimer->start();
 }
 int GameStateGameOver::unload()
 {
+    if (this->fadeWin)  delete this->fadeWin;
+    if (this->fadeLose) delete this->fadeLose;
+    if (this->gameover) delete this->gameover;
+    if (this->win)   delete this->win;
+    if (this->lose)   delete this->lose;
+
+    if (this->imageTimer)  delete this->imageTimer;
     if (this->music) delete this->music;
+    if (this->zeus) delete this->zeus;
 
     return 0;
 }
@@ -57,12 +65,53 @@ GameState::StateCode GameStateGameOver::update(float dt)
     if (input->quitRequested())
         return GameState::QUIT;
 
+
+    if(stack == 0) //Lose
+        this->fadeLose->start();
+    else
+    {
+        this->fadeWin->start();
+        this->imageTimer->start();
+    }
+
+      // UPDATE
+
+    this->win->update(dt);
+    this->lose->update(dt);
+    this->fadeWin->update(dt);
+    this->fadeLose->update(dt);
+
     // if we're not doing anything it keeps TRAVANDO
     return GameState::CONTINUE;
 }
 void GameStateGameOver::render()
 {
-    text1->render();
-    text2->render();
+    if(stack == 0)
+    {
+        this->lose->render();
+        this->fadeLose->render();
+    }
+
+    else
+    {
+        switch(nextScene)
+        {
+            case 0:
+                this->win->render();
+            break;
+
+            default:
+                this->lose->render();
+            break;
+        }
+
+        this->fadeWin->render();
+        this->gameover->render();
+
+        if(this->imageTimer->isDone())
+            this->nextScene = 1;
+    }
+        //if(this->textTimer->isRunning())
+        //    this->gameover->render();
 }
 
