@@ -19,11 +19,7 @@ BadGuyContainer::BadGuyContainer(unsigned int maxAmmount, Rectangle *gameArea, P
     this->addGriffin();
     this->addGriffin();
     this->addGriffin();
-    this->addGriffin();
-    this->addGriffin();
-    this->addGriffin();
-    this->addGriffin();
-    this->addGriffin();
+
     // ADDING EVERYONE
     // for (i = 0; i < this->maxAmmount; i++)
     // {

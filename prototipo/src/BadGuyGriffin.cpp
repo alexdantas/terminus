@@ -101,7 +101,7 @@ void BadGuyGriffin::update(float dt)
             else
                 targetVx = (-1 * this->acceleration);
 
-            this->attackSFX->play();
+            //this->attackSFX->play();
         }
     }
     else if (this->damaging)

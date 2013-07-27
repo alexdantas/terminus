@@ -53,7 +53,7 @@ void GameStateMainMenu::load(int stack)
                           Window::height/2 + 100);
 
     this->menu->addItem("New Game");
-    this->menu->addItem("Instruction");
+    this->menu->addItem("Instructions");
     this->menu->addItem("Exit");
     this->menu->centralizeText();
 

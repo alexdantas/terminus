@@ -100,13 +100,14 @@ void BadGuyVenus::update(float dt)
         this->timer->startCounting();
         this->isAttacking = true;
 
+        //THIS IS SO ANNOYING, SO ANNOYING... I'M GIVE UP!
         // Will only play the sound once in 30 times
-        static int counterToAvoidThisAnnoyingSFXFromPlayingEveryTime = 0;
+        //static int counterToAvoidThisAnnoyingSFXFromPlayingEveryTime = 0;
 
-        if ((counterToAvoidThisAnnoyingSFXFromPlayingEveryTime % 30) == 0)
-            this->attackSFX->play();
+        //if ((counterToAvoidThisAnnoyingSFXFromPlayingEveryTime % 30) == 0)
+            //this->attackSFX->play();
 
-        counterToAvoidThisAnnoyingSFXFromPlayingEveryTime++;
+        //counterToAvoidThisAnnoyingSFXFromPlayingEveryTime++;
     }
     else if((this->currentAnimation == this->animations[ATTACK_LEFT] ||
              this->currentAnimation == this->animations[ATTACK_RIGHT]))
