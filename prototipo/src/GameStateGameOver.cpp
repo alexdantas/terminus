@@ -21,19 +21,18 @@ void GameStateGameOver::load(int stack)
     this->win      = new Sprite("img/apterus ending 1.png");
     this->lose      = new Sprite("img/apterus ende2.png");
     this->imageTimer = new TimerCounter(2500); // 2 seconds
-    this->textTimer = new TimerCounter(1000); // 5 seconds
+    //this->textTimer = new TimerCounter(5000); // 5 seconds
 
     this->music = new Music("ogg/gameover.ogg");
 
-    fala = (this->stack == 0 ? "ogg/zeus_lose.wav" : "ogg/zeus_win.wav");
+    fala = (this->stack == 0 ? "ogg/zeus_lose.ogg" : "ogg/zeus_win.ogg");
     this->zeus = new SFX(fala);
 
-    //fala = (this->stack == 0 ? "img/game_over.png" : "img/press_enter.png");
-    //this->gameover      = new Sprite("img/game_over.png");
+    this->gameover      = new Sprite("img/game_over.png");
     this->music->play();
     this->zeus->play(1);
 
-    this->textTimer->start();
+    //this->textTimer->start();
 }
 int GameStateGameOver::unload()
 {
@@ -110,7 +109,6 @@ void GameStateGameOver::render()
         if(this->imageTimer->isDone())
             this->nextScene = 1;
     }
-        //if(this->textTimer->isRunning())
-        //    this->gameover->render();
+            this->gameover->render();
 }
 

@@ -53,7 +53,7 @@ void GameStateMainMenu::load(int stack)
                           Window::height/2 + 100);
 
     this->menu->addItem("New Game");
-    this->menu->addItem("Credits");
+    this->menu->addItem("Instruction");
     this->menu->addItem("Exit");
     this->menu->centralizeText();
 
@@ -130,6 +130,7 @@ GameState::StateCode GameStateMainMenu::update(float dt)
             break;
 
         case 1:
+            return GameState::GAME_INSTRUCTION;
             break;
 
         case 2:

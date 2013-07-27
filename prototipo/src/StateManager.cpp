@@ -8,6 +8,7 @@
 #include "GameStateGame.hpp"
 #include "GameStateGameOver.hpp"
 #include "GameStateIntro.hpp"
+#include "GameStateInstruction.hpp"
 #include "Window.hpp"
 #include "Graphics.hpp"
 
@@ -110,6 +111,13 @@ void StateManager::run()
             delete (this->currentState);
 
             this->currentState = new GameStateMainMenu();
+            this->currentState->load(this->sharedInfo);
+            break;
+        case GameState::GAME_INSTRUCTION: // nothing exciting here
+            this->sharedInfo = this->currentState->unload();
+            delete (this->currentState);
+
+            this->currentState = new GameStateInstruction();
             this->currentState->load(this->sharedInfo);
             break;
 

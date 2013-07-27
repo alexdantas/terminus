@@ -42,7 +42,7 @@ public:
     /// *StateManager* makes the appropriate changes.
     enum StateCode
     {
-        QUIT, CONTINUE, MAIN_MENU, GAME_START, GAME_OVER
+        QUIT, CONTINUE, MAIN_MENU, GAME_START, GAME_INSTRUCTION, GAME_OVER
     };
 
     // Left this here just because.
