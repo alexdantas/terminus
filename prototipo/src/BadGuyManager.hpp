@@ -43,6 +43,8 @@ private:
 
     /// Timer to (possibly) create new venuses.
     TimerCounter* venusTimer;
+
+    TimerCounter* griffinTimer;
 };
 
 
