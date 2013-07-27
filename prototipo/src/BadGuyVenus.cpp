@@ -13,31 +13,31 @@ BadGuyVenus::BadGuyVenus(float x, float y, int w, int h, int hp, float accelerat
 
     int animationSpeed = 10;
 
-    tmp = new Animation("img/spritesheets/venusstandby_esq.png", 10, animationSpeed);
+    tmp = new Animation("img/spritesheets/venus-standby-left.png", 10, animationSpeed);
     this->animations[STANDING_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/venusstandby.png", 10, animationSpeed);
+    tmp = new Animation("img/spritesheets/venus-standby-right.png", 10, animationSpeed);
     this->animations[STANDING_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/Untitled-6.png", 5, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/venus-damaging-left.png", 5, animationSpeed, 1);
     this->animations[DAMAGING_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/Untitled-5.png", 5, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/venus-damaging-right.png", 5, animationSpeed, 1);
     this->animations[DAMAGING_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/venus sprite atak_esq.png", 16, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/venus-attack-left.png", 16, animationSpeed, 1);
     this->animations[ATTACK_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/venus sprite atak.png", 16, animationSpeed + 10, 1);
+    tmp = new Animation("img/spritesheets/venus-attack-right.png", 16, animationSpeed + 10, 1);
     this->animations[ATTACK_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/venusmorrendosprite_esq.png", 10, animationSpeed + 10, 1);
+    tmp = new Animation("img/spritesheets/venus-dying-left.png", 10, animationSpeed + 10, 1);
     this->animations[DEATH_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/venusmorrendosprite.png", 10, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/venus-dying-right.png", 10, animationSpeed, 1);
     this->animations[DEATH_RIGHT] = tmp;
 
-    this->beam = new Thorn("img/sprites/projetilvenus.png", this->position->x + 91, this->position->y + 50, 16, 15);
+    this->beam = new Thorn("img/sprites/venus-heart.png", this->position->x + 91, this->position->y + 50, 16, 15);
 
 
     // Let's start by looking at our right.

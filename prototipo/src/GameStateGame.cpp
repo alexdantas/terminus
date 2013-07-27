@@ -17,7 +17,8 @@ enum GameStateGameCommands
 };
 
 GameStateGame::GameStateGame():
-    bg(NULL),
+    bg_top(NULL),
+    bg_bottom(NULL),
     will_quit(false),
     will_return_to_main_menu(false),
     game_over(false),
@@ -49,12 +50,15 @@ void GameStateGame::load(int stack)
 
     loading.setSubtitle("Drawing background...");
 
-    this->bg = new Sprite("img/fundo.png");
+    this->bg_bottom = new Sprite("img/scenario-bottom.png");
+    this->bg_top    = new Sprite("img/scenario-top.png");
+    this->bgWidth   = this->bg_bottom->getWidth()  + this->bg_top->getWidth();
+    this->bgHeight  = this->bg_bottom->getHeight() + this->bg_top->getHeight();
 
     this->gameArea = new Rectangle(0,
                                    0,
-                                   this->bg->getWidth(),
-                                   this->bg->getHeight());
+                                   this->bgWidth,
+                                   this->bgHeight);
 
     loading.increase();
     loading.setSubtitle("Buying camera...");
@@ -190,7 +194,8 @@ int GameStateGame::unload()
     }                  \
 }
 
-    safe_delete(this->bg);
+    safe_delete(this->bg_top);
+    safe_delete(this->bg_bottom);
     safe_delete(this->bgmusic);
     safe_delete(this->camera);
 
@@ -268,8 +273,8 @@ GameState::StateCode GameStateGame::update(float dt)
 
         //     for (int i = 0; i < platformAmmount; i++)
         //         this->platforms->addBetween(Point(0, 0),
-        //                                     Point(this->bg->getWidth(),
-        //                                           this->bg->getHeight()));
+        //                                     Point(this->bgWidth,
+        //                                           this->bgHeight);
         // }
         //     break;
 
@@ -351,9 +356,13 @@ GameState::StateCode GameStateGame::update(float dt)
         this->camera->centerOn(this->apterus->getCenterX(),
                                 this->apterus->getCenterY());
 
-         if(this->apterus->getY() + 200< this->gameArea->h - 48)
+        // How much the player has to climb to get the spikes to appear.
+        int spikeThreshold = 48;
+
+        // Creating spikes!
+        if ((this->apterus->box->bottom) < (this->gameArea->h - spikeThreshold - 300))
         {
-            this->spikes->setPositionSprite(camera->getY() + 600 - 48);
+            this->spikes->setPositionSprite(camera->getY() + 600 - spikeThreshold);
             this->spikes->setPositionCollision( cameraLowestPoint + 600);
         }
     }
@@ -377,7 +386,9 @@ void GameStateGame::render()
     float cameraX = this->camera->getX();
     float cameraY = this->camera->getY();
 
-    this->bg->render(0 - cameraX, 0 - cameraY);
+    this->bg_top->render(0 - cameraX, 0 - cameraY);
+    this->bg_bottom->render(0 - cameraX,
+                            this->bg_top->getHeight() - cameraY);
 
     this->clouds->render(cameraX, cameraY);
 

@@ -116,7 +116,11 @@ private:
 
     // Now, the variables.
 
-	Sprite* bg; ///< Background of the game.
+	Sprite* bg_top;    ///< Top background of the game.
+	Sprite* bg_bottom; ///< Bottom background of the game.
+
+    int bgWidth;  ///< Total background width.
+    int bgHeight; ///< Total background height.
 
 	bool will_quit; ///< If we're gonna quit the game.
     bool will_return_to_main_menu; ///< If we're gonna go to main menu.
