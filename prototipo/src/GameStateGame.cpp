@@ -118,8 +118,8 @@ void GameStateGame::load(int stack)
     loading.increase();
     loading.setSubtitle("Legally buying music...");
 
-    this->bgmusic = new Music("ogg/escaping.ogg");
-//    this->bgmusic->play();
+    this->bgmusic = new Music("ogg/gameplay.ogg");
+    this->bgmusic->play();
 
     loading.increase();
     loading.setSubtitle("Loading Quake-like console...");
@@ -360,10 +360,10 @@ GameState::StateCode GameStateGame::update(float dt)
         int spikeThreshold = 48;
 
         // Creating spikes!
-        if ((this->apterus->box->bottom) < (this->gameArea->h - spikeThreshold - 300))
+        if ((this->apterus->box->bottom) < (this->gameArea->h - 48))
         {
-            this->spikes->setPositionSprite(camera->getY() + 600 - spikeThreshold);
-            this->spikes->setPositionCollision( cameraLowestPoint + 600);
+            this->spikes->setPositionSprite(camera->getY() + 600 - 48);
+            this->spikes->setPositionCollision(cameraLowestPoint + 600);
         }
     }
 

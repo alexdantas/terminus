@@ -5,6 +5,8 @@
 #include "Sprite.hpp"
 #include "Fade.hpp"
 #include "TimerCounter.hpp"
+#include "Music.hpp"
+#include <list>
 
 /// Shows the introduction to the game.
 ///
@@ -39,12 +41,18 @@ private:
 
     /// The image that will be shown on the intro.
     Sprite* image;
+    std::list<std::string> scene;
+    int count;
 
     /// How long the image's allowed to stay on the screen.
     TimerCounter* imageTimer;
 
     /// Counts the time before fade in starts (black screen).
     TimerCounter* fadeInTimer;
+    TimerCounter* trasitionTimer;
+
+    ///Musics! Sounds good
+    Music *music;
 };
 
 #endif //GAMESTATEINTRO_H_DEFINED

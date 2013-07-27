@@ -112,7 +112,7 @@ void Player::update(float dt)
 {
     this->desiredPosition->copy(this->box);
 
-    if(this->desiredPosition->y == this->topLimitY)
+    if(this->desiredPosition->y <= this->topLimitY + 2000) //where zeus temple is
         this->win = true;
 
     // The acceleration is reseted each frame

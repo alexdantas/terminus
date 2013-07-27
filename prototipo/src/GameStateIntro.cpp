@@ -13,23 +13,44 @@ void GameStateIntro::load(int stack)
 {
     UNUSED(stack);
 
+    std::list<std::string>::iterator it;
+    it = this->scene.begin();
+
+    it = this->scene.insert(it, "img/intro/sequencia 1.png");
+    it = this->scene.insert(it, "img/intro/sequencia 2.png");
+    it = this->scene.insert(it, "img/intro/sequencia 3.png");
+    it = this->scene.insert(it, "img/intro/sequencia 4.png");
+    it = this->scene.insert(it, "img/intro/sequencia 5.png");
+    it = this->scene.insert(it, "img/intro/sequencia 6.png");
+    it = this->scene.insert(it, "img/intro/sequencia 7.png");
+    it = this->scene.insert(it, "img/intro/sequencia 8.png");
+    it = this->scene.insert(it, "img/intro/sequencia 9.png");
+    it = this->scene.insert(it, "img/intro/sequencia 10.png");
+    it = this->scene.insert(it, "img/intro/sequencia 11.png");
+
+
     this->fadeIn  = new Fade(Fade::FADE_IN,  400, Color("white"));
     this->fadeOut = new Fade(Fade::FADE_OUT, 400);
 
     this->image      = new Sprite("img/intro1.png");
-    this->imageTimer = new TimerCounter(2500); // 2 seconds
+    this->imageTimer = new TimerCounter(5000); // 2 seconds
 
-    this->fadeInTimer = new TimerCounter(500);
+    this->fadeInTimer = new TimerCounter(200);
+    this->trasitionTimer = new TimerCounter(500);
     this->fadeInTimer->startCounting();
+    this->music = new Music("ogg/op.ogg");
+    this->music->play();
 }
 int GameStateIntro::unload()
 {
     if (this->fadeIn)  delete this->fadeIn;
     if (this->fadeOut) delete this->fadeOut;
     if (this->image)   delete this->image;
+    if (this->music)    delete this->music;
 
     if (this->fadeInTimer) delete this->fadeInTimer;
     if (this->imageTimer)  delete this->imageTimer;
+    if (this->trasitionTimer)  delete this->trasitionTimer;
     return 0;
 }
 GameState::StateCode GameStateIntro::update(float dt)
@@ -44,12 +65,22 @@ GameState::StateCode GameStateIntro::update(float dt)
 
     // Fade out starts when the image has spent enough time
     // on the screen.
-    if (this->imageTimer->isDone())
+    if (this->imageTimer->isDone() || this->trasitionTimer->isDone())
     {
-        this->fadeIn->stop(); // safety check - if the timer's
-                              // not enough, this will make the
-                              // screen flash.
-        this->fadeOut->start();
+        this->fadeIn->start();
+        if(!this->scene.empty())
+        {
+            this->image->setFilename(this->scene.back());
+            this->image->load();
+            this->scene.pop_back();
+            this->trasitionTimer->start();
+        }
+        else
+        {
+            this->fadeIn->stop();
+            this->fadeOut->start();
+        }
+
     }
 
     // We only quit to main menu after the fade out completes.

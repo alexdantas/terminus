@@ -68,6 +68,9 @@ void GameStateMainMenu::load(int stack)
 
     this->fadeOut = new Fade(Fade::FADE_OUT, 500);
 
+    this->bgmusic = new Music("ogg/intro.ogg");
+    this->bgmusic->play();
+
     loading.increase(10);
     loading.setSubtitle("loading all the rest...");
 }

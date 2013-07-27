@@ -106,7 +106,6 @@ void GameStateGameOver::render()
         }
 
         this->fadeWin->render();
-        this->gameover->render();
 
         if(this->imageTimer->isDone())
             this->nextScene = 1;

@@ -25,8 +25,11 @@ bool Music::load()
     this->music = Mix_LoadMUS(this->filepath.c_str());
     if (!this->music)
     {
+        std::string erro = Mix_GetError();
         Log::error("Mix_LoadMUS: Couldn't load music on '" +
                    this->filepath + "'");
+        Log::error("Error: '" +
+                   erro + "'");
         return false;
     }
 
@@ -45,6 +48,7 @@ bool Music::play(int times)
     {
         Log::error("Mix_PlayMusic: Couldn't play music on '" +
                    this->filepath + "'");
+
         return false;
     }
 

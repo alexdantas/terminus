@@ -6,6 +6,7 @@
 #include "Music.hpp"
 #include "Text.hpp"
 #include "Menu.hpp"
+#include "Music.hpp"
 #include "Sprite.hpp"
 #include "CloudContainer.hpp"
 #include "Fade.hpp"
@@ -39,6 +40,8 @@ private:
     Music* music;     ///< Menu's background music.
 
     Menu* menu;       ///< The actual game menu.
+
+    Music* bgmusic;
 
     Sprite* bg;       ///< The background image.
     Sprite* logo;     ///< The logo image.
