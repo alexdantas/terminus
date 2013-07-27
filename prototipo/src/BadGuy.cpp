@@ -191,6 +191,7 @@ void BadGuy::commitMovement()
 }
 void BadGuy::die()
 {
+    this->isAlive = false;
     this->dead = true;
     this->deathSFX->play();
 }

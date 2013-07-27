@@ -1,5 +1,6 @@
 #include "BadGuyContainer.hpp"
 #include "SDL.hpp" // randomNumberBetween()
+#include "Window.hpp"
 
 
 BadGuyContainer::BadGuyContainer(unsigned int maxAmmount, Rectangle *gameArea, PlatformManager *platforms) :
@@ -106,7 +107,7 @@ void BadGuyContainer::update(float dt)
         if (this->badguy[i])
         {
             // Will kill it if it's below current camera level
-            if ((this->badguy[i]->box->bottom) > (this->cameraY))
+            if ((this->badguy[i]->box->bottom) > (this->cameraY + Window::height + 100))
                 this->badguy[i]->die();
 
             if (this->badguy[i]->died())
@@ -141,14 +142,17 @@ void BadGuyContainer::addVenus()
 
         // Adding only on platforms above the current camera level
         if ((*it)->box->bottom < this->cameraY)
+        {
             this->addVenusTo((*it));
+            break;
+        }
     }
 }
 void BadGuyContainer::addVenusTo(Platform* p)
 {
     p->occupied = true;
 
-    BadGuyVenus* v = new BadGuyVenus(p->box->x,
+    BadGuyVenus* v = new BadGuyVenus(p->box->center.x - 30,
                                      p->box->top - 270,
                                      98,
                                      270,
@@ -177,7 +181,7 @@ void BadGuyContainer::addGriffin()
                                          Config::playerAcceleration);
 
     g->setHorizontalLimit(60, this->gameArea->w - 119);
-    g->setVerticalLimit(215, rand()%this->gameArea->h);
+    g->setVerticalLimit(215, SDL::randomNumberBetween(this->gameArea->x - 300, this->gameArea->x + 600));
 
     this->badguy.push_back(g);
 
