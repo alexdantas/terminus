@@ -86,7 +86,29 @@ void BadGuy::updateAnimation(int dt)
     // And there's a whole tree of possible animations depending
     // on a lot of circumstances... Damn, dude.
 
-    if (this->damaging && !this->dead)
+    // The first thing we should worry about is whether he's alive
+    if (!(this->isAlive))
+    {
+        this->die();
+        if (this->facingDirection == RIGHT)
+        {
+            if (this->currentAnimation != this->animations[DEATH_RIGHT])
+            {
+                willChangeAnimation = true;
+                tmp = this->animations[DEATH_RIGHT];
+            }
+        }
+        else
+        {
+            if (this->currentAnimation != this->animations[DEATH_LEFT])
+            {
+                willChangeAnimation = true;
+                tmp = this->animations[DEATH_LEFT];
+            }
+        }
+    }
+    // Then we see if he's taking tamage
+    else if (this->damaging)
     {
         if (this->facingDirection == RIGHT)
         {
@@ -108,25 +130,6 @@ void BadGuy::updateAnimation(int dt)
         {
             if (!(this->currentAnimation->isRunning()))
                 this->damaging = false;
-        }
-    }
-    else if (this->dead)
-    {
-        if (this->facingDirection == RIGHT)
-        {
-            if (this->currentAnimation != this->animations[DEATH_RIGHT])
-            {
-                willChangeAnimation = true;
-                tmp = this->animations[DEATH_RIGHT];
-            }
-        }
-        else
-        {
-            if (this->currentAnimation != this->animations[DEATH_LEFT])
-            {
-                willChangeAnimation = true;
-                tmp = this->animations[DEATH_LEFT];
-            }
         }
     }
     else if(this->isAttacking)
@@ -191,37 +194,33 @@ void BadGuy::die()
     this->dead = true;
     this->deathSFX->play();
 }
-bool BadGuy::isAlive()
-{
-    return (!this->dead);
-}
-
 bool BadGuy::Attacking()
 {
-    return this->isAttacking;
+    return (this->isAttacking);
 }
-
 bool BadGuy::isHittable()
 {
-    return (this->isAlive() && !this->Attacking() && !this->damaging);
+    return (this->isAlive      &&
+            !this->Attacking() &&
+            !this->damaging);
 }
-
 void BadGuy::dealDamage()
 {
     this->damaging = true;
 }
-
 void BadGuy::Attacked()
 {
     this->dealDamage();
     this->damage(1);
-
 }
-
 bool BadGuy::died()
 {
-    if(this->currentAnimation == this->animations[DEATH_RIGHT] || this->currentAnimation == this->animations[DEATH_LEFT])
-        return (this->currentAnimation->isRunning() ? false : true);
+    if (this->currentAnimation == this->animations[DEATH_RIGHT] ||
+        this->currentAnimation == this->animations[DEATH_LEFT])
+        return (this->currentAnimation->isRunning()?
+                false:
+                true);
+
     return false;
 }
 

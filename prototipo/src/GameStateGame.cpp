@@ -52,7 +52,7 @@ void GameStateGame::load(int stack)
 
     this->bg_bottom = new Sprite("img/scenario-bottom.png");
     this->bg_top    = new Sprite("img/scenario-top.png");
-    this->bgWidth   = this->bg_bottom->getWidth()  + this->bg_top->getWidth();
+    this->bgWidth   = this->bg_bottom->getWidth();
     this->bgHeight  = this->bg_bottom->getHeight() + this->bg_top->getHeight();
 
     this->gameArea = new Rectangle(0,
@@ -565,11 +565,11 @@ void GameStateGame::checkCollisions()
     {
         if (this->apterus && badguys[i] && this->apterus->collidedWith(badguys[i]))
         {
-            if(this->apterus->Dashing() && badguys[i]->isHittable())
+            if (this->apterus->Dashing() && badguys[i]->isHittable())
             {
                 (badguys[i])->Attacked(); //Take that!
             }
-            else if(badguys[i]->isAlive())
+            else if(!(badguys[i]->isDead()))
             {
                 if (this->apterus->isHittable())
                 {

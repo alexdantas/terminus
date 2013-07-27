@@ -58,7 +58,6 @@ public:
 
 
     /// Tells if he's already defeat
-    bool isAlive();
     bool Attacking();
     bool isHittable();
     bool died();

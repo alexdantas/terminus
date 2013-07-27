@@ -7,7 +7,6 @@ BadGuyManager::BadGuyManager(unsigned int ammout, Rectangle *gameArea, PlatformM
     currentCameraY(0)
 {
     this->container = new BadGuyContainer(ammout, gameArea, platforms);
-
 }
 BadGuyManager::~BadGuyManager()
 {
@@ -16,7 +15,8 @@ BadGuyManager::~BadGuyManager()
 }
 void BadGuyManager::update(float dt)
 {
-    this->container->update(30);
+//    this->container->update(30);
+    this->container->update(dt);
 }
 void BadGuyManager::render(float cameraX, float cameraY)
 {

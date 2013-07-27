@@ -15,28 +15,28 @@ BadGuyGriffin::BadGuyGriffin(float x, float y, int w, int h, int hp, float accel
 
     int animationSpeed = 30;
 
-    tmp = new Animation("img/spritesheets/grifo standby redem.png", 18, animationSpeed);
+    tmp = new Animation("img/spritesheets/griffin-standby.png", 18, animationSpeed);
     this->animations[STANDING_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/grifo standby redem.png", 18, animationSpeed);
+    tmp = new Animation("img/spritesheets/griffin-standby.png", 18, animationSpeed);
     this->animations[STANDING_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/griffo transition redem direita.png", 30, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/griffin-transition-right.png", 30, animationSpeed, 1);
     this->animations[DAMAGING_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/griffo transition redem esquerda.png", 30, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/griffin-transition-left.png", 30, animationSpeed, 1);
     this->animations[DAMAGING_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/grifo rasante redem direita.png", 1, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/griffin-dash-right.png", 1, animationSpeed, 1);
     this->animations[ATTACK_RIGHT] = tmp;
 
-    tmp = new Animation("img/spritesheets/grifo rasante redem esquerda.png", 1, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/griffin-dash-left.png", 1, animationSpeed, 1);
     this->animations[ATTACK_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/grifo morrendo redem esquerda.png", 22, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/griffin-dying-left.png", 22, animationSpeed, 1);
     this->animations[DEATH_LEFT] = tmp;
 
-    tmp = new Animation("img/spritesheets/grifo morrendo redem.png", 22, animationSpeed, 1);
+    tmp = new Animation("img/spritesheets/griffin-dying-right.png", 22, animationSpeed, 1);
     this->animations[DEATH_RIGHT] = tmp;
 
     // Let's start by looking at our right.
@@ -62,7 +62,6 @@ BadGuyGriffin::~BadGuyGriffin()
     //
     // NEED TO DELETE ALL THINGS I'VE MALLOCED
 }
-
 void BadGuyGriffin::update(float dt)
 {
     this->desiredPosition->copy(this->box);

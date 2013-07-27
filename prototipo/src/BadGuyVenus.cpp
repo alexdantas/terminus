@@ -40,7 +40,6 @@ BadGuyVenus::BadGuyVenus(float x, float y, int w, int h, int hp, float accelerat
 
     this->beam = new Thorn("img/sprites/venus-heart.png", this->position->x + 91, this->position->y + 50, 16, 15);
 
-
     // Let's start by looking at our right.
     this->currentAnimation = this->animations[STANDING_RIGHT];
 
@@ -69,13 +68,12 @@ BadGuyVenus::~BadGuyVenus()
 //OHMYGOD, I FORGET HOW TO CODE
 void BadGuyVenus::updateAttack(float dt)
 {
-    if(!this->currentAnimation->isRunning())
+    if (!this->currentAnimation->isRunning())
     {
-        if(this->beam && this->beam->position->x <= 800)
+        if (this->beam && this->beam->position->x <= 800)
         {
             this->beam->addPosition(5, 10 * sin(count * 0.5));
             count++;
-
         }
         else
         {
@@ -85,13 +83,11 @@ void BadGuyVenus::updateAttack(float dt)
             this->isAttacking = false;
             this->beam->setPosition(this->position->x + 91, this->beam->position->y);
             this->currentAnimation->start();
-            this->timer->restart();
+            this->timer->startCounting();
         }
-
         this->beam->update(dt);
     }
 }
-
 void BadGuyVenus::update(float dt)
 {
     this->desiredPosition->copy(this->box);
@@ -101,14 +97,15 @@ void BadGuyVenus::update(float dt)
 
     if (this->timer->isDone())
     {
+        this->timer->startCounting();
         this->isAttacking = true;
         this->attackSFX->play();
     }
-    else if((this->currentAnimation == this->animations[ATTACK_LEFT] || this->currentAnimation == this->animations[ATTACK_RIGHT]))
+    else if((this->currentAnimation == this->animations[ATTACK_LEFT] ||
+             this->currentAnimation == this->animations[ATTACK_RIGHT]))
     {
         this->updateAttack(dt);
     }
-
 
     this->desiredPosition->update();
 
