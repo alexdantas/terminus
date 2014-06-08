@@ -8,6 +8,11 @@
 ![flyy](http://alexdantas.net/projects/terminus/img/terminus-fly.png)
 ![game](http://alexdantas.net/projects/terminus/img/terminus-game-over.png)
 
+([Click here for a sample playthrough of the game][play] and [here for a hack][hack])
+
+[play]: http://alexdantas.net/projects/terminus/img/play.gif
+[hack]: http://alexdantas.net/projects/terminus/img/hack.gif
+
 **Terminus** is a greek-themed game for Windows and GNU/Linux.
 
 It was a team work for the classes *"Introduction to Game Development"* and
