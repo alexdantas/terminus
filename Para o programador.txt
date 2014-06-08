@@ -1,4 +1,0 @@
--Bibliotecas necessárias
-
-http://www.glfw.org/ - GLFW
-http://freeglut.sourceforge.net/ - Freeglut
