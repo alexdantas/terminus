@@ -1,6 +1,6 @@
 # Terminus Makefile
 
-EXE      = prototipo
+EXE      = terminus
 
 CFLAGS   = -g `sdl-config --cflags`
 CXXFLAGS = -Wall -Wextra -g `sdl-config --cflags`

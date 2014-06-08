@@ -1,6 +1,8 @@
 # Terminus Window's cross-compiling Makefile
 #
-# This file compiles FOR Windows ON Linux
+# We used this file to compile Terminus FOR Windows
+# ON Linux.
+#
 # It assumes you have 'mxe' nand installed SDL for windows
 # on \opt\SDL-1.2.13
 #
