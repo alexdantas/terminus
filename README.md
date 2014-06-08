@@ -2,7 +2,11 @@
 
 *Greek-themed 2D platform jumper*
 
-// Insert screenshot here
+![main](http://alexdantas.net/projects/terminus/img/terminus-main-menu.png)
+![walk](http://alexdantas.net/projects/terminus/img/terminus-walk.png)
+![medu](http://alexdantas.net/projects/terminus/img/terminus-medusa.png)
+![flyy](http://alexdantas.net/projects/terminus/img/terminus-fly.png)
+![game](http://alexdantas.net/projects/terminus/img/terminus-game-over.png)
 
 **Terminus** is a greek-themed game for Windows and GNU/Linux.
 
@@ -29,12 +33,23 @@ prevent anyone from climbing it at all costs.
 Will **Apterus** ever become a Pegasus? Can you cross a path blocked by the
 gods?
 
+## Download
+
+* **Windows**: [Click here to download the executable][exe]**;
+* **GNU/Linux**: See section *Development* below;
+
+[exe]: https://github.com/alexdantas/terminus/archive/windows.zip
+
 ## Controls
 
-| Keys          | Action |
-| ------------- | ------ |
-| Arrows / WASD | Walk   |
-| Space         | Jump   |
+| Keys          | Action                       |
+| ------------- | ---------------------------- |
+| Arrows / WASD | Walk and Jump                |
+| Space         | Dash Attack                  |
+| Shift         | Run                          |
+| Delete        | Suicide                      |
+| ESC           | Quit Game                    |
+| F1            | (debug) Show collision boxes |
 
 ## Credits
 
@@ -58,6 +73,12 @@ gods?
 
 **Terminus** is a C++ game made with our custom game engine, using SDL 1.2 for
 graphics.
+
+To compile and run (if you're on a GNU/Linux system), be sure you have
+SDL 1.2 installed and simply do:
+
+    $ make
+    $ ./terminus
 
 ## License
 
