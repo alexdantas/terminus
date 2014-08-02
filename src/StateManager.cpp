@@ -25,7 +25,7 @@ StateManager::StateManager(int width, int height)
     Graphics::init(Window::screen);
 
     // For even further debugging purposes
-    Log::verboseMode(true);
+    Log::verboseMode(Config::verboseMode);
 
     // Starting the game!
     if (Config::skipMenu)

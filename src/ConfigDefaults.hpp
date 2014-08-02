@@ -3,6 +3,7 @@
 #define DEFAULT_CONFIG_FILE        "config.ini"
 
 #define DEFAULT_DEBUG_MODE         false
+#define DEFAULT_VERBOSE_MODE       false
 #define DEFAULT_SCREEN_WIDTH       800
 #define DEFAULT_SCREEN_HEIGHT      600
 #define DEFAULT_SCREEN_FRAMERATE   3

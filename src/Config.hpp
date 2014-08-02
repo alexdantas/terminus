@@ -36,6 +36,7 @@ public:
     static void reset();
 
     static bool debugMode;
+    static bool verboseMode;
     static bool skipMenu;
     static bool hasMusic;
     static bool showBoundingBoxes;

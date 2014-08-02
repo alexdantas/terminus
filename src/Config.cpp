@@ -3,9 +3,10 @@
 
 // Must intialize static members out of the class
 ConfigFile  Config::file;
-bool        Config::debugMode = false;
-bool        Config::skipMenu  = false;
-bool        Config::hasMusic  = true;
+bool        Config::debugMode   = false;
+bool        Config::verboseMode = false;
+bool        Config::skipMenu    = false;
+bool        Config::hasMusic    = true;
 bool        Config::showBoundingBoxes = false;
 
 int         Config::screenWidth       = 0;
@@ -42,6 +43,7 @@ bool Config::load(std::string fileName)
 
     file.SelectGroup("game", false);
     debugMode = file.Read("debug_mode", debugMode);
+    verboseMode = file.Read("verbose_mode", verboseMode);
     skipMenu = file.Read("skip_menu", skipMenu);
     hasMusic = file.Read("has_music", hasMusic);
     cloudsLimit = file.Read("clouds_limit", cloudsLimit);
@@ -87,7 +89,8 @@ void Config::reset()
 {
     // Is this necessary?
 
-    debugMode       = DEFAULT_DEBUG_MODE;
+    debugMode   = DEFAULT_DEBUG_MODE;
+    verboseMode = DEFAULT_VERBOSE_MODE;
 
     screenWidth     = DEFAULT_SCREEN_WIDTH;
     screenHeight    = DEFAULT_SCREEN_HEIGHT;
