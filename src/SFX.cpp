@@ -18,8 +18,8 @@ bool SFX::play(int times)
 
     if (Mix_PlayChannel(-1, this->sfx, 0) == -1)
     {
-        Log::error("Mix_PlayChannel: Couldn't play SFX on '" +
-                   this->filepath + "'");
+	    Log::warning("Mix_PlayChannel: Couldn't play SFX on '" +
+	                 this->filepath + "'");
         return false;
     }
 

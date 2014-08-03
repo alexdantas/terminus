@@ -43,14 +43,15 @@ void Log::warning(std::string msg)
     // if (isUsingFiles)
     //     stderr    << "Warning: " << msg << std::endl;
     // else
-    std::cerr << bold_yellow << warningPrefix << msg << reset_color << std::endl;
+    if (isDebugMode)
+	    std::cerr << bold_yellow << warningPrefix << msg << reset_color << std::endl;
 }
 void Log::log(std::string msg)
 {
     // if (isUsingFiles)
     //     stdout    << msg << std::endl;
     // else
-    std::cout << bold_green << msg << reset_color << std::endl;
+	std::cout << bold_green << msg << reset_color << std::endl;
 }
 void Log::debug(std::string msg)
 {
