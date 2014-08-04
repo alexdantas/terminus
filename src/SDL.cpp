@@ -13,6 +13,8 @@ bool         SDL::startedAudio    = false;
 Timer        SDL::framerate_timer;
 FPSmanager   SDL::fpsManager;
 
+std::vector<std::pair<std::string, SDL_Surface*> > SDL::loadedImages;
+
 bool SDL::init(uint32_t frameRate)
 {
     // SDL General Initialization
@@ -136,6 +138,15 @@ SDL_Surface* SDL::loadBMP(std::string filename)
 }
 SDL_Surface* SDL::loadImage(std::string filename, bool optimize)
 {
+	// If it's on the cache, merely return it
+	for (size_t i = 0; i < SDL::loadedImages.size(); i++)
+		if (SDL::loadedImages[i].first == filename)
+		{
+			Log::verbose("Hit cache for '" + filename + "'");
+			return SDL::loadedImages[i].second;
+		}
+
+
     SDL_Surface* tmpImage = NULL;
 
     tmpImage = IMG_Load(filename.c_str());
@@ -159,6 +170,8 @@ SDL_Surface* SDL::loadImage(std::string filename, bool optimize)
         image = SDL_DisplayFormat(tmpImage);
 
     SDL::freeImage(tmpImage);
+
+    SDL::loadedImages.push_back(std::pair<std::string, SDL_Surface*>(filename, image));
     return image;
 }
 void SDL::freeImage(SDL_Surface* image)

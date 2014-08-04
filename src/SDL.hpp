@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <stdint.h>
+#include <vector>
 #include "SDL/SDL.h"
 #include "SDL/SDL_video.h"
 #include "SDL/SDL_image.h"
@@ -261,6 +262,10 @@ private:
 
     /// SDL's internal data structure to deal with FPS.
     static FPSmanager fpsManager;
+
+	/// Cache of loaded images.
+	/// Avoid loading the same file more than once.
+	static std::vector<std::pair<std::string, SDL_Surface*> > loadedImages;
 };
 
 #endif /* SDL_H_DEFINED */
