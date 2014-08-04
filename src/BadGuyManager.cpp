@@ -2,8 +2,8 @@
 
 BadGuyManager::BadGuyManager(unsigned int ammout, Rectangle *gameArea, PlatformManager *platforms):
     container(NULL),
-    maxHeight(maxHeight),
-    minHeight(20),
+    maxHeight(100),
+    minHeight(50),
     currentCameraY(0)
 {
     this->container = new BadGuyContainer(ammout, gameArea, platforms);
