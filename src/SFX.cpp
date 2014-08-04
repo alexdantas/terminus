@@ -1,7 +1,36 @@
 #include "SFX.hpp"
 #include "Log.hpp"
 
-SFX::SFX(std::string filepath)
+/* returns the duration of a `Mix_Chunk` in milliseconds
+ * Source: http://osdl.sourceforge.net/OSDL-0.4/api/html/OSDLAudio_8cc-source.html
+ *
+ * Untested code follows...
+ */
+Uint32 getChunkTimeMilliseconds(Mix_Chunk *chunk)
+{
+	Uint32 points = 0;
+	Uint32 frames = 0;
+	int freq      = 0;
+	Uint16 fmt    = 0;
+	int chans     = 0;
+
+	// Chunks are converted to audio device format...
+	if (!Mix_QuerySpec(&freq, &fmt, &chans))
+		return 0;  //never called Mix_OpenAudio()?!
+
+	// bytes / samplesize == sample points
+	points = (chunk->alen / ((fmt & 0xFF) / 8));
+
+	// sample points / channels == sample frames
+	frames = (points / chans);
+
+	// (sample frames * 1000) / frequency == play length in ms
+	return (frames * 1000) / freq;
+}
+
+SFX::SFX(std::string filepath):
+	playing(false),
+	playTimer(0)
 {
     this->sfx = NULL;
 	this->setSFX(filepath);
@@ -15,6 +44,18 @@ bool SFX::play()
 {
     if (!this->sfx)
         return false;
+
+    if (this->playing)
+    {
+	    if (!this->playTimer.isDone())
+		    return false;
+
+	    this->playing = false; // done!
+    }
+
+    this->playTimer.setDelay(getChunkTimeMilliseconds(this->sfx));
+    this->playTimer.startCounting();
+    this->playing = true;
 
     if (Mix_PlayChannel(-1, this->sfx, 0) == -1)
     {

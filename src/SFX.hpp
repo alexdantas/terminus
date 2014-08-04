@@ -2,6 +2,7 @@
 #define SFX_H_DEFINED
 
 #include "SDL.hpp"
+#include "TimerCounter.hpp"
 
 /// Sound effects for the win!
 //
@@ -43,6 +44,9 @@ public:
 private:
     Mix_Chunk*  sfx;
     std::string filepath;
+
+	bool playing;
+	TimerCounter playTimer;
 };
 
 #endif /* SFX_H_DEFINED */
