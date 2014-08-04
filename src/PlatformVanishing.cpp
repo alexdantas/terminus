@@ -20,6 +20,8 @@ void PlatformVanishing::vanish()
 }
 void PlatformVanishing::update(float dt)
 {
+	UNUSED(dt);
+
     if (this->timer->isDone())
     {
         this->setVisible(false);

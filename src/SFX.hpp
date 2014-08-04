@@ -19,12 +19,9 @@ public:
 
     /// Plays the loaded SFX.
     //
-    //  @param times How many times we'll play the SFX. If -1,
-    //  infinite loop.
-    //
     //  @note If called multiple times, will wait for it to
     //        finish before playing again.
-    bool play(int times=-1);
+	bool play();
 
     /// Loads the SFX into memory.
     //

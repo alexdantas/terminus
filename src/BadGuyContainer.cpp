@@ -11,9 +11,6 @@ BadGuyContainer::BadGuyContainer(unsigned int maxAmmount, Rectangle *gameArea, P
     gameArea(gameArea),
     platforms(platforms)
 {
-    unsigned int i;
-    int occupied = 0; // Say's if platform already occupied by Venus copy
-
     this->addGriffin();
     this->addGriffin();
     this->addGriffin();

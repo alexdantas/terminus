@@ -360,9 +360,9 @@ GameState::StateCode GameStateGame::update(float dt)
         int spikeThreshold = 48;
 
         // Creating spikes!
-        if ((this->apterus->box->bottom) < (this->gameArea->h - 48))
+        if ((this->apterus->box->bottom) < (this->gameArea->h - spikeThreshold))
         {
-            this->spikes->setPositionSprite(camera->getY() + 600 - 48);
+            this->spikes->setPositionSprite(camera->getY() + 600 - spikeThreshold);
             this->spikes->setPositionCollision(cameraLowestPoint + 600);
         }
     }

@@ -30,7 +30,7 @@ void GameStateGameOver::load(int stack)
 
     this->gameover      = new Sprite("img/game_over.png");
     this->music->play();
-    this->zeus->play(1);
+    this->zeus->play();
 
     //this->textTimer->start();
 }

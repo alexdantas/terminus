@@ -11,7 +11,7 @@ SFX::~SFX()
 {
 	if (this->sfx) Mix_FreeChunk(this->sfx);
 }
-bool SFX::play(int times)
+bool SFX::play()
 {
     if (!this->sfx)
         return false;

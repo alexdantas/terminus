@@ -7,6 +7,7 @@ GameStateInstruction::GameStateInstruction():
 { }
 void GameStateInstruction::load(int stack)
 {
+	UNUSED(stack);
     this->image      = new Sprite("img/instruction.png");
 
 }
@@ -18,6 +19,8 @@ int GameStateInstruction::unload()
 }
 GameState::StateCode GameStateInstruction::update(float dt)
 {
+	UNUSED(dt);
+
     InputManager* input = InputManager::getInstance();
     input->update();
 
