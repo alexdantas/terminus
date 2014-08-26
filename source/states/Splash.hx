@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.util.FlxTimer;
+import flixel.util.FlxColor;
 
 /**
  * First state, shows a splash screen.
@@ -13,6 +14,10 @@ class Splash extends FlxState
 	// Countdown to switch to next game state
 	private var timer:FlxTimer;
 
+	// Time to wait (in seconds)
+	private static inline var DELAY:Int = 2;
+
+	// Image to show on the background
 	private var background:FlxSprite;
 
 	override public function create():Void
@@ -22,9 +27,9 @@ class Splash extends FlxState
 
 		// Countdown to the
 		timer = new FlxTimer(
-			2, // Seconds to go
+			DELAY, // Seconds to go
 			function(timer:FlxTimer):Void {
-				// Switch to the game
+				this.nextState();
 			}
 		);
 
@@ -33,11 +38,24 @@ class Splash extends FlxState
 
 	override public function update():Void
 	{
+		// Interrupt splash if any of those keys
+		// is pressed
 		if (FlxG.keys.anyPressed(["SPACE", "ENTER"]))
 		{
 			timer.cancel();
-			// Switch to the game
+			this.nextState();
 		}
 		super.update();
+	}
+
+	public function nextState():Void
+	{
+		FlxG.camera.fade(
+			FlxColor.BLACK, 0.33, false,
+			function()
+			{
+				FlxG.switchState(new Intro());
+			}
+		);
 	}
 }
