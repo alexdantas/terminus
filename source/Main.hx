@@ -44,9 +44,14 @@ class Main extends Sprite
 	 */
 	public static function exitGame():Void
 	{
+		#if flash
+		// Flash games cannot exit - of course
+		// TODO: Create a blank state or something
+		#else
 		// I don't know if this is safe at all,
 		// but at least its something.
 		System.exit(0);
+		#end
 	}
 
 	/**

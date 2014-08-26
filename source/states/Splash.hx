@@ -22,12 +22,14 @@ class Splash extends FlxState
 
 	override public function create():Void
 	{
+		// Sweet fade-in effect
+		FlxG.camera.fade(FlxColor.WHITE, 1, true);
+
 		background = new FlxSprite(0, 0, "assets/gfx/splash-screen.png");
 		add(background);
 
-		// Countdown to the
 		timer = new FlxTimer(
-			DELAY, // Seconds to go
+			DELAY,
 			function(timer:FlxTimer):Void {
 				this.nextState();
 			}
