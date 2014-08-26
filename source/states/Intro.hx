@@ -19,10 +19,20 @@ class Intro extends FlxState
 	private var timer:FlxTimer;
 
 	// Time to wait on each image (in seconds)
-	private static inline var DELAY:Int = 1;
+	private static inline var DELAY:Float = 1.1;
 
 	override public function create():Void
 	{
+		// Let's get it on!
+		// Note that music is already interrupted when
+		// changing states
+		#if flash
+		FlxG.sound.playMusic("assets/music/intro.mp3", 1, false);
+		#else
+		FlxG.sound.playMusic("assets/music/intro.ogg", 1, false);
+		#end
+
+		// All "slides"
 		images = new Array<FlxSprite>();
 		images.push(new FlxSprite(0, 0, "assets/gfx/intro/intro01.png"));
 		images.push(new FlxSprite(0, 0, "assets/gfx/intro/intro02.png"));

@@ -15,7 +15,7 @@ class Splash extends FlxState
 	private var timer:FlxTimer;
 
 	// Time to wait (in seconds)
-	private static inline var DELAY:Int = 2;
+	private static inline var DELAY:Float = 2;
 
 	// Image to show on the background
 	private var background:FlxSprite;
