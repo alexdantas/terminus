@@ -28,14 +28,27 @@
 	<param type="string" value="options"/>
   </button>
 
-  <!-- Button that quits the game -->
+  <button
+	  id="button_intro"
+	  use_def="text_button_medium"
+	  label="$BUTTON_INTRO"
+	  >
+	<!-- Relatively positioning -->
+	<anchor
+	  x="button_options.left" y="button_options.bottom"
+	  x-flush="left" y-flush="top"
+	  />
+	<param type="string" value="intro"/>
+  </button>
+
+
   <button
 	  id="button_quit"
 	  use_def="text_button_medium"
 	  label="$BUTTON_QUIT_GAME"
 	  >
 	<anchor
-	  x="button_options.left" y="button_options.bottom"
+	  x="button_intro.left" y="button_intro.bottom"
 	  x-flush="left" y-flush="top"
 	  />
 

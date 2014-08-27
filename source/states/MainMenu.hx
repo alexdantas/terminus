@@ -62,6 +62,15 @@ class MainMenu extends FlxUIState
 				case "options":
 					FlxG.switchState(new Options());
 
+				case "intro":
+					FlxG.camera.fade(
+						FlxColor.BLACK, 0.5, false,
+							function()
+							{
+								FlxG.switchState(new Intro());
+							}
+					);
+
 				case "quit":
 					// Fade out to the Desktop
 					FlxG.camera.fade(

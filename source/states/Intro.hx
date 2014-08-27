@@ -70,19 +70,27 @@ class Intro extends FlxState
 		super.update();
 	}
 
+	override public function destroy():Void
+	{
+		// Don't forget to delete the
+		// last image!
+		super.destroy();
+	}
+
 	public function nextImage():Void
 	{
+		// We're at the last image
+		if (images.length == 1)
+		{
+			this.nextState();
+			return;
+		}
+
 		remove(images[0]); // Taking from screen
 
 		images.shift().destroy(); // Removes first element of Array
 		                          // and returns it, clearing
 		                          // FlxSprite from memory
-
-		if (images.length == 0)
-		{
-			this.nextState();
-			return;
-		}
 
 		add(images[0]);
 		timer.start(
