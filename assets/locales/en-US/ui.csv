@@ -1,6 +1,7 @@
 "flag","content",
 "$BUTTON_BACK","Back",
 "$BUTTON_FULLSCREEN","Fullscreen",
+"$BUTTON_HELP","Help",
 "$BUTTON_INTRO","View Intro",
 "$BUTTON_OPTIONS","Options",
 "$BUTTON_QUIT_GAME","Exit",

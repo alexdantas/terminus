@@ -8,7 +8,7 @@
 
   <button
 	  id="button_start"
-	  x="270" y="400"
+	  x="270" y="300"
 	  use_def="text_button_medium"
 	  label="$BUTTON_START_GAME"
 	  >
@@ -29,13 +29,26 @@
   </button>
 
   <button
+	  id="button_help"
+	  use_def="text_button_medium"
+	  label="$BUTTON_HELP"
+	  >
+	<!-- Relatively positioning -->
+	<anchor
+	  x="button_options.left" y="button_options.bottom"
+	  x-flush="left" y-flush="top"
+	  />
+	<param type="string" value="help"/>
+  </button>
+
+  <button
 	  id="button_intro"
 	  use_def="text_button_medium"
 	  label="$BUTTON_INTRO"
 	  >
 	<!-- Relatively positioning -->
 	<anchor
-	  x="button_options.left" y="button_options.bottom"
+	  x="button_help.left" y="button_help.bottom"
 	  x-flush="left" y-flush="top"
 	  />
 	<param type="string" value="intro"/>
