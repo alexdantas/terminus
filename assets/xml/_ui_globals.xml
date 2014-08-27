@@ -2,12 +2,12 @@
 <data>
 
   <definition id="crom_medium"
-			  font="crom"
-			  size="32"
+			  font="livingst"
+			  size="36"
 			  />
   <definition id="crom_medium_bold"
-			  font="lithos"
-			  size="32"
+			  font="livingst"
+			  size="36"
 			  style="bold"
 			  />
 
@@ -20,6 +20,20 @@
 
 	<text use_def="crom_medium"
 		  align="center"
+		  outline="0x000000"
+		  >
+		<color id="up"   value="0xe3cf92" />
+		<color id="over" value="0xffffff" />
+		<color id="down" value="0xaaaaaa" />
+	</text>
+  </definition>
+
+  <definition id="radio_medium"
+			  label_width="600"
+			  >
+	<text use_def="crom_medium"
+		  align="center"
+		  size="18"
 		  outline="0x000000"
 		  >
 		<color id="up"   value="0xe3cf92" />
