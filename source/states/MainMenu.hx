@@ -10,6 +10,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSave;
 import flixel.addons.ui.FlxUIState;
 import flixel.addons.ui.interfaces.IFlxUIWidget;
+import flixel.addons.ui.FlxUICursor;
 
 /**
  * The Main menu.
@@ -23,14 +24,25 @@ class MainMenu extends FlxUIState
 		// (must be inside "assets/xml")
 		_xml_id = "ui_main_menu";
 
+		// Enable a cursor so we can
+		// select menu items with the keyboard
+		_makeCursor = true;
+
+		super.create();
+
+		// And make it move with the following keys
+		cursor.loadGraphic("assets/gfx/ui/cursor.png");
+		cursor.setDefaultKeys(
+			FlxUICursor.KEYS_DEFAULT_ARROWS |
+			FlxUICursor.KEYS_DEFAULT_WASD   |
+			FlxUICursor.KEYS_DEFAULT_TAB
+		);
 
 		#if flash
 		FlxG.sound.playMusic("assets/music/main_menu.mp3", 1, false);
 		#else
 		FlxG.sound.playMusic("assets/music/main_menu.ogg", 1, false);
 		#end
-
-		super.create();
 	}
 
 	override public function destroy():Void
