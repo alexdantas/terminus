@@ -23,19 +23,20 @@ class MainMenu extends FlxUIState
 		// (must be inside "assets/xml")
 		_xml_id = "ui_main_menu";
 
-		// Let's get it on!
-		// Note that music is already interrupted when
-		// changing states
-		if (FlxG.sound.music == null)
-		{
-			#if flash
-			FlxG.sound.playMusic("assets/music/main_menu.mp3", 1, false);
-			#else
-			FlxG.sound.playMusic("assets/music/main_menu.ogg", 1, false);
-			#end
-		}
+
+		#if flash
+		FlxG.sound.playMusic("assets/music/main_menu.mp3", 1, false);
+		#else
+		FlxG.sound.playMusic("assets/music/main_menu.ogg", 1, false);
+		#end
 
 		super.create();
+	}
+
+	override public function destroy():Void
+	{
+		FlxG.sound.music.stop();
+		super.destroy();
 	}
 
 	// Handles events on the UI

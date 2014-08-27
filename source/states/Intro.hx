@@ -24,8 +24,6 @@ class Intro extends FlxState
 	override public function create():Void
 	{
 		// Let's get it on!
-		// Note that music is already interrupted when
-		// changing states
 		#if flash
 		FlxG.sound.playMusic("assets/music/intro.mp3", 1, false);
 		#else
@@ -72,8 +70,11 @@ class Intro extends FlxState
 
 	override public function destroy():Void
 	{
-		// Don't forget to delete the
-		// last image!
+		// Don't forget to delete the last image!
+		if (images.length == 1)
+			images.shift().destroy();
+
+		FlxG.sound.music.stop();
 		super.destroy();
 	}
 
