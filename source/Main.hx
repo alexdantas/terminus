@@ -9,6 +9,7 @@ import flixel.FlxGame;
 import flixel.FlxState;
 import flash.system.System; // System.exit()
 import states.Splash;
+import states.MainMenu;
 
 class Main extends Sprite
 {
@@ -34,7 +35,7 @@ class Main extends Sprite
 
 	// First state that the game starts with.
 #if debug
-	var initialState:Class<FlxState> = Splash;
+	var initialState:Class<FlxState> = MainMenu;
 #else
 	var initialState:Class<FlxState> = Splash;
 #end

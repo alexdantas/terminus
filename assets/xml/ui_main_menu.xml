@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+  <include id="_ui_globals" />
+
+  <!-- Background -->
+  <sprite src="bg_main_menu" x="0" y="0" />
+  <sprite src="logo" x="141" y="50" />
+
+  <button
+	  id="button_start"
+	  x="270" y="400"
+	  use_def="text_button_medium"
+	  label="$BUTTON_START_GAME"
+	  >
+	<param type="string" value="start"/>
+  </button>
+
+  <button
+	  id="button_options"
+	  use_def="text_button_medium"
+	  label="$BUTTON_OPTIONS"
+	  >
+	<!-- Relatively positioning -->
+	<anchor
+	  x="button_start.left" y="button_start.bottom"
+	  x-flush="left" y-flush="top"
+	  />
+	<param type="string" value="options"/>
+  </button>
+
+  <!-- Button that quits the game -->
+  <button
+	  id="button_quit"
+	  use_def="text_button_medium"
+	  label="$BUTTON_QUIT_GAME"
+	  >
+	<anchor
+	  x="button_options.left" y="button_options.bottom"
+	  x-flush="left" y-flush="top"
+	  />
+
+	<param type="string" value="quit"/>
+  </button>
+
+</data>
+

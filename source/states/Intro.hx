@@ -101,7 +101,7 @@ class Intro extends FlxState
 			FlxColor.BLACK, DELAY, false,
 			function()
 			{
-				FlxG.switchState(new Splash());
+				FlxG.switchState(new MainMenu());
 			}
 		);
 	}

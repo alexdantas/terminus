@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+
+  <definition id="crom_medium"
+			  font="crom"
+			  size="32"
+			  />
+  <definition id="crom_medium_bold"
+			  font="lithos"
+			  size="32"
+			  style="bold"
+			  />
+
+  <!-- Text button with medium text and no background -->
+  <definition id="text_button_medium"
+			  width="300"
+			  height="50"
+			  >
+	<graphic blank="true" />
+
+	<text use_def="crom_medium"
+		  align="center"
+		  outline="0x000000"
+		  >
+		<color id="up"   value="0xe3cf92" />
+		<color id="over" value="0xffffff" />
+		<color id="down" value="0xaaaaaa" />
+	</text>
+  </definition>
+
+</data>

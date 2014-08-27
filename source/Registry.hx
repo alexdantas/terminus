@@ -17,7 +17,7 @@ class Registry
 	/**
 	 * Language used to translate all in-game texts.
 	 */
-	//public static var language:MyFireTongue = null;
+	public static var language:MyFireTongue = null;
 
 	public static var shipsDestroyed   :Int = 0;
 	public static var distanceTraveled :Int = 0;
@@ -60,7 +60,7 @@ class Registry
 
 		if (Registry.save.data.locale == null)
 			Registry.save.data.locale = "en-US";
-/*
+
 		// Setting up the language
 		// (Firetongue instance on the `Registry` class)
 		if (Registry.language == null)
@@ -71,7 +71,7 @@ class Registry
 			// All states will use this tongue.
 			FlxUIState.static_tongue = Registry.language;
 		}
-*/
+
 		if (Registry.save.data.fullscreen == null)
 			Registry.save.data.fullscreen = false;
 	}

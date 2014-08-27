@@ -25,7 +25,7 @@ class Splash extends FlxState
 		// Sweet fade-in effect
 		FlxG.camera.fade(FlxColor.WHITE, 1, true);
 
-		background = new FlxSprite(0, 0, "assets/gfx/splash-screen.png");
+		background = new FlxSprite(0, 0, "assets/gfx/bg_splash_screen.png");
 		add(background);
 
 		timer = new FlxTimer(
