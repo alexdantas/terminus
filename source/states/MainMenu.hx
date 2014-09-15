@@ -1,5 +1,7 @@
 package states;
 
+import flixel.addons.display.FlxStarField;
+import flixel.addons.display.FlxStarField.FlxStarField2D;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -11,6 +13,8 @@ import flixel.util.FlxSave;
 import flixel.addons.ui.FlxUIState;
 import flixel.addons.ui.interfaces.IFlxUIWidget;
 import flixel.addons.ui.FlxUICursor;
+import flixel.addons.display.FlxStarField.FlxStarField2D;
+import flixel.util.FlxGradient;
 
 /**
  * The Main menu.
@@ -20,6 +24,25 @@ class MainMenu extends FlxUIState
 {
 	override public function create():Void
 	{
+		// Adding stuff on the order on which they
+		// must be drawn
+		var stars = new FlxStarField2D(0, 0, FlxG.width, FlxG.height, 300);
+		stars.setStarSpeed(5, 25);
+		add(stars);
+
+		var gradient:FlxSprite = FlxGradient.createGradientFlxSprite(
+			FlxG.width, FlxG.height,
+			[0xff000000, 0xff343d6e]
+		);
+		gradient.x = 0;
+		gradient.y = 0;
+		gradient.alpha = 0.3;
+		add(gradient);
+
+		add(new FlxSprite(25, 169, "assets/gfx/temple.png"));
+
+		add(new FlxSprite(141, 35, "assets/gfx/logo.png"));
+
 		// Which XML file to use when building UI
 		// (must be inside "assets/xml")
 		_xml_id = "ui_main_menu";

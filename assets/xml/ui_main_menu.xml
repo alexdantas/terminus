@@ -2,13 +2,9 @@
 <data>
   <include id="_ui_globals" />
 
-  <!-- Background -->
-  <sprite src="bg_main_menu" x="0" y="0" />
-  <sprite src="logo" x="141" y="50" />
-
   <button
 	  id="button_start"
-	  x="270" y="300"
+	  x="370" y="300"
 	  use_def="text_button_medium"
 	  label="$BUTTON_START_GAME"
 	  >
